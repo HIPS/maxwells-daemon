@@ -49,3 +49,9 @@
 
 ![](experiments/Feb_10_hmc_coupling_from_the_past/1/optimization.png)
 
+That was using beta = 0.5 (so exactly a bit per iteration). Here's the same
+thing with beta = 0.75:
+
+![](experiments/Feb_10_hmc_coupling_from_the_past/2/entropy_estimates.png)
+
+![](experiments/Feb_10_hmc_coupling_from_the_past/2/optimization.png)
