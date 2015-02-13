@@ -1,17 +1,25 @@
 # Tasks
 
 ### Experiments
-* Demonstrate perfect sampling
 * Illustrate early stopping and comparison between training loss, validation
   loss, actual KL divergence and our bound on the KL divergence.
+
+--------------------------------------------------------------------------------
+* Demonstrate perfect sampling
 * Show convergence to unidentifiable minima and the N! floor
 * Helmholtz machine??
 
 ### Engineering
-* Reimplement information buffer using arithmetic coding.
+* Implement LIFO arithmetic coding.
 
 ### Technical problems to figure out
-* How can we be more frugal with the bits we put into HMC?
+* What knobs besides number of iters do we have to optimize our new variational objective?
+* How can we adaptively chose e.g. alpha and beta without foiling reversibility.
+* Can we "get credit" for the extra entropy injected by MCMC?
+  Or is beta > 1 the only way to guarantee an entropy increase?
+* Figure out how to do LIFO arithmetic coding.
+
+--------------------------------------------------------------------------------
 * Work out how to handle HMC's accept/reject step.
 * Formalize an "almost perfect sample", where 1-epsilon of initializations
   lead to the same point.
@@ -21,6 +29,11 @@
 * Is there any way to estimate the actual entropy without paying a penalty
   that's exponential in the gap between the actual entropy and the theoretical
   minimum entropy?
+
+# Feb 13
+
+Polling the group, the variational interpretation of early stopping seems the
+most popular. Let's do some experiments and see how it looks in practice.
 
 # Feb 10
 
