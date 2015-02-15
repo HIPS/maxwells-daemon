@@ -1,0 +1,157 @@
+% Sample LaTeX file for creating a paper in the Morgan Kaufmannn two
+% column, 8 1/2 by 11 inch proceedings format.
+
+\documentclass[]{article}
+\usepackage{uai2015stylefiles/proceed2e}
+
+% Set the typeface to Times Roman
+\usepackage{times}
+\usepackage{amsmath, amssymb}
+\usepackage{graphicx}
+\usepackage{algpseudocode}
+\usepackage{hyperref}
+
+
+\newcommand{\vx}{\mathbf{x}}
+\newcommand{\vX}{\mathbf{X}}
+\newcommand{\vw}{\mathbf{w}}
+\newcommand{\vv}{\mathbf{v}}
+\newcommand{\vg}{\mathbf{g}}
+\newcommand{\vzero}{\mathbf{0}}
+\newcommand{\ones}[1]{\mat{1}_{#1}}
+\newcommand{\eye}[1]{\mat{E}_{#1}}
+\newcommand{\tra}{^{\mathsf{T}}}
+\newcommand{\vect}[1]{{\bf{#1}}}
+\newcommand{\mat}[1]{\mathbf{#1}}
+\newcommand{\pderiv}[2]{\frac{\partial #1}{\partial #2}}
+\newcommand{\npderiv}[2]{\nicefrac{\partial #1}{\partial #2}}
+
+\newcommand{\data}{\vx}
+\newcommand{\params}{\vx}
+\newcommand{\paramsrv}{\vX}  % Random variable.
+\newcommand{\numsteps}{T}
+\newcommand{\decay}{\beta}
+\newcommand{\decays}{{\boldsymbol{\decay}}}
+\newcommand{\stepsize}{\alpha}
+\newcommand{\stepsizes}{{\boldsymbol{\stepsize}}}
+
+
+\title{Maxwell's D\ae mon: Stochastic Gradient Nonparametric Variational Inference}
+
+\author{} % LEAVE BLANK FOR ORIGINAL SUBMISSION.
+          % UAI  reviewing is double-blind.
+
+% The author names and affiliations should appear only in the accepted paper.
+%
+%\author{ {\bf Harry Q.~Bovik\thanks{Footnote for author to give an
+%alternate address.}} \\
+%Computer Science Dept. \\
+%Cranberry University\\
+%Pittsburgh, PA 15213 \\
+%\And
+%{\bf Coauthor}  \\
+%Affiliation          \\
+%Address \\
+%\And
+%{\bf Coauthor}   \\
+%Affiliation \\
+%Address    \\
+%(if needed)\\
+%}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+We show how to turn stochastic gradient descent into a procedure that generates a sample from an approximate variational posterior.
+The nonparametric variational distribution is implicitly defined as the output of stochastic gradient descent given a random starting point.
+The tunable variational parameters are the learning rates and momentum schedules of the optimizer.
+We adapt these parameters as the optimizer runs to maximize an approximate variational lower bound on the marginal likelihood.
+Entropy is removed from parameters that can effect the likelihood, and injected into parameters to which the likelihood is insensitive.
+\end{abstract}
+
+\section{Formulation}
+
+We're trying to maximize the variational lower bound on the marginal likelihood of a model:
+%
+\begin{align}
+L = \int q(\params) \log p(\params) d\params - \int q(\params) \log q(\params) d\params
+\end{align}
+%
+where $q(\params)$ is a variational distribution.
+We define a nonparametric variational distribution implicitly as the output of a random initialization run through $T$ iterations of stochastic gradient descent (SGD):
+%
+\begin{align}
+\params_1          & \sim p^{\textnormal{init}}(\params) \\
+q^{SGD}_T(\params) & =    SGD(\stepsizes, \decays, \params, T)
+\end{align}
+%
+
+This distribution is intractable, but we can approximate it at each time step using a single Monte Carlo sample:
+\begin{align}
+  \int q_t(\params) \log   p(\params) d\params & \approxeq f(\params_t) \\
+- \int q_t(\params) \log q_t(\params) d\params & \approxeq \sum_{i=0}^{t} \decay_i
+\end{align}
+%
+where $f(\params)$ is the negative log-likelihood.
+
+The variational parameters of $q^{SGD}$ are the learning rate schedule $\stepsizes$, the momentum decay schedule $\decays$ and the initial distribution $p^{\textnormal{init}}(\params)$.
+Perhaps for now we'll set $p^{\textnormal{init}}(\params)$ to be the prior, although it could really be anything.
+
+How to optimize the variational parameters $\stepsizes$ and $\decays$?
+Keep in mind that these could be different for every iteration of SGD as well as every parameter.
+Keep in mind that since our approximation to the lower bound is deterministic in $\stepsizes$ and $\decays$, we can easily ``overfit'' the variational hyperparameters unless we average over multiple runs of SGD.
+
+\section{Online gradient updates of learning rate and momentum}
+
+A simple procedure to sample from a variational posterior could look like this:
+Start with $\stepsize_1 = 1$, $\decay_1 = 1$.
+At each iteration of SGD, update each in the direction that would improve the bound at computed at the current step,~$L_{t+1}$:
+%
+\begin{align}
+\vv_{t+1}     & = \decay_t \vv_t - g(\params_t) \\
+\params_{t+1} & = \params_t + \stepsize_t \vv_{t+1} \\
+\stepsize_{t+1} & = \stepsize_t + s_\stepsize \pderiv{L_t}{\stepsize_t} \\
+\decay_{t+1} & = \decay_t + s_\decay \pderiv{L_t}{\decay_t}
+\end{align}
+%
+where $s_\stepsize$ and $s_\decay$ are `meta' step sizes.
+
+Which direction do these gradients point?
+For $\stepsize$,
+%
+\begin{align}
+\pderiv{L_t}{\stepsize_t} = g(\params_{t+1}) \vv_{t+1}
+\end{align}
+%
+which means that the learning rate will increase as long as the gradient is pointing in the same direction as the velocity.
+It also has the effect of going at the same speed when the gradient becomes small.
+This is what we want:  If learning stopped when the gradient was zero, then the optimizer would converge.
+
+For $\decay$, the gradient has the form:
+%
+\begin{align}
+\pderiv{L_t}{\decay_t} = - g(\params_{t+1}) \vv_{t} \stepsize_t - \log \decay_t
+\end{align}
+%
+The first term is exactly the same as our heuristic, scaled by $\stepsize$!
+It will increase the velocity if the gradient points in the opposite direction from the velocity.
+
+The second term has a damping effect:  If the gradient, velocity, or stepsize are all small, then this term will try to set the momentum decay term to 1.
+When the momentum decay term is exactly one, no entropy is lost or gained by the optimizer.
+
+Taken together, these two update rules mean that when the local gradient goes to zero, the velocity will stabilize and not go to zero, and the stepsize will also remain constant.
+This is also necessary for the optimizer not to stop at local minima.
+These dynamics will also skate over basins at a constant speed, which is what we want.
+
+[TODO] see if there are any other steady states of this system, such as going in a circle around the minimum of a parabola.
+
+
+\section{Reversibility}
+
+We can probably play with the order of the SGD steps to make them reversible.
+But do we need to?
+If we interpret $\stepsizes$ and $\decays$ as just variational parameters, then they are "outside" the system, and the only way they can go wrong is by failing to find a good bound, or by messing up our estimates of the bound.
+
+\end{document}
