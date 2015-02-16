@@ -197,4 +197,19 @@ eigendirection.
 
 [TODO: think about how to handle negative eigenvalues]
 
+\section{Yet another approach - velocity randomization}
+
+An orthonormal transformation of the velocity vector leaves the target
+distribution invariant and the entropy unchanged. So if we just apply a
+transformation of $I + \alpha T$ at each iteration, we will get a similar effect
+to that of a per-parameter $\decay$, without having to devise an elaborate
+heuristic to assign a $\decay$ to each parameter. There is just one global
+$\decay$ which controls the overall rate of entropy extraction and the remaining
+entropy is automatically distributed among the parameters as needed by the
+random rotations.
+
+This is a lot like randomizing velocities in the manner of HMC, except that it
+doesn't add or remove any net entropy. Entropy is only added or removed when we
+apply $\decay$ for which we are rewarded or penalized as appropriate.
+
 \end{document}
