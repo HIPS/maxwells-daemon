@@ -158,4 +158,43 @@ We can probably play with the order of the SGD steps to make them reversible.
 But do we need to?
 If we interpret $\stepsizes$ and $\decays$ as just variational parameters, then they are "outside" the system, and the only way they can go wrong is by failing to find a good bound, or by messing up our estimates of the bound.
 
+\section{Alternative approach - decay rate from velocity variance estimate}
+
+If we treat $\decays$ as variational parameters we have to use the same
+$\decays$ regardless of starting position and trajectory. Some smoothing will
+therefore be necessary to avoid overfitting to a perticular trajectory. If we
+evaluate multiple trajectories from an ensemble of starting positions, we can
+chose $\decay$ based on the statistical properties of this ensemble.
+
+In particular, we happen to know the target distribution's marginal distribution
+over $\vv$ (it's just $N(0, 1)$ independent of $\params$).  The purpose of the
+decay term is to collapse the velocity towards this distribution.  We can
+estimate the variance, $\sigma_v^2$, of the variational distribution over $\vv$
+at time $T$ using the ensemble and then, for example, choose:
+\begin{align}
+\log \decay = - \beta_0 \log \sigma_v
+\end{align}
+For some overall ``decay speed'' $\beta_0$. [TODO: think about the multivariate
+case, in which $\decays$ could be a matrix. With $N << D$ samples, we can't
+hope to estimate the full covariance matrix. Maybe some ones on the diagonal
+would help.]
+
+\section{Alternative approach - decay rate adapted using curvature information}
+
+If we base $\decays$ entirely on $\params$ and not on $\vv$ we can have
+different $\decays$ for different trajectories and we don't have to worry about
+overfitting.
+
+If we have a good estimate of the entropy difference between initial and target
+distributions we can choose some integrable $\decays$ schedule that amortizes
+the entropy change over multiple steps. The log determinant of the Hessian is
+such an estimate. It's exact in the Gaussian case and hopefully a reasonable
+approximation otherwise. Looking at the individual eigenvalues of the Hessian
+gives a way to estimate the required entropy injection/extraction along each
+eigendirection.
+
+[TODO: think about how to avoid actually diagonalizing the Hessian]
+
+[TODO: think about how to handle negative eigenvalues]
+
 \end{document}
