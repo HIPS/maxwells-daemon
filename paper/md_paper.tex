@@ -26,6 +26,7 @@
 \newcommand{\pderiv}[2]{\frac{\partial #1}{\partial #2}}
 \newcommand{\npderiv}[2]{\nicefrac{\partial #1}{\partial #2}}
 
+\newcommand{\distinit}{q_0(\params, \vv)}
 \newcommand{\data}{\vx}
 \newcommand{\params}{\vx}
 \newcommand{\paramsrv}{\vX}  % Random variable.
@@ -64,7 +65,7 @@
 \maketitle
 
 \begin{abstract}
-We show how to turn stochastic gradient descent into a procedure that generates a sample from an approximate variational posterior.
+We show how to turn stochastic gradient descent into a procedure that generates a sample from a variational approximate posterior.
 The nonparametric variational distribution is implicitly defined as the output of stochastic gradient descent given a random starting point.
 The tunable variational parameters are the learning rates and momentum schedules of the optimizer.
 We adapt these parameters as the optimizer runs to maximize an approximate variational lower bound on the marginal likelihood.
@@ -76,32 +77,35 @@ Entropy is removed from parameters that can effect the likelihood, and injected 
 We're trying to maximize the variational lower bound on the marginal likelihood of a model:
 %
 \begin{align}
-L = \int q(\params) \log p(\params) d\params - \int q(\params) \log q(\params) d\params
+L & = \int q(\params) \log p(\params) d\params - \int q(\params) \log q(\params) d\params \\
+  & = \mathbb{E}_q[\log p(\params)] + H[q]
 \end{align}
 %
 where $q(\params)$ is a variational distribution.
+The two terms can be interpreted as (negative) energy and entropy terms respectively.
 We define a nonparametric variational distribution implicitly as the output of a random initialization run through $T$ iterations of stochastic gradient descent (SGD):
 %
 \begin{align}
-\params_1          & \sim p^{\textnormal{init}}(\params) \\
-q^{SGD}_T(\params) & =    SGD(\stepsizes, \decays, \params, T)
+\params_1, \vv_1 & \sim \distinit \\
+q^{SGD}_T(\params, \vv) & =    SGD(\stepsizes, \decays, \params_1, \vv_1, T)
 \end{align}
 %
 
-This distribution is intractable, but we can approximate it at each time step using a single Monte Carlo sample:
+[TODO: specify ``SGD'' function and auxiliary velocity $\vv$.]
+Since we can sample exactly from $q$, we can approximate the first (``energy'') term of $L$ using one or more Monte Carlo samples. We can compute the second (``entropy'') term exactly:
 \begin{align}
-  \int q_t(\params) \log   p(\params) d\params & \approxeq f(\params_t) \\
-- \int q_t(\params) \log q_t(\params) d\params & \approxeq \sum_{i=0}^{t} \decay_i
+H[q_t] = H[q_0] - \sum_{t=1}^{T} \sum_{d=1}^{D} \log \decay_{td}
 \end{align}
 %
-where $f(\params)$ is the negative log-likelihood.
+where $f(\params)$ is the negative log-likelihood and $\decay_{td}$ is the velocity decay rate for step $t$ and parameter $d$.
+[Maybe: mention that it's only a lower bound on the entropy in the case of finite precision.]
 
-The variational parameters of $q^{SGD}$ are the learning rate schedule $\stepsizes$, the momentum decay schedule $\decays$ and the initial distribution $p^{\textnormal{init}}(\params)$.
-Perhaps for now we'll set $p^{\textnormal{init}}(\params)$ to be the prior, although it could really be anything.
+The variational parameters of $q^{SGD}$ are the learning rate schedule $\stepsizes$, the momentum decay schedule $\decays$ and the initial distribution $\distinit$.
+Perhaps for now we'll set $\distinit$ to be the prior, although it could really be anything.
 
 How to optimize the variational parameters $\stepsizes$ and $\decays$?
 Keep in mind that these could be different for every iteration of SGD as well as every parameter.
-Keep in mind that since our approximation to the lower bound is deterministic in $\stepsizes$ and $\decays$, we can easily ``overfit'' the variational hyperparameters unless we average over multiple runs of SGD.
+Keep in mind that since our approximation to the lower bound is deterministic in $\stepsizes$ and $\decays$, we can easily ``overfit'' the variational hyperparameters unless we average over multiple runs of SGD. [TODO: this doesn't have to be the case. It depends on whether we can reversibly infer the momentum decay rate as we go along.]
 
 \section{Online gradient updates of learning rate and momentum}
 
