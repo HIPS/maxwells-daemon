@@ -37,7 +37,8 @@
 \newcommand{\stepsizes}{{\boldsymbol{\stepsize}}}
 
 
-\title{Maxwell's D\ae mon: Stochastic Gradient Nonparametric Variational Inference}
+%\title{Maxwell's D\ae mon: Stochastic Gradient Nonparametric Variational Inference}
+\title{Entropic Descent: Stochastic Gradient Nonparametric Variational Inference}
 
 \author{} % LEAVE BLANK FOR ORIGINAL SUBMISSION.
           % UAI  reviewing is double-blind.
@@ -71,6 +72,23 @@ The tunable variational parameters are the learning rates and momentum schedules
 We adapt these parameters as the optimizer runs to maximize an approximate variational lower bound on the marginal likelihood.
 Entropy is removed from parameters that can effect the likelihood, and injected into parameters to which the likelihood is insensitive.
 \end{abstract}
+
+
+\section{Introduction}
+
+[TODO: Talk about the bridging the gap paper]
+
+\subsection{Contributions}
+
+\begin{itemize}
+\item We give a simple algorithm based on stochastic gradient descent that produces samples from a variational posterior along with an estimate of the marginal likelihood.
+This algorithm, called entropic descent, performs approximate Bayesian inference in a manner analogous to Hamiltonian Monte Carlo, but without the need for accept-reject steps, and with the ability to operate on minibatches.
+This allows regularization parameters to be set within a single training pass.
+\item We show that the entropy of our nonparametric variational distribution can be computed exactly by a simple sum of log-momentum decay terms.
+\item Early stopping can be viewed as taking a single sample from the implicitly-defined variational distribution.
+Tracking the approximate marginal likelihood gives a stopping rule without a validation set.
+\item possible contribution:  We derive a variational inference algorithm based on RMSProp, and a corresponding variant of Hamiltonian Monte Carlo.
+\end{itemize}
 
 \section{Formulation}
 
