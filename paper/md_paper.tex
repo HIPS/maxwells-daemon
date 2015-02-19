@@ -10,7 +10,23 @@
 \usepackage{graphicx}
 \usepackage{algpseudocode}
 \usepackage{hyperref}
+\usepackage{natbib}
+\usepackage{color}
 
+  \definecolor{mydarkblue}{rgb}{0,0.08,0.45}
+  \hypersetup{ %
+    pdftitle={},
+    pdfauthor={},
+    pdfsubject={},
+    pdfkeywords={},
+    pdfborder=0 0 0,
+    pdfpagemode=UseNone,
+    colorlinks=true,
+    linkcolor=mydarkblue,
+    citecolor=mydarkblue,
+    filecolor=mydarkblue,
+    urlcolor=mydarkblue,
+    pdfview=FitH}
 
 \newcommand{\vx}{\mathbf{x}}
 \newcommand{\vX}{\mathbf{X}}
@@ -229,5 +245,50 @@ random rotations.
 This is a lot like randomizing velocities in the manner of HMC, except that it
 doesn't add or remove any net entropy. Entropy is only added or removed when we
 apply $\decay$ for which we are rewarded or penalized as appropriate.
+
+
+\section{Relation to existing optimization methods}
+RMSprop~\cite{Tieleman2012} or Adam~\citep{Adam14}
+
+
+\section{Related work}
+
+\paragraph{MCMC for variational inference}
+Our method can be seen as a special case of \citet{Bridging14}.
+
+
+\paragraph{Bayesian neural networks}
+Variational inference in Bayesian neural-network models such as deep Gaussian processes~\citep{deepGPVar14}.
+\citet{kingma2014efficient} show how neural networks having unknown weights can be reformulated as neural networks having known weights but stochastic hidden units, and exploit this connection to preform efficient gradient-based inference in Bayesian neural networks.
+
+
+\paragraph{Black-box stochastic variational inference}
+\citet{alp2014blackbox} introduce a general scheme for variational inference using only the gradients of the log-likelihood of a model.
+However, they constrain their variational approximation to be Gaussian, as opposed to our free-form variational distribution.
+
+\paragraph{Adaptive learning rates for SGD}
+\citet{courbariaux2014low} give a method based on Hessian-vector products to adapt learning rates for stochastic gradient descent without momentum.
+
+
+\paragraph{Langevin Dynamics}
+\citet{welling2011bayesian} introduced stochastic gradient Langevin dynamics for doing inference with minibatches.
+\citet{ma2013estimating} use Langevin dynamics and a floating temperature to estimate partition functions of graphical models.
+\citet{vollmer2015non} analyze the asymptotics of Langevin dynamics.
+
+\paragraph{Annealed HMC}
+\citet{sohl2012hamiltonian} used HMC including an accept/reject step for annealed importance sampling to estimate partition functions.
+
+\paragraph{HMC with fewer rejections}
+\citet{sohl2014hamiltonian} introduce a variant of HMC that requires fewer rejections by extending trajectories in some cases where a rejection would otherwise occur, giving a sampler that does not obey detailed balance but still samples from the correct stationary distribution.
+
+\paragraph{MCMC with mini batches}
+[TODO: more citations go here]
+\citet{betancourt2015fundamental} argues that minibatches are fundamentally incompatible with HMC.
+
+
+
+
+\bibliography{references.bib}
+\bibliographystyle{uai2015stylefiles/icml2015}
 
 \end{document}
