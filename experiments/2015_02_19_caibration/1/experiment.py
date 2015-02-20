@@ -11,7 +11,7 @@ from maxwell_d.util import RandomState
 from maxwell_d.optimizers import entropic_descent2
 
 # ------ Problem parameters -------
-nllfun = lambda x: -0.5 * np.log(2.0*np.pi) + 0.5*np.sum(x**2)  # Marg lik should be 1
+nllfun = lambda x: -0.5*np.log(2.0*np.pi) + 0.5*np.sum(x**2)  # Marg lik should be 1
 nllfunt = lambda x, t : nllfun(x)
 gradfun = grad(nllfunt)
 
@@ -20,9 +20,9 @@ D = 1
 seed = 0
 init_variance = 10.0
 x_init_scale = np.full(D, init_variance)
-epsilon = 0.11
-gamma = 0.01
-N_iter = 200
+epsilon = 0.1
+gamma = 0.1
+N_iter = 1000
 
 # ------ Plot parameters -------
 N_samples = 5
@@ -56,28 +56,47 @@ def plot():
           results = pickle.load(f)
 
     fig = plt.figure(0); fig.clf()
-    ax = fig.add_subplot(111)
+    ax = fig.add_subplot(211)
     for i in xrange(N_samples):
         plt.plot([results[("x", i, t)] for t in xrange(N_iter)])
+    ax = fig.add_subplot(212)
+    plt.plot([np.mean([results[("x", i, t)] for i in xrange(N_samples)])
+              for t in xrange(N_iter)])
     plt.savefig("paths.png")
 
     fig = plt.figure(0); fig.clf()
     ax = fig.add_subplot(111)
     for i in xrange(N_samples):
+        plt.plot([results[("x", i, t)] for t in xrange(N_iter)], [results[("velocity", i, t)] for t in xrange(N_iter)])
+    plt.savefig("trajectories.png")
+
+    fig = plt.figure(0); fig.clf()
+    ax = fig.add_subplot(211)
+    for i in xrange(N_samples):
         plt.plot([results[("entropy", i, t)] for t in xrange(N_iter)])
+    ax = fig.add_subplot(212)
+    plt.plot([np.mean([results[("entropy", i, t)] for i in xrange(N_samples)])
+              for t in xrange(N_iter)])
     plt.savefig("entropy.png")
 
     fig = plt.figure(0); fig.clf()
-    ax = fig.add_subplot(111)
+    ax = fig.add_subplot(211)
     for i in xrange(N_samples):
         plt.plot([results[("likelihood", i, t)] for t in xrange(N_iter)])
+    ax = fig.add_subplot(212)
+    plt.plot([np.mean([results[("likelihood", i, t)] for i in xrange(N_samples)])
+              for t in xrange(N_iter)])
     plt.savefig("likelihoods.png")
 
     fig = plt.figure(0); fig.clf()
-    ax = fig.add_subplot(111)
+    ax = fig.add_subplot(211)
     for i in xrange(N_samples):
         plt.plot([estimate_marginal_likelihood(results[("likelihood", i, t)],
                                                results[("entropy", i, t)]) for t in xrange(N_iter)])
+    ax = fig.add_subplot(212)
+    plt.plot([np.mean([estimate_marginal_likelihood(results[("likelihood", i, t)],
+                                               results[("entropy", i, t)]) for i in xrange(N_samples)])
+              for t in xrange(N_iter)])
     plt.savefig("marginal_likelihoods.png")
 
 

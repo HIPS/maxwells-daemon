@@ -77,7 +77,7 @@ def entropic_descent2(grad, x_scale, callback=None, iters=200, epsilon=0.1, gamm
     annealing_schedule = np.linspace(0,1,iters)
     x = rs.randn(D) * x_scale
     v = rs.randn(D)
-    entropy = 0.5 * D * np.log(2*np.pi) + 0.5 * np.sum(-np.log(x_scale))
+    entropy = 0.5 * D * np.log(2*np.pi) + 0.5 * np.sum(np.log(x_scale))
     for t, anneal in enumerate(annealing_schedule):
         cur_epsilon = anneal * epsilon + (1 - anneal) * x_scale
         neg_dlog_init = x / x_scale
