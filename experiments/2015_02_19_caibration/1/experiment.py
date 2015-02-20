@@ -3,6 +3,7 @@
 import numpy as np
 import pickle
 from collections import defaultdict
+from numpy.linalg import norm
 
 from funkyyak import grad
 
@@ -15,8 +16,10 @@ nllfunt = lambda x, t : nllfun(x)
 gradfun = grad(nllfunt)
 
 # ------ Variational parameters -------
+D = 1
 seed = 0
-x_init_scale = np.full(1, 10.0)
+init_variance = 10.0
+x_init_scale = np.full(D, init_variance)
 epsilon = 0.11
 gamma = 0.01
 N_iter = 200
@@ -43,6 +46,8 @@ def run():
 
     return results
 
+def estimate_marginal_likelihood(likelihood, entropy):
+    return likelihood + entropy
 
 def plot():
     print "Plotting results..."
@@ -71,7 +76,8 @@ def plot():
     fig = plt.figure(0); fig.clf()
     ax = fig.add_subplot(111)
     for i in xrange(N_samples):
-        plt.plot([results[("likelihood", i, t)] + results[("entropy", i, t)] for t in xrange(N_iter)])
+        plt.plot([estimate_marginal_likelihood(results[("likelihood", i, t)],
+                                               results[("entropy", i, t)]) for t in xrange(N_iter)])
     plt.savefig("marginal_likelihoods.png")
 
 

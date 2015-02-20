@@ -77,19 +77,19 @@ def entropic_descent2(grad, x_scale, callback=None, iters=200, epsilon=0.1, gamm
     annealing_schedule = np.linspace(0,1,iters)
     x = rs.randn(D) * x_scale
     v = rs.randn(D)
-    x_entropy = 0.5 * D * np.log(2*np.pi) + 0.5 * np.sum(np.log(x_scale))
-    v_entropy = 0.5 * D * np.log(2*np.pi) + 0.5 * D
-    entropy = x_entropy + v_entropy
+    entropy = 0.5 * D * np.log(2*np.pi) + 0.5 * np.sum(-np.log(x_scale))
     for t, anneal in enumerate(annealing_schedule):
         cur_epsilon = anneal * epsilon + (1 - anneal) * x_scale
         neg_dlog_init = x / x_scale
         g = anneal * grad(x, t) + (1 - anneal) * neg_dlog_init
-        if callback: callback(x, t, g, v, entropy)
+        if callback: callback(x, t, g, v, entropy + 0.5 - 0.5*norm(v)**2)
         v = v - cur_epsilon * alpha * g
         x += cur_epsilon * alpha * v
         r = rs.randn(len(v))
         old_v_norm = norm(v)  # Track how much we grow or shrink due to r.
         v = v * np.sqrt(1-gamma**2) + gamma * r
         new_v_norm = norm(v)
-        entropy += 0.5*np.log(new_v_norm) - 0.5*np.log(old_v_norm)
+        entropy += 0.5*new_v_norm**2 - 0.5*old_v_norm**2
+
+    entropy = entropy + 0.5 - 0.5*norm(v)**2
     return x, entropy
