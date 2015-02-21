@@ -80,7 +80,7 @@ def entropic_descent2(grad, x_scale, callback=None, epsilon=0.1,
     for t, anneal in enumerate(annealing_schedule):
         if callback: callback(x, t, v, entropy)
         entropy += 0.5 * norm(v) ** 2
-        neg_dlog_init = x / x_scale
+        neg_dlog_init = x / x_scale**2
         g = anneal * grad(x, t) + (1 - anneal) * neg_dlog_init
         e = anneal * epsilon    + (1 - anneal) * x_scale
         v -= e * alpha * g
