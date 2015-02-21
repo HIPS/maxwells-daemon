@@ -12,9 +12,10 @@
 \usepackage{hyperref}
 \usepackage{natbib}
 \usepackage{color}
+\usepackage{algorithm}
 
-  \definecolor{mydarkblue}{rgb}{0,0.08,0.45}
-  \hypersetup{ %
+\definecolor{mydarkblue}{rgb}{0,0.08,0.45}
+\hypersetup{ %
     pdftitle={},
     pdfauthor={},
     pdfsubject={},
@@ -28,12 +29,15 @@
     urlcolor=mydarkblue,
     pdfview=FitH}
 
+% Math typesetting.
 \newcommand{\vx}{\mathbf{x}}
 \newcommand{\vX}{\mathbf{X}}
 \newcommand{\vw}{\mathbf{w}}
 \newcommand{\vv}{\mathbf{v}}
+\newcommand{\vr}{\mathbf{r}}
 \newcommand{\vg}{\mathbf{g}}
-\newcommand{\vzero}{\mathbf{0}}
+\newcommand{\vI}{\mathbf{I}}
+\newcommand{\vzero}{\bf{0}}
 \newcommand{\ones}[1]{\mat{1}_{#1}}
 \newcommand{\eye}[1]{\mat{E}_{#1}}
 \newcommand{\tra}{^{\mathsf{T}}}
@@ -41,17 +45,31 @@
 \newcommand{\mat}[1]{\mathbf{#1}}
 \newcommand{\pderiv}[2]{\frac{\partial #1}{\partial #2}}
 \newcommand{\npderiv}[2]{\nicefrac{\partial #1}{\partial #2}}
+\newcommand{\argmin}{\operatornamewithlimits{argmin}}
+\newcommand{\argmax}{\operatornamewithlimits{argmax}}
+\newcommand{\expect}{\mathbb{E}}
+\newcommand{\expectargs}[2]{\mathbb{E}_{#1} \left[ {#2} \right]}
+\newcommand{\var}{\mathbb{V}}
+\def\iid{i.i.d.\ }
+\def\simiid{\overset{\mbox{\tiny iid}}{\sim}}
+\newcommand{\defeq}{\mathrel{:\mkern-0.25mu=}}
+\newcommand{\Normal}{\mathcal{N}}
+\newcommand{\Nt}[3]{\mathcal{N}\!\left(#1 \middle| #2,#3\right)}
+\newcommand{\N}[2]{\mathcal{N}\!\left(#1,#2\right)}
 
+% Symbol definitions.
 \newcommand{\distinit}{q_0(\params, \vv)}
 \newcommand{\data}{\vx}
 \newcommand{\params}{\vx}
 \newcommand{\paramsrv}{\vX}  % Random variable.
 \newcommand{\numsteps}{T}
-\newcommand{\decay}{\beta}
+\newcommand{\decay}{\gamma}
 \newcommand{\decays}{{\boldsymbol{\decay}}}
 \newcommand{\stepsize}{\alpha}
 \newcommand{\stepsizes}{{\boldsymbol{\stepsize}}}
-
+\newcommand{\gradparams}{\nabla L(\params_t, t)}
+\DeclareMathOperator{\SGD}{SGD}
+\newcommand{\entropy}{H}
 
 %\title{Maxwell's D\ae mon: Stochastic Gradient Nonparametric Variational Inference}
 \title{Entropic Descent: Stochastic Gradient Nonparametric Variational Inference}
@@ -103,8 +121,8 @@ This allows regularization parameters to be set within a single training pass.
 \item We show that the entropy of our nonparametric variational distribution can be computed exactly by a simple sum of log-momentum decay terms.
 \item Early stopping can be viewed as taking a single sample from the implicitly-defined variational distribution.
 Tracking the approximate marginal likelihood gives a stopping rule without a validation set.
-\item possible contribution:  We derive a variational inference algorithm based on RMSProp, and a corresponding variant of Hamiltonian Monte Carlo.
 \end{itemize}
+
 
 \section{Formulation}
 
@@ -116,26 +134,104 @@ L & = \int q(\params) \log p(\params) d\params - \int q(\params) \log q(\params)
 \end{align}
 %
 where $q(\params)$ is a variational distribution.
-The two terms can be interpreted as (negative) energy and entropy terms respectively.
+The two terms can be interpreted as (negative) energy and entropy terms, respectively.
 We define a nonparametric variational distribution implicitly as the output of a random initialization run through $T$ iterations of stochastic gradient descent (SGD):
 %
 \begin{align}
 \params_1, \vv_1 & \sim \distinit \\
-q^{SGD}_T(\params, \vv) & =    SGD(\stepsizes, \decays, \params_1, \vv_1, T)
+q^{\SGD}_T(\params, \vv) & =    \SGD(\stepsizes, \decays, \params_1, \vv_1, T)
 \end{align}
 %
 
-[TODO: specify ``SGD'' function and auxiliary velocity $\vv$.]
-Since we can sample exactly from $q$, we can approximate the first (``energy'') term of $L$ using one or more Monte Carlo samples. We can compute the second (``entropy'') term exactly:
-\begin{align}
-H[q_t] = H[q_0] - \sum_{t=1}^{T} \sum_{d=1}^{D} \log \decay_{td}
-\end{align}
-%
-where $f(\params)$ is the negative log-likelihood and $\decay_{td}$ is the velocity decay rate for step $t$ and parameter $d$.
-[Maybe: mention that it's only a lower bound on the entropy in the case of finite precision.]
 
-The variational parameters of $q^{SGD}$ are the learning rate schedule $\stepsizes$, the momentum decay schedule $\decays$ and the initial distribution $\distinit$.
+
+\begin{algorithm}
+   \caption{Entropic Descent}
+   \label{alg:entropic-descent}
+\begin{algorithmic}[1]
+	\State {\bfseries input:}
+	Weight initialization scale $\sigma_0$,
+	$\decay$,
+	annealing schedule $\stepsizes$,
+	time step $\epsilon$,
+	highest eigenvalue $\lambda$,
+	negative log likelihood $L(\params, t)$
+	\State initialize $\vv_1 \sim \N{0}{\vI_D}$
+	\State initialize $\params_1 \sim \N{0}{\sigma_0 \vI_D}$
+	\State $\entropy = \frac{D}{2} (1 + \log 2 \pi) + D \log\sigma_0 + \frac{1}{2} (D - |\vv|_2^2)$
+	\For{$t=1$ {\bfseries to} $T$}
+		\State $\entropy = \entropy + \frac{1}{2} |\vv|_2^2$ \Comment{Update entropy}
+		\State $d =   \stepsizes_t \lambda     + (1 - \stepsizes_t) \sigma_0^2$ \Comment{Anneal stepsize}
+		\State $\vg = \stepsizes_t \gradparams + (1 - \stepsizes_t) \frac{\vx}{\sigma_0^2}$ \Comment{Anneal gradient}
+		\State $\vv_{t+1} = \vv_t + d \times \vg$ \Comment{Update velocity}
+		\State $\params_{t+1} = \params_t + d \times \vv$  \Comment{Update position}
+		\State $\entropy = \entropy - \frac{1}{2} |\vv|_2^2$  \Comment{Downdate entropy}
+		\State $\vr \sim \N{0}{\vI_D}$
+		\State $d\vv = \sqrt{1 - \decay^2} d\vv + \decay \vr$ \Comment{Perturb velocity}
+   \EndFor
+   \State \textbf{output} sample $\params_T$, estimate of entropy $\entropy$
+\end{algorithmic}
+\end{algorithm}
+
+$\lambda$ is the square root of the highest eigenvalue of the Hessian of the log-posterior at the mode.
+$\decay$ controls the amount velocities randomize each iteration.
+
+Since we can sample exactly from $q$, we can approximate the first (``energy'') term of $L$ using one or more Monte Carlo samples.
+
+The variational parameters of $q^{\SGD}$ are the learning rate schedule $\stepsizes$, the momentum decay schedule $\decays$ and the initial distribution $\distinit$.
 Perhaps for now we'll set $\distinit$ to be the prior, although it could really be anything.
+
+\subsection{The need for Annealing}
+If we didn't anneal, one of our KL terms wouldn't go to zero even as the step-size approached zero.
+
+
+\section{Related work}
+
+RMSprop~\cite{Tieleman2012} or Adam~\citep{Adam14}
+
+\paragraph{MCMC for variational inference}
+Our method can be seen as a special case of \citet{Bridging14}.
+
+
+\paragraph{Bayesian neural networks}
+Variational inference in Bayesian neural-network models such as deep Gaussian processes~\citep{deepGPVar14}.
+\citet{kingma2014efficient} show how neural networks having unknown weights can be reformulated as neural networks having known weights but stochastic hidden units, and exploit this connection to preform efficient gradient-based inference in Bayesian neural networks.
+
+
+\paragraph{Black-box stochastic variational inference}
+\citet{alp2014blackbox} introduce a general scheme for variational inference using only the gradients of the log-likelihood of a model.
+However, they constrain their variational approximation to be Gaussian, as opposed to our free-form variational distribution.
+
+\paragraph{Adaptive learning rates for SGD}
+\citet{courbariaux2014low} give a method based on Hessian-vector products to adapt learning rates for stochastic gradient descent without momentum.
+
+
+\paragraph{Langevin Dynamics}
+\citet{welling2011bayesian} introduced stochastic gradient Langevin dynamics for doing inference with minibatches.
+\citet{ma2013estimating} use Langevin dynamics and a floating temperature to estimate partition functions of graphical models.
+\citet{vollmer2015non} analyze the asymptotics of Langevin dynamics.
+
+\paragraph{Annealed HMC}
+\citet{sohl2012hamiltonian} used HMC including an accept/reject step for annealed importance sampling to estimate partition functions.
+
+\paragraph{HMC with fewer rejections}
+\citet{sohl2014hamiltonian} introduce a variant of HMC that requires fewer rejections by extending trajectories in some cases where a rejection would otherwise occur, giving a sampler that does not obey detailed balance but still samples from the correct stationary distribution.
+
+\paragraph{MCMC with mini batches}
+[TODO: more citations go here]
+\citet{betancourt2015fundamental} argues that minibatches are fundamentally incompatible with HMC.
+
+
+\section{Future Work and Extensions}
+
+We could derive a variational inference algorithm based on RMSProp, and a corresponding variant of Hamiltonian Monte Carlo.
+
+\bibliography{references.bib}
+\bibliographystyle{uai2015stylefiles/icml2015}
+
+\end{document}
+
+
 
 How to optimize the variational parameters $\stepsizes$ and $\decays$?
 Keep in mind that these could be different for every iteration of SGD as well as every parameter.
@@ -247,48 +343,13 @@ This is a lot like randomizing velocities in the manner of HMC, except that it
 doesn't add or remove any net entropy. Entropy is only added or removed when we
 apply $\decay$ for which we are rewarded or penalized as appropriate.
 
+------
 
-
-\section{Related work}
-
-RMSprop~\cite{Tieleman2012} or Adam~\citep{Adam14}
-
-\paragraph{MCMC for variational inference}
-Our method can be seen as a special case of \citet{Bridging14}.
-
-
-\paragraph{Bayesian neural networks}
-Variational inference in Bayesian neural-network models such as deep Gaussian processes~\citep{deepGPVar14}.
-\citet{kingma2014efficient} show how neural networks having unknown weights can be reformulated as neural networks having known weights but stochastic hidden units, and exploit this connection to preform efficient gradient-based inference in Bayesian neural networks.
-
-
-\paragraph{Black-box stochastic variational inference}
-\citet{alp2014blackbox} introduce a general scheme for variational inference using only the gradients of the log-likelihood of a model.
-However, they constrain their variational approximation to be Gaussian, as opposed to our free-form variational distribution.
-
-\paragraph{Adaptive learning rates for SGD}
-\citet{courbariaux2014low} give a method based on Hessian-vector products to adapt learning rates for stochastic gradient descent without momentum.
-
-
-\paragraph{Langevin Dynamics}
-\citet{welling2011bayesian} introduced stochastic gradient Langevin dynamics for doing inference with minibatches.
-\citet{ma2013estimating} use Langevin dynamics and a floating temperature to estimate partition functions of graphical models.
-\citet{vollmer2015non} analyze the asymptotics of Langevin dynamics.
-
-\paragraph{Annealed HMC}
-\citet{sohl2012hamiltonian} used HMC including an accept/reject step for annealed importance sampling to estimate partition functions.
-
-\paragraph{HMC with fewer rejections}
-\citet{sohl2014hamiltonian} introduce a variant of HMC that requires fewer rejections by extending trajectories in some cases where a rejection would otherwise occur, giving a sampler that does not obey detailed balance but still samples from the correct stationary distribution.
-
-\paragraph{MCMC with mini batches}
-[TODO: more citations go here]
-\citet{betancourt2015fundamental} argues that minibatches are fundamentally incompatible with HMC.
-
-
-
-
-\bibliography{references.bib}
-\bibliographystyle{uai2015stylefiles/icml2015}
-
-\end{document}
+Since we can sample exactly from $q$, we can approximate the first (``energy'') term of $L$ using one or more Monte Carlo samples.
+We can compute the second (``entropy'') term exactly:
+\begin{align}
+H[q_t] = H[q_0] - \sum_{t=1}^{T} \sum_{d=1}^{D} \log \decay_{td}
+\end{align}
+%
+where $f(\params)$ is the negative log-likelihood and $\decay_{td}$ is the velocity decay rate for step $t$ and parameter $d$.
+[Maybe: mention that it's only a lower bound on the entropy in the case of finite precision.]
