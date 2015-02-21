@@ -65,31 +65,27 @@ def adaptive_sgd(grad, x, v=None, callback=None, iters=200,
         learn_rates += meta_learn_rate * g * v
     return x
 
-
-def entropic_descent2(grad, x_scale, callback=None, iters=200, epsilon=0.1, gamma=0.1, rs=None):
+def entropic_descent2(grad, x_scale, callback=None, epsilon=0.1,
+                      gamma=0.1, alpha=0.1, annealing_schedule=None, rs=None):
     """Stochastic gradient descent with momentum and velocity randomization.
        gamma controls the amount velocities randomize each iteration.
        epsilon is roughly the scale of the square root of
        the largest eigenvalue of the Hessian of the log-posterior at the mode.
-       rs is a RandomState."""
-    alpha = 0.1  # integration step-size.
+       rs is a RandomState.
+       alpha is the integration step-size."""
     D = len(x_scale)
-    annealing_schedule = np.linspace(0,1,iters)
     x = rs.randn(D) * x_scale
     v = rs.randn(D)
-    entropy = 0.5 * D * np.log(2*np.pi) + 0.5 * np.sum(np.log(x_scale))
+    entropy = 0.5 * D * (1 + np.log(2*np.pi)) + np.sum(np.log(x_scale)) + 0.5 * (D - norm(v) **2)
     for t, anneal in enumerate(annealing_schedule):
-        cur_epsilon = anneal * epsilon + (1 - anneal) * x_scale
+        if callback: callback(x, t, v, entropy)
+        entropy += 0.5 * norm(v) ** 2
         neg_dlog_init = x / x_scale
         g = anneal * grad(x, t) + (1 - anneal) * neg_dlog_init
-        if callback: callback(x, t, g, v, entropy + 0.5 - 0.5*norm(v)**2)
-        v = v - cur_epsilon * alpha * g
-        x += cur_epsilon * alpha * v
-        r = rs.randn(len(v))
-        old_v_norm = norm(v)  # Track how much we grow or shrink due to r.
-        v = v * np.sqrt(1-gamma**2) + gamma * r
-        new_v_norm = norm(v)
-        entropy += 0.5*new_v_norm**2 - 0.5*old_v_norm**2
-
-    entropy = entropy + 0.5 - 0.5*norm(v)**2
+        e = anneal * epsilon    + (1 - anneal) * x_scale
+        v -= e * alpha * g
+        x += e * alpha * v
+        entropy -= 0.5 * norm(v) ** 2
+        v = v * np.sqrt(1-gamma**2) + rs.randn(len(v)) * gamma
+    if callback: callback(x, t, v, entropy)
     return x, entropy
