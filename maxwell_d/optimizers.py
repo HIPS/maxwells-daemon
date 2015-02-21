@@ -87,5 +87,5 @@ def entropic_descent2(grad, x_scale, callback=None, epsilon=0.1,
         x += e * alpha * v
         entropy -= 0.5 * norm(v) ** 2
         v = v * np.sqrt(1-gamma**2) + rs.randn(len(v)) * gamma
-    if callback: callback(x, t, v, entropy)
+    if callback: callback(x, t + 1, v, entropy)
     return x, entropy

@@ -11,3 +11,4 @@ paper/*.synctex.gz
 paper/*.pdf
 *.tex.swp
 *.idea
+data/
