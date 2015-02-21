@@ -70,6 +70,7 @@
 \newcommand{\gradparams}{\nabla L(\params_t, t)}
 \DeclareMathOperator{\SGD}{SGD}
 \newcommand{\entropy}{H}
+\newcommand{\pun}{{\tilde p}}
 
 %\title{Maxwell's D\ae mon: Stochastic Gradient Nonparametric Variational Inference}
 \title{Entropic Descent: Stochastic Gradient Nonparametric Variational Inference}
@@ -124,12 +125,12 @@ Tracking the approximate marginal likelihood gives a stopping rule without a val
 \end{itemize}
 
 
-\section{Formulation}
+\section{Constructing a tight variational bound}
 
 We're trying to maximize the variational lower bound on the marginal likelihood of a model:
 %
 \begin{align}
-L & = \int q(\params) \log p(\params) d\params - \int q(\params) \log q(\params) d\params \\
+L & = \int q(\params) \log \pun(\params) d\params - \int q(\params) \log q(\params) d\params \\
   & = \mathbb{E}_q[\log p(\params)] + H[q]
 \end{align}
 %
@@ -150,11 +151,11 @@ q^{\SGD}_T(\params, \vv) & =    \SGD(\stepsizes, \decays, \params_1, \vv_1, T)
    \label{alg:entropic-descent}
 \begin{algorithmic}[1]
 	\State {\bfseries input:}
-	Weight initialization scale $\sigma_0$,
-	$\decay$,
-	annealing schedule $\stepsizes$,
-	time step $\epsilon$,
-	highest eigenvalue $\lambda$,
+	Weight initialization scale $\sigma_0$, \\
+	velocity randomization level $\decay$, \\
+	annealing schedule $\stepsizes$, \\
+	time step $\epsilon$, \\
+	highest eigenvalue $\lambda$, \\
 	negative log likelihood $L(\params, t)$
 	\State initialize $\vv_1 \sim \N{0}{\vI_D}$
 	\State initialize $\params_1 \sim \N{0}{\sigma_0 \vI_D}$
