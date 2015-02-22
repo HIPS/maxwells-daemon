@@ -90,7 +90,7 @@ def logit(x): return 1 / (1 + np.exp(-x))
 def inv_logit(y): return -np.log( 1/y - 1)
 def d_logit(x): return logit(x) * (1 - logit(x))
 
-def make_nn_funs(layer_sizes, L2_reg=0.0):
+def make_nn_funs(layer_sizes):
     parser = VectorParser()
     for i, shape in enumerate(zip(layer_sizes[:-1], layer_sizes[1:])):
         parser.add_shape(('weights', i), shape)
@@ -112,10 +112,8 @@ def make_nn_funs(layer_sizes, L2_reg=0.0):
         return cur_units
 
     def loss(W_vect, X, T):
-        # L2 reg is per data point
-        log_prior = - 0.5 * L2_reg * np.dot(W_vect, W_vect)
-        log_lik = np.sum(predictions(W_vect, X) * T) / X.shape[0]
-        return - log_prior - log_lik
+        # log_prior = - 0.5 * L2_reg * np.dot(W_vect, W_vect)
+        return - np.sum(predictions(W_vect, X) * T) / X.shape[0]
 
     def frac_err(W_vect, X, T):
         preds = np.argmax(predictions(W_vect, X), axis=1)
