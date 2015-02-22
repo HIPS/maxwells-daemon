@@ -185,8 +185,10 @@ Perhaps for now we'll set $\distinit$ to be the prior, although it could really 
 \subsection{The need for Annealing}
 If we didn't anneal, one of our KL terms wouldn't go to zero even as the step-size approached zero.
 
+\subsection{But what about detailed balance?}
 
 \section{Related work}
+
 
 RMSprop~\cite{Tieleman2012} or Adam~\citep{Adam14}
 
@@ -226,6 +228,15 @@ However, they constrain their variational approximation to be Gaussian, as oppos
 \section{Future Work and Extensions}
 
 We could derive a variational inference algorithm based on RMSProp, and a corresponding variant of Hamiltonian Monte Carlo.
+
+Hyperparameters typically come in two forms:
+Regularization parameters and training parameters.
+Optimizing marginal likelihood rather than training loss lets us set regularization parameters during training without using a validation set.
+The marginal likelihood estimate lets us optimize the variational parameters (training hyperparameters) in an outer loop.
+However, optimizing more than a few of these is difficult without gradients.
+We could gain access to exact gradients of the variational lower bound with respect to all variational parameters by simply using reverse-mode differentiation.
+\citet{MacDuvAda2015hyper} showed that this can be done in a memory-efficient way for momentum-based learning procedures.
+Combining these two procedures would allow one to set all hyperparameters using gradient-based methods without the need for a validation set.
 
 \bibliography{references.bib}
 \bibliographystyle{uai2015stylefiles/icml2015}
