@@ -90,7 +90,7 @@ def logit(x): return 1 / (1 + np.exp(-x))
 def inv_logit(y): return -np.log( 1/y - 1)
 def d_logit(x): return logit(x) * (1 - logit(x))
 
-def make_nn_funs(layer_sizes):
+def make_nn_funs(layer_sizes, L2_reg=0.0):
     parser = VectorParser()
     for i, shape in enumerate(zip(layer_sizes[:-1], layer_sizes[1:])):
         parser.add_shape(('weights', i), shape)
@@ -111,9 +111,9 @@ def make_nn_funs(layer_sizes):
                 cur_units = np.tanh(cur_units)
         return cur_units
 
-    def loss(W_vect, X, T, L2_reg=0.0):
-        # TODO: consider treating L2_reg as a matrix
-        log_prior = -np.dot(W_vect * L2_reg, W_vect)
+    def loss(W_vect, X, T):
+        # L2 reg is per data point
+        log_prior = - 0.5 * L2_reg * np.dot(W_vect, W_vect)
         log_lik = np.sum(predictions(W_vect, X) * T) / X.shape[0]
         return - log_prior - log_lik
 
