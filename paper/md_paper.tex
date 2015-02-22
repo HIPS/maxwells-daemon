@@ -136,6 +136,23 @@ L & = \int q(\params) \log \pun(\params) d\params - \int q(\params) \log q(\para
 %
 where $q(\params)$ is a variational distribution.
 The two terms can be interpreted as (negative) energy and entropy terms, respectively.
+
+\subsection{Leapfrog Dynamics}
+
+\begin{figure*}[t]
+%\vskip 0.2in
+\begin{center}
+\includegraphics[width=0.18\linewidth]{../experiments/2015_02_19_caibration/5_figure/seqs/densities_0}
+\includegraphics[width=0.18\linewidth]{../experiments/2015_02_19_caibration/5_figure/seqs/densities_200}
+\includegraphics[width=0.18\linewidth]{../experiments/2015_02_19_caibration/5_figure/seqs/densities_400}
+\includegraphics[width=0.18\linewidth]{../experiments/2015_02_19_caibration/5_figure/seqs/densities_600}
+\includegraphics[width=0.18\linewidth]{../experiments/2015_02_19_caibration/5_figure/seqs/densities_800}
+\caption{Left to right: Phase diagrams over time.}
+\label{fig:dynamics}
+\end{center}
+\end{figure*}
+
+
 We define a nonparametric variational distribution implicitly as the output of a random initialization run through $T$ iterations of stochastic gradient descent (SGD):
 %
 \begin{align}
@@ -237,6 +254,10 @@ However, optimizing more than a few of these is difficult without gradients.
 We could gain access to exact gradients of the variational lower bound with respect to all variational parameters by simply using reverse-mode differentiation.
 \citet{MacDuvAda2015hyper} showed that this can be done in a memory-efficient way for momentum-based learning procedures.
 Combining these two procedures would allow one to set all hyperparameters using gradient-based methods without the need for a validation set.
+
+%\subsection{Acknowledgements}
+%We thank Roger Grosse for helpful discussions.
+
 
 \bibliography{references.bib}
 \bibliographystyle{uai2015stylefiles/icml2015}
