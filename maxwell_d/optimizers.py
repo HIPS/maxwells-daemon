@@ -89,3 +89,29 @@ def entropic_descent2(grad, x_scale, callback=None, epsilon=0.1,
         v = v * np.sqrt(1-gamma**2) + rs.randn(len(v)) * gamma
     if callback: callback(x, t + 1, v, entropy)
     return x, entropy
+
+def entropic_descent_deterministic(grad, x_scale, callback=None, epsilon=0.1,
+                                   gamma=0.1, alpha=0.1, annealing_schedule=None, rs=None):
+    """Same as above, but with deterministic velocity scaling based on gradients."""
+    D = len(x_scale)
+    x = rs.randn(D) * x_scale
+    v = rs.randn(D)
+    entropy = 0.5 * D * (1 + np.log(2*np.pi)) + np.sum(np.log(x_scale))
+    prev_anneal = 0.0
+    for t, anneal in enumerate(annealing_schedule):
+        if callback: callback(x, t, v, entropy)
+        neg_dlog_init = x / x_scale**2
+        neg_dlog_final = grad(x, t)
+        g = anneal * neg_dlog_final + (1 - anneal) * neg_dlog_init
+        e = anneal * epsilon    + (1 - anneal) * x_scale
+        v -= e * alpha * g
+        x += e * alpha * v
+
+        g_prev = prev_anneal * neg_dlog_final + (1 - prev_anneal) * neg_dlog_init
+        scale_change = np.sqrt(np.abs(g_prev / g))
+        v = v * scale_change
+        entropy += np.sum(np.log(scale_change))
+        prev_anneal = anneal
+
+    if callback: callback(x, t + 1, v, entropy)
+    return x, entropy
