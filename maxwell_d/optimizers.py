@@ -91,6 +91,51 @@ def entropic_descent2(grad, x_scale, callback=None, epsilon=0.1,
     return x, entropy
 
 
+def entropic_descent_deterministic(grad, x_scale, callback=None, epsilon=0.1,
+                                   gamma=0.1, alpha=0.1, annealing_schedule=None,
+                                   rs=None, scale_calc_method='gradient',
+                                   hessian=None):
+    """Changes scale at each annealing step by estimating the change in curvature."""
+    if scale_calc_method == 'gradient':
+        def calc_scale(cur_anneal, prev_anneal):
+            return np.sqrt(np.abs(convex_comb(prev_anneal, neg_dlog_final, neg_dlog_init) /
+                                  convex_comb(cur_anneal,  neg_dlog_final, neg_dlog_init)))
+    elif scale_calc_method == 'exact_hessian':
+        # THIS ONLY WORKS FOR A GUASSIAN. JUST TESTING.
+        def calc_scale(cur_anneal, prev_anneal):
+            hess_final = hessian
+            hess_init = 0.5 * 1 /  x_scale**2
+            return np.full(D, np.sqrt(convex_comb(prev_anneal, hess_final, hess_init) /
+                                      convex_comb(cur_anneal,  hess_final, hess_init)))
+    else:
+        raise Exception("{0} not valid".format(scale_calc_method))
+
+    def convex_comb(f, A, B):
+        return f * A + (1 - f) * B
+
+    D = len(x_scale)
+    x = rs.randn(D) * x_scale
+    v = rs.randn(D)
+    entropy = 0.5 * D * (1 + np.log(2*np.pi)) + np.sum(np.log(x_scale))
+    prev_anneal = 0.0
+    for t, anneal in enumerate(annealing_schedule):
+        if callback: callback(x, t, v, entropy)
+        neg_dlog_init = x / x_scale**2
+        neg_dlog_final = grad(x, t)
+        g = convex_comb(anneal, neg_dlog_final, neg_dlog_init)
+        e = convex_comb(anneal, epsilon, x_scale)
+        v -= e * alpha * g
+        x += e * alpha * v
+
+        scale_change = calc_scale(anneal, prev_anneal)
+        v = v * scale_change
+        entropy += np.sum(np.log(scale_change))
+        prev_anneal = anneal
+
+    if callback: callback(x, t + 1, v, entropy)
+    return x, entropy
+
+
 def aed3(grad, x, v, callback=None, iters=200, learn_rate=0.1, init_log_decay=np.log(0.9),
          decay_learn_rate=0.01):
     """Stochastic gradient descent with momentum with auto-adapting decays.
