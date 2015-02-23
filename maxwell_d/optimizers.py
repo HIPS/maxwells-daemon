@@ -141,10 +141,12 @@ def aed3(grad, x, v, callback=None, iters=200, learn_rate=0.1, init_log_decay=np
     """Stochastic gradient descent with momentum with auto-adapting decays.
     Hyperparameters are updated using gradient descent with stepsize given by decay_learn_rate."""
     log_decays = np.full(len(x), init_log_decay)
+    entropy = 0.0
     for t in xrange(iters):
         g = grad(x, t)
-        if callback: callback(x, t, g, v)
+        if callback: callback(x, t, v, entropy)
         v = v * np.exp(log_decays) - g
         x += learn_rate * v
-        log_decays += decay_learn_rate * ( 1 - v**2 )
-    return x
+        entropy = entropy + sum(log_decays)
+        log_decays += decay_learn_rate * np.sign(( 1 - v**2 ))
+    return x, entropy
