@@ -89,3 +89,17 @@ def entropic_descent2(grad, x_scale, callback=None, epsilon=0.1,
         v = v * np.sqrt(1-gamma**2) + rs.randn(len(v)) * gamma
     if callback: callback(x, t + 1, v, entropy)
     return x, entropy
+
+
+def aed3(grad, x, v, callback=None, iters=200, learn_rate=0.1, init_log_decay=np.log(0.9),
+         decay_learn_rate=0.01):
+    """Stochastic gradient descent with momentum with auto-adapting decays.
+    Hyperparameters are updated using gradient descent with stepsize given by decay_learn_rate."""
+    log_decays = np.full(len(x), init_log_decay)
+    for t in xrange(iters):
+        g = grad(x, t)
+        if callback: callback(x, t, g, v)
+        v = v * np.exp(log_decays) - g
+        x += learn_rate * v
+        log_decays += decay_learn_rate * ( 1 - v**2 )
+    return x

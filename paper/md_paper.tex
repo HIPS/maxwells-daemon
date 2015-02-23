@@ -259,8 +259,50 @@ Combining these two procedures would allow one to set all hyperparameters using 
 %We thank Roger Grosse for helpful discussions.
 
 
+
+
+
 \bibliography{references.bib}
 \bibliographystyle{uai2015stylefiles/icml2015}
+
+
+\section{Online gradient updates of learning rate and momentum}
+
+A simple procedure to sample from a variational posterior could look like this:
+Start with $\stepsize_1 = 1$, $\decay_1 = 1$.
+At each iteration of SGD, update each in the direction that would improve the bound at computed at the current step,~$L_{t+1}$:
+%
+\begin{align}
+\vv_{t+1}     & = \decay_t \vv_t - g(\params_t) \\
+\params_{t+1} & = \params_t + \stepsize_t \vv_{t+1} \\
+\stepsize_{t+1} & = \stepsize_t + s_\stepsize \pderiv{L_t}{\stepsize_t} \\
+\decay_{t+1} & = \decay_t + s_\decay \pderiv{L_t}{\decay_t}
+\end{align}
+%
+where $s_\stepsize$ and $s_\decay$ are `meta' step sizes.
+
+Which direction do these gradients point?
+For $\stepsize$,
+%
+\begin{align}
+\pderiv{L_t}{\stepsize_t} = g(\params_{t+1}) \vv_{t+1}
+\end{align}
+%
+which means that the learning rate will increase as long as the gradient is pointing in the same direction as the velocity.
+It also has the effect of going at the same speed when the gradient becomes small.
+This is what we want:  If learning stopped when the gradient was zero, then the optimizer would converge.
+
+For $\decay$, the gradient has the form:
+%
+\begin{align}
+\pderiv{L_t}{\decay_t} = - g(\params_{t+1}) \vv_{t} \stepsize_t - \log \decay_t
+\end{align}
+%
+The first term is exactly the same as our heuristic, scaled by $\stepsize$!
+It will increase the velocity if the gradient points in the opposite direction from the velocity.
+
+The second term has a damping effect:  If the gradient, velocity, or stepsize are all small, then this term will try to set the momentum decay term to 1.
+When the momentum decay term is exactly one, no entropy is lost or gained by the optimizer.
 
 \end{document}
 
