@@ -25,7 +25,7 @@ L2_per_dpt = 1 / init_scale **2 / N_train
 epsilon = 0.1 / N_train
 N_iter = 500
 init_log_decay=np.log(1.0)
-decay_learn_rate=10**-2
+decay_learn_rate=0.0
 
 # ------ Plot parameters -------
 N_samples = 3
