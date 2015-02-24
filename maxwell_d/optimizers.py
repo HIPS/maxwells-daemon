@@ -90,6 +90,8 @@ def entropic_descent2(grad, x_scale, callback=None, epsilon=0.1,
     if callback: callback(x, t + 1, v, entropy)
     return x, entropy
 
+def convex_comb(f, A, B):
+    return f * A + (1 - f) * B
 
 def entropic_descent_deterministic(grad, x_scale, callback=None, epsilon=0.1,
                                    gamma=0.1, alpha=0.1, annealing_schedule=None,
@@ -109,9 +111,6 @@ def entropic_descent_deterministic(grad, x_scale, callback=None, epsilon=0.1,
                                       convex_comb(cur_anneal,  hess_final, hess_init)))
     else:
         raise Exception("{0} not valid".format(scale_calc_method))
-
-    def convex_comb(f, A, B):
-        return f * A + (1 - f) * B
 
     D = len(x_scale)
     x = rs.randn(D) * x_scale
@@ -149,3 +148,23 @@ def aed3(grad, x, v, callback=None, iters=200, learn_rate=0.1, init_log_decay=np
         entropy = entropy + sum(log_decays)
         log_decays += decay_learn_rate * ( 1 - v**2 )
     return x, entropy
+
+
+def aed3_anneal(grad, x_scale, callback=None, learn_rate=0.1, init_log_decay=np.log(0.9),
+                decay_learn_rate=0.01, rs=None, annealing_schedule=None):
+    D = len(x_scale)
+    x = rs.randn(D) * x_scale
+    v = rs.randn(D)
+    entropy = 0.5 * D * (1 + np.log(2*np.pi)) + np.sum(np.log(x_scale))
+    log_decays = np.full(len(x), init_log_decay)
+    for t, anneal in enumerate(annealing_schedule):
+        neg_dlog_init = x / x_scale**2
+        neg_dlog_final = grad(x, t)
+        g = convex_comb(anneal, neg_dlog_final, neg_dlog_init)
+        if callback: callback(x, t, v, entropy + 0.5 * (D - norm(v) **2), log_decays)
+        v = v * np.exp(log_decays) - g
+        x += learn_rate * v
+        entropy = entropy + sum(log_decays)
+        log_decays += decay_learn_rate * ( 1 - v**2 )
+    return x, entropy + 0.5 * (D - norm(v) **2)
+
