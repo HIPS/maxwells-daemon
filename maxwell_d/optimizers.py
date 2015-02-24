@@ -165,6 +165,6 @@ def aed3_anneal(grad, x_scale, callback=None, learn_rate=0.1, init_log_decay=np.
         v = v * np.exp(log_decays) - g
         x += learn_rate * v
         entropy = entropy + sum(log_decays)
-        log_decays += decay_learn_rate * ( 1 - v**2 )
+        log_decays += decay_learn_rate * np.sign( 1 - v**2 )
     return x, entropy + 0.5 * (D - norm(v) **2)
 

@@ -56,6 +56,8 @@
 \newcommand{\Normal}{\mathcal{N}}
 \newcommand{\Nt}[3]{\mathcal{N}\!\left(#1 \middle| #2,#3\right)}
 \newcommand{\N}[2]{\mathcal{N}\!\left(#1,#2\right)}
+\DeclareMathOperator{\KLop}{KL}
+\newcommand{\KL}[2]{\KLop \left(#1 \middle \| #2 \right)}
 
 % Symbol definitions.
 \newcommand{\distinit}{q_0(\params, \vv)}
@@ -130,36 +132,53 @@ Tracking the approximate marginal likelihood gives a stopping rule without a val
 We're trying to maximize the variational lower bound on the marginal likelihood of a model:
 %
 \begin{align}
-L & = \int q(\params) \log \pun(\params) d\params - \int q(\params) \log q(\params) d\params \\
-  & = \mathbb{E}_q[\log p(\params)] + H[q]
+\log Z & \geq \int q(\params) \log \pun(\params) d\params \underbrace{- \int q(\params) \log q(\params) d\params}_{\textnormal{\normalsize Entropy $H[q]$}}
+%  & = \mathbb{E}_q[\log p(\params)] + H[q]
 \end{align}
 %
 where $q(\params)$ is a variational distribution.
 The two terms can be interpreted as (negative) energy and entropy terms, respectively.
 
-\subsection{Leapfrog Dynamics}
-
-\begin{figure*}[t]
-%\vskip 0.2in
-\begin{center}
-\includegraphics[width=0.18\linewidth]{../experiments/2015_02_19_caibration/5_figure/seqs/densities_0}
-\includegraphics[width=0.18\linewidth]{../experiments/2015_02_19_caibration/5_figure/seqs/densities_200}
-\includegraphics[width=0.18\linewidth]{../experiments/2015_02_19_caibration/5_figure/seqs/densities_400}
-\includegraphics[width=0.18\linewidth]{../experiments/2015_02_19_caibration/5_figure/seqs/densities_600}
-\includegraphics[width=0.18\linewidth]{../experiments/2015_02_19_caibration/5_figure/seqs/densities_800}
-\caption{Left to right: Phase diagrams over time.}
-\label{fig:dynamics}
-\end{center}
-\end{figure*}
-
-
 We define a nonparametric variational distribution implicitly as the output of a random initialization run through $T$ iterations of stochastic gradient descent (SGD):
 %
 \begin{align}
 \params_1, \vv_1 & \sim \distinit \\
-q^{\SGD}_T(\params, \vv) & =    \SGD(\stepsizes, \decays, \params_1, \vv_1, T)
+q^{\SGD}_T(\params, \vv) & = \SGD(\stepsizes, \decays, \params_1, \vv_1, T)
 \end{align}
 %
+
+\subsection{Leapfrog Dynamics}
+
+In the limit of small step sizes $\stepsize$, leapfrog dynamics exactly preserve the energy and entropy of the system, and therefore the marginal likelihood of the implicit variational distribution remains the same.
+
+No matter the step size, leapfrog dynamics always exactly preserve entropy.
+The only time entropy is added or removed from the system is when the momentum is resampled.
+The difference in this entropy is given by:
+%
+\begin{align}
+\Delta H & = H_t' - H_t \\
+ & = - \expectargs{q_(\vx)}{\expect_{q'(\vv|\vx)} \log q'(\vv|\vx) - \expect_{q(\vv|\vx)} \log q(\vv|\vx)} \nonumber \\
+ & = - \expect{q_(\vx)} \Bigg[ \expect_{q'(\vv|\vx)} \log q'(\vv|\vx) - \expect_{q(\vv|\vx)} \log r(\vv|\vx) \nonumber \\ 
+ & \quad - \underbrace{\expect_{q(\vv|\vx)} \log \frac{ q(\vv|\vx)}{r(\vv|\vx)}}_{\textnormal{\scriptsize $\KL{q(\vv|\vx)}{q(\vv|\vx)}$}} \Bigg] \label{eq:r slack}
+\end{align}
+%
+
+In the case of SGD with momentum, entropy is lost only when drag is applied.
+If the momentum is decayed by $\vv_{t+1} = \decay_t \vv_t$, then the amount of entropy lost is exactly $\log \decay$.
+
+\begin{figure}[t]
+%\vskip 0.2in
+\begin{center}
+\includegraphics[width=\columnwidth]{../experiments/2015_02_23_gaussian_phase_diagrams/1/phase_diagram}
+\caption{Phase diagram over time.}
+\label{fig:phase}
+\end{center}
+\end{figure}
+
+
+
+
+
 
 
 
@@ -200,7 +219,7 @@ The variational parameters of $q^{\SGD}$ are the learning rate schedule $\stepsi
 Perhaps for now we'll set $\distinit$ to be the prior, although it could really be anything.
 
 \subsection{The need for Annealing}
-If we didn't anneal, one of our KL terms wouldn't go to zero even as the step-size approached zero.
+If we didn't anneal, the KL term in equation \ref{eq:r slack} wouldn't go to zero even as the step-size approached zero.
 
 \subsection{But what about detailed balance?}
 
@@ -259,11 +278,31 @@ Combining these two procedures would allow one to set all hyperparameters using 
 %We thank Roger Grosse for helpful discussions.
 
 
-
+[TODO: Cite Nando's variational MCMC paper]
 
 
 \bibliography{references.bib}
 \bibliographystyle{uai2015stylefiles/icml2015}
+
+
+
+\end{document}
+
+
+
+\begin{figure*}[t]
+%\vskip 0.2in
+\begin{center}
+\includegraphics[width=0.18\linewidth]{../experiments/2015_02_19_caibration/5_figure/seqs/densities_0}
+\includegraphics[width=0.18\linewidth]{../experiments/2015_02_19_caibration/5_figure/seqs/densities_200}
+\includegraphics[width=0.18\linewidth]{../experiments/2015_02_19_caibration/5_figure/seqs/densities_400}
+\includegraphics[width=0.18\linewidth]{../experiments/2015_02_19_caibration/5_figure/seqs/densities_600}
+\includegraphics[width=0.18\linewidth]{../experiments/2015_02_19_caibration/5_figure/seqs/densities_800}
+\caption{Left to right: Phase diagrams over time.}
+\label{fig:dynamics}
+\end{center}
+\end{figure*}
+
 
 
 \section{Online gradient updates of learning rate and momentum}
@@ -304,7 +343,12 @@ It will increase the velocity if the gradient points in the opposite direction f
 The second term has a damping effect:  If the gradient, velocity, or stepsize are all small, then this term will try to set the momentum decay term to 1.
 When the momentum decay term is exactly one, no entropy is lost or gained by the optimizer.
 
-\end{document}
+
+
+
+
+
+
 
 
 

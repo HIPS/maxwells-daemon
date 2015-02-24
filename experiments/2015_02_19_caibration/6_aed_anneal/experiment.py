@@ -23,8 +23,8 @@ epsilon = 0.1
 gamma = 0.3
 N_iter = 1800
 alpha = 0.1
-init_log_decay=np.log(1.0)
-decay_learn_rate=0.0
+init_log_decay=np.log(0.99)
+decay_learn_rate=0.0001
 
 x_init_scale = np.full(D, init_scale)
 # annealing_schedule = np.linspace(0,1,N_iter)
