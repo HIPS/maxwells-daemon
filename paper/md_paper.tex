@@ -75,7 +75,8 @@
 \newcommand{\pun}{{\tilde p}}
 
 %\title{Maxwell's D\ae mon: Stochastic Gradient Nonparametric Variational Inference}
-\title{Entropic Descent: Stochastic Gradient Nonparametric Variational Inference}
+%\title{Entropic Descent: Stochastic Gradient Nonparametric Variational Inference}
+\title{Stochastic Gradient Descent is Nonparametric Variational Inference}
 
 \author{} % LEAVE BLANK FOR ORIGINAL SUBMISSION.
           % UAI  reviewing is double-blind.
@@ -132,7 +133,8 @@ Tracking the approximate marginal likelihood gives a stopping rule without a val
 We're trying to maximize the variational lower bound on the marginal likelihood of a model:
 %
 \begin{align}
-\log Z & \geq \int q(\params) \log \pun(\params) d\params \underbrace{- \int q(\params) \log q(\params) d\params}_{\textnormal{\normalsize Entropy $H[q]$}}
+\log Z & = \int q(\params) \log \pun(\params) d\params - \int q(\params) \log q(\params) d\params \nonumber \\ & \quad - \KL{p(\vv|\vx)}{q(\vv|\vx)} \\
+& \geq \int q(\params) \log \pun(\params) d\params \underbrace{- \int q(\params) \log q(\params) d\params}_{\textnormal{\normalsize Entropy $H[q]$}}
 %  & = \mathbb{E}_q[\log p(\params)] + H[q]
 \end{align}
 %
@@ -159,7 +161,7 @@ The difference in this entropy is given by:
 \Delta H & = H_t' - H_t \\
  & = - \expectargs{q_(\vx)}{\expect_{q'(\vv|\vx)} \log q'(\vv|\vx) - \expect_{q(\vv|\vx)} \log q(\vv|\vx)} \nonumber \\
  & = - \expect{q_(\vx)} \Bigg[ \expect_{q'(\vv|\vx)} \log q'(\vv|\vx) - \expect_{q(\vv|\vx)} \log r(\vv|\vx) \nonumber \\ 
- & \quad - \underbrace{\expect_{q(\vv|\vx)} \log \frac{ q(\vv|\vx)}{r(\vv|\vx)}}_{\textnormal{\scriptsize $\KL{q(\vv|\vx)}{q(\vv|\vx)}$}} \Bigg] \label{eq:r slack}
+ & \quad - \underbrace{\expect_{q(\vv|\vx)} \log \frac{ q(\vv|\vx)}{r(\vv|\vx)}}_{\textnormal{\scriptsize $\KL{q(\vv|\vx)}{r(\vv|\vx)}$}} \Bigg] \label{eq:r slack}
 \end{align}
 %
 
