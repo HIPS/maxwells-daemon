@@ -2,6 +2,8 @@ import numpy as np
 import numpy.random as npr
 from numpy.linalg import norm
 
+from funkyyak import grad
+
 def sgd(grad, x, v=None, callback=None, iters=200, learn_rate=0.1, decay=0.9):
     """Stochastic gradient descent with momentum."""
     if v is None: v = np.zeros(len(x))
@@ -168,3 +170,31 @@ def aed3_anneal(grad, x_scale, callback=None, learn_rate=0.1, init_log_decay=np.
         log_decays += decay_learn_rate * np.sign( 1 - v**2 )
     return x, entropy + 0.5 * (D - norm(v) **2)
 
+def sgd_entropic(gradfun, x_scale, N_iter, learn_rate=0.1, rs=None, callback=None):
+    x = rs.randn(D) * x_scale
+    entropy = 0.5 * D * (1 + np.log(2*np.pi)) + np.sum(np.log(x_scale))
+    for t in xrange(N_iter):
+        g = gradfun(x, t)
+        hvp = grad(lambda x, vect : np.dot(gradfun(x, t), vect)) # Hessian vector product
+        jvp = lambda vect : x - learn_rate * hvp(x, vect) # Jacobian vector product
+        entropy += approximate_log_det(jvp, rs, D)
+        if callback: callback(x, t, entropy)
+        x -= learn_rate * g
+        
+    return x, entropy
+
+def approx_log_det(mvp, D, rs):
+    # This should be an unbiased estimator of a lower bound on the log determinant
+    # provided the eigenvalues are all greater than 0.317 (solution of
+    # log(x) = (x - 1) - (x - 1)**2 = -2 + 3 * x - x**2
+    R0 = rs.randn(D) # TODO: Consider normalizing R
+    R1 = mvp(R0)
+    R2 = mvp(R1)
+    return np.dot(R0, -2 * R0 + 3 * R1 - R2)
+
+def exact_log_det(mvp, D, rs=None):
+    mat = np.zeros((D, D))
+    eye = np.eye(D)
+    for i in range(D):
+        mat[:, i] = mvp(eye[:, i])
+    return np.log(np.linalg.det(mat))
