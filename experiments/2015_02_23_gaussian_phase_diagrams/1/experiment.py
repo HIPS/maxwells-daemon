@@ -5,12 +5,12 @@ def run():
     epsilon = 0.05
     x_scale = 1.0
     x_init = -3.8
-    decay_rate = 0.3
-    N_steps = 100
+    decay_rate = 3.0
+    N_steps = 500
     lim = 5.0
-    thin = 10
-    # updater = gaussian_hmc_update
-    updater = gaussian_aed_update
+    thin = 2
+    updater = gaussian_hmc_update
+     # updater = gaussian_aed_update
 
     mu = np.array([x_init, 0.0])
     inv_chol = np.array([[x_scale, 0.0],[0.0, 1.0]])
