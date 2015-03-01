@@ -126,8 +126,19 @@ set results than incomplete optimization. A popular appraoch is to invoke `early
 stopping' in which optimization is halted based on the continually monitored
 performance of a validation set. But early stopping is both theoretically
 unsatisfying and problematic from a research perspective.  How can we be
-expected to rationally design better optimization methods if the spec is for it
-to be `powerful but not \emph{too} powerful'?
+expected to rationally design better optimization methods if the spec is for
+something `powerful but not \emph{too} powerful'?
+
+\begin{figure}[ht]
+%\vskip 0.2in
+\begin{center}
+\includegraphics[width=\columnwidth]{../experiments/2015_02_28_front_page_cartoon/1/cartoon.png}
+\caption{Illustration of a family of variational distributions implicitly defined by
+  stochastic gradient descent. Of these, iteration 10 maximizes the lower bound on
+  the marginal likelihood.}
+\label{fig:cartoon}
+\end{center}
+\end{figure}
 
 Optimization is an intrinsically information-destroying process. A good optimization
 procedure maps any initial starting point to one or a few final optima. (keeping
