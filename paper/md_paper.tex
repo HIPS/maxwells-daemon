@@ -201,8 +201,7 @@ inequality for the marginal likelihood:
 \log p(\data)
 & \geq \underbrace{  \int q(\params) \log p(\params, \data) d\params}_{\textnormal{\normalsize Energy $-E[q]$}}
        \underbrace{- \int q(\params) \log q(\params)        d\params}_{\textnormal{\normalsize Entropy $H[q]$}} \nonumber \\
-& := \varL[q] \\
-\label{eq:varbound}
+& := \varL[q] \label{eq:varbound}
 \end{align}
 %
 Maximizing $\varL[q]$, the variational lower bound on the marginal likelihood,
@@ -216,92 +215,67 @@ As shown in \ref{eq:varbound}, $\varL$ consists of an `energy' term and an
 `entropy' term. The energy term measures how well $q$ fits the data and the
 entropy term encourages the probability mass of $q$ to spread out.
 
-We define a nonparametric variational distribution implicitly as the output of a random initialization run through $T$ iterations of stochastic gradient descent (SGD):
-%
-\begin{align}
-\params_1, \vv_1 & \sim \distinit \\
-q^{\SGD}_T(\params, \vv) & = \SGD(\stepsizes, \decays, \params_1, \vv_1, T)
-\end{align}
-%
+(Variational distribution for a general optimizer. Discuss qualitatively what
+this optimizer does. Energy is followed entropy reduction is a
+consequence. Discuss optimization as entropy reduction. Quantify entropy in
+terms of Jacobian)
 
-\subsection{Leapfrog Dynamics}
+\subsection{Stochastic Gradient Descent}
 
-In the limit of small step sizes $\stepsize$, leapfrog dynamics exactly preserve the energy and entropy of the system, and therefore the marginal likelihood of the implicit variational distribution remains the same.
+(SGD is simple, effective and popular. Derive entropy update rule)
 
-No matter the step size, leapfrog dynamics always exactly preserve entropy.
-The only time entropy is added or removed from the system is when the momentum is resampled.
-The difference in this entropy is given by:
-%
-\begin{align}
-\Delta H & = H_t' - H_t \\
- & = - \expectargs{q_(\vx)}{\expect_{q'(\vv|\vx)} \log q'(\vv|\vx) - \expect_{q(\vv|\vx)} \log q(\vv|\vx)} \nonumber \\
- & = - \expect{q_(\vx)} \Bigg[ \expect_{q'(\vv|\vx)} \log q'(\vv|\vx) - \expect_{q(\vv|\vx)} \log r(\vv|\vx) \nonumber \\ 
- & \quad - \underbrace{\expect_{q(\vv|\vx)} \log \frac{ q(\vv|\vx)}{r(\vv|\vx)}}_{\textnormal{\scriptsize $\KL{q(\vv|\vx)}{r(\vv|\vx)}$}} \Bigg] \label{eq:r slack}
-\end{align}
-%
+\subsection{Managing the Jacobian in high dimensions}
 
-In the case of SGD with momentum, entropy is lost only when drag is applied.
-If the momentum is decayed by $\vv_{t+1} = \decay_t \vv_t$, then the amount of entropy lost is exactly $\log \decay$.
+(In high dimensions Hessian is a bugger to instantiate, let along
+diagonalize. BUT we only care about log det. AND it's very close to the
+identity. Indeed, if we assume step size is sufficiently small (and it must be
+so for optimization to be stable, then we can do the whole thing with randomized
+traces and Hessian vector products.)
 
-\begin{figure}[t]
-%\vskip 0.2in
-\begin{center}
-\includegraphics[width=\columnwidth]{../experiments/2015_02_23_gaussian_phase_diagrams/1/phase_diagram}
-\caption{Phase diagram over time.}
-\label{fig:phase}
-\end{center}
-\end{figure}
+\subsection{Adding noise to increase entropy}
 
+(Adding noise is the obvious way to increase entropy. If noise variance is
+exactly double step size then this is just stochastic langevin dynamic (cite
+Welling and Teh) and if we're doing MCMC then this is just like bridging the gap
+paper. But the hard part is now estiamting entropy. It requires an estimate of q
+itself but we don't have access to q directly. Luckily, any q will do, it will
+just be a looser bound if we get it wrong. The approach of Welling et al is
+to make a parametric form which is learned. We propose a simpler approach. We
+expect it to eventually converge to the true posterior, and we know the initial
+distribution. So we approximate as it goes along with a convex combination of
+these two log probs. Annealing so that we're actaully targeting these as we go
+along is another possiblity.)
 
+\section{Experiments}
 
+(Planning to test out how well it performs in practice. Not claiming it's the
+best thing ever. Just scientifically interested in how good of an approximation
+it is.)
 
+In general, what do we most care about in this section?
+\begin{itemize}
+\item Quality of marginal likelihood estiamte
+\item Quality of approximating distribution
+\item Comparison between marginal likelihood estimate and held-out likelihood
+\item Slackness of bound due to imperfect guessing of distribution when using
+  noisy/mcmc version
+\item Quality of Hessian randomized trace estimate
+\item Noisiness of stochastic estimates
+\end{itemize}
 
+\subsection{Boston Housing Data}
 
+(Use SGD with exact Hessian and no noise. Show overfitting and show that marginal
+likelihood peaks at a similar (?) place to peak of held-out log-likelihood.)
 
+\subsection{MNIST}
 
-\begin{algorithm}
-   \caption{Entropic Descent}
-   \label{alg:entropic-descent}
-\begin{algorithmic}[1]
-	\State {\bfseries input:}
-	Weight initialization scale $\sigma_0$, \\
-	velocity randomization level $\decay$, \\
-	annealing schedule $\stepsizes$, \\
-	time step $\epsilon$, \\
-	highest eigenvalue $\lambda$, \\
-	negative log likelihood $L(\params, t)$
-	\State initialize $\vv_1 \sim \N{0}{\vI_D}$
-	\State initialize $\params_1 \sim \N{0}{\sigma_0 \vI_D}$
-	\State $\entropy = \frac{D}{2} (1 + \log 2 \pi) + D \log\sigma_0 + \frac{1}{2} (D - |\vv|_2^2)$
-	\For{$t=1$ {\bfseries to} $T$}
-		\State $\entropy = \entropy + \frac{1}{2} |\vv|_2^2$ \Comment{Update entropy}
-		\State $d =   \stepsizes_t \lambda     + (1 - \stepsizes_t) \sigma_0^2$ \Comment{Anneal stepsize}
-		\State $\vg = \stepsizes_t \gradparams + (1 - \stepsizes_t) \frac{\vx}{\sigma_0^2}$ \Comment{Anneal gradient}
-		\State $\vv_{t+1} = \vv_t + d \times \vg$ \Comment{Update velocity}
-		\State $\params_{t+1} = \params_t + d \times \vv$  \Comment{Update position}
-		\State $\entropy = \entropy - \frac{1}{2} |\vv|_2^2$  \Comment{Downdate entropy}
-		\State $\vr \sim \N{0}{\vI_D}$
-		\State $d\vv = \sqrt{1 - \decay^2} d\vv + \decay \vr$ \Comment{Perturb velocity}
-   \EndFor
-   \State \textbf{output} sample $\params_T$, estimate of entropy $\entropy$
-\end{algorithmic}
-\end{algorithm}
+(Show that noiseless version doesn't perform particularly well. Noise does a
+good job with the overfitting problem. But does can we capture the marginal
+likelood well? Do we need to do AIS to check?)
 
-$\lambda$ is the square root of the highest eigenvalue of the Hessian of the log-posterior at the mode.
-$\decay$ controls the amount velocities randomize each iteration.
-
-Since we can sample exactly from $q$, we can approximate the first (``energy'') term of $L$ using one or more Monte Carlo samples.
-
-The variational parameters of $q^{\SGD}$ are the learning rate schedule $\stepsizes$, the momentum decay schedule $\decays$ and the initial distribution $\distinit$.
-Perhaps for now we'll set $\distinit$ to be the prior, although it could really be anything.
-
-\subsection{The need for Annealing}
-If we didn't anneal, the KL term in equation \ref{eq:r slack} wouldn't go to zero even as the step-size approached zero.
-
-\subsection{But what about detailed balance?}
 
 \section{Related work}
-
 
 RMSprop~\cite{Tieleman2012} or Adam~\citep{Adam14}
 
@@ -376,8 +350,86 @@ Combining these two procedures would allow one to set all hyperparameters using 
 
 % ==============================================================================
 
+We define a nonparametric variational distribution implicitly as the output of a
+random initialization run through $T$ iterations of stochastic gradient descent
+(SGD):
+
+%
+\begin{align}
+\params_1, \vv_1 & \sim \distinit \\
+q^{\SGD}_T(\params, \vv) & = \SGD(\stepsizes, \decays, \params_1, \vv_1, T)
+\end{align}
+%
+
+\subsection{Leapfrog Dynamics}
+
+In the limit of small step sizes $\stepsize$, leapfrog dynamics exactly preserve the energy and entropy of the system, and therefore the marginal likelihood of the implicit variational distribution remains the same.
+
+No matter the step size, leapfrog dynamics always exactly preserve entropy.
+The only time entropy is added or removed from the system is when the momentum is resampled.
+The difference in this entropy is given by:
+%
+\begin{align}
+\Delta H & = H_t' - H_t \\
+ & = - \expectargs{q_(\vx)}{\expect_{q'(\vv|\vx)} \log q'(\vv|\vx) - \expect_{q(\vv|\vx)} \log q(\vv|\vx)} \nonumber \\
+ & = - \expect{q_(\vx)} \Bigg[ \expect_{q'(\vv|\vx)} \log q'(\vv|\vx) - \expect_{q(\vv|\vx)} \log r(\vv|\vx) \nonumber \\ 
+ & \quad - \underbrace{\expect_{q(\vv|\vx)} \log \frac{ q(\vv|\vx)}{r(\vv|\vx)}}_{\textnormal{\scriptsize $\KL{q(\vv|\vx)}{r(\vv|\vx)}$}} \Bigg] \label{eq:r slack}
+\end{align}
+%
+
+In the case of SGD with momentum, entropy is lost only when drag is applied.
+If the momentum is decayed by $\vv_{t+1} = \decay_t \vv_t$, then the amount of entropy lost is exactly $\log \decay$.
+
+\begin{figure}[t]
+%\vskip 0.2in
+\begin{center}
+\includegraphics[width=\columnwidth]{../experiments/2015_02_23_gaussian_phase_diagrams/1/phase_diagram}
+\caption{Phase diagram over time.}
+\label{fig:phase}
+\end{center}
+\end{figure}
 
 
+\begin{algorithm}
+   \caption{Entropic Descent}
+   \label{alg:entropic-descent}
+\begin{algorithmic}[1]
+	\State {\bfseries input:}
+	Weight initialization scale $\sigma_0$, \\
+	velocity randomization level $\decay$, \\
+	annealing schedule $\stepsizes$, \\
+	time step $\epsilon$, \\
+	highest eigenvalue $\lambda$, \\
+	negative log likelihood $L(\params, t)$
+	\State initialize $\vv_1 \sim \N{0}{\vI_D}$
+	\State initialize $\params_1 \sim \N{0}{\sigma_0 \vI_D}$
+	\State $\entropy = \frac{D}{2} (1 + \log 2 \pi) + D \log\sigma_0 + \frac{1}{2} (D - |\vv|_2^2)$
+	\For{$t=1$ {\bfseries to} $T$}
+		\State $\entropy = \entropy + \frac{1}{2} |\vv|_2^2$ \Comment{Update entropy}
+		\State $d =   \stepsizes_t \lambda     + (1 - \stepsizes_t) \sigma_0^2$ \Comment{Anneal stepsize}
+		\State $\vg = \stepsizes_t \gradparams + (1 - \stepsizes_t) \frac{\vx}{\sigma_0^2}$ \Comment{Anneal gradient}
+		\State $\vv_{t+1} = \vv_t + d \times \vg$ \Comment{Update velocity}
+		\State $\params_{t+1} = \params_t + d \times \vv$  \Comment{Update position}
+		\State $\entropy = \entropy - \frac{1}{2} |\vv|_2^2$  \Comment{Downdate entropy}
+		\State $\vr \sim \N{0}{\vI_D}$
+		\State $d\vv = \sqrt{1 - \decay^2} d\vv + \decay \vr$ \Comment{Perturb velocity}
+   \EndFor
+   \State \textbf{output} sample $\params_T$, estimate of entropy $\entropy$
+\end{algorithmic}
+\end{algorithm}
+
+$\lambda$ is the square root of the highest eigenvalue of the Hessian of the log-posterior at the mode.
+$\decay$ controls the amount velocities randomize each iteration.
+
+Since we can sample exactly from $q$, we can approximate the first (``energy'') term of $L$ using one or more Monte Carlo samples.
+
+The variational parameters of $q^{\SGD}$ are the learning rate schedule $\stepsizes$, the momentum decay schedule $\decays$ and the initial distribution $\distinit$.
+Perhaps for now we'll set $\distinit$ to be the prior, although it could really be anything.
+
+\subsection{The need for Annealing}
+If we didn't anneal, the KL term in equation \ref{eq:r slack} wouldn't go to zero even as the step-size approached zero.
+
+\subsection{But what about detailed balance?}
 
 
 
