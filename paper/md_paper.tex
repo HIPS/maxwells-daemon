@@ -65,7 +65,7 @@
 \newcommand{\data}{\vx}
 
 %% \newcommand{\params}{\vx}
-\newcommand{\params}{\theta}
+\newcommand{\params}{\mathbf{\theta}}
 \newcommand{\trans}{T}
 \newcommand{\paramsrv}{\vX}  % Random variable.
 \newcommand{\numsteps}{T}
@@ -77,6 +77,11 @@
 \DeclareMathOperator{\SGD}{SGD}
 \newcommand{\entropy}{H}
 \newcommand{\pun}{{\tilde p}}
+\newcommand{\jointdist}{p(\params , \data)}
+\newcommand{\posterior}{p(\params | \data)}
+\newcommand{\subjointdist}[2]{p_{#1}(\params_{#2} , \data)}
+\newcommand{\subjointdistminibatch}[1]{\tilde{p}(\params_{#1} , \data)}
+\newcommand{\reals}{\mathbb{R}}
 
 %\title{Maxwell's D\ae mon: Stochastic Gradient Nonparametric Variational Inference}
 %\title{Entropic Descent: Stochastic Gradient Nonparametric Variational Inference}
@@ -191,22 +196,22 @@ evidence in both directions in our experiments section.
 \section{Unfinished optimization as variational inference}
 
 Variational inference (cite) aims to approximate an intractable posterior
-distribution, $p(\params | \data)$, with another distribution, $q(\params)$,
+distribution, $\posterior$, with another distribution, $q(\params)$,
 which belongs to some class of tractable distributions such as factorized
 distributions or a parametric family. The usual approach is to quantify the
 goodness of the approximation using the Kullback-Leibler (KL) divergence from
-$q(\params)$ to $p(\params | \data)$. Rearranging Bayes' rule gives the familiar
+$q(\params)$ to $\jointdist$. Rearranging Bayes' rule gives the familiar
 inequality for the marginal likelihood:
 %
 \begin{align}
 \log p(\data)
-& \geq - \underbrace{\expectargs{q(\params)}{-\log p(\params, \data)}}_{\textnormal{\normalsize Energy $E[q]$}}
+& \geq - \underbrace{\expectargs{q(\params)}{-\log \jointdist}}_{\textnormal{\normalsize Energy $E[q]$}}
          \underbrace{- \expectargs{q(\params)}{\log  q(\params)}     }_{\textnormal{\normalsize Entropy $S[q]$}} \nonumber \\
 & := \varL[q] \label{eq:varbound}
 \end{align}
 %
 Maximizing $\varL[q]$, the variational lower bound on the marginal likelihood,
-with respect to $q$ minimizes $\KL{q(\params)}{p(\params | \data)}$, the KL
+with respect to $q$ minimizes $\KL{q(\params)}{\posterior}$, the KL
 divergence from $q$ to the true posterior, giving the closest approximation
 available within the variational family. A convenient side effect is that we
 also get a lower bound on $p(\data)$, which can be used, for model selection.
@@ -218,23 +223,26 @@ overfitting.
 
 Consider a general optimization procedure which initializes $\params$ according
 to some distribution $q_0(\params)$ and updates $\params$ at each
-iteration according to a transition operation $\trans$,
+iteration according to a transition operation ${\trans : \reals^D \rightarrow \reals^D}$,
 %
 \begin{align}
 \params_0 \sim q_0(\params) \nonumber \\
 \params_{t + 1} = \trans(\params_t), \nonumber
 \end{align}
 %
-and let $q_t(\params)$ be the distribution over $\params_t$.
+and let $q_t(\params)$ be the distribution over $\params_t$. We will assume that
+the mapping $T$ is bijective.
 
 We can't evaluate $\varL[q_t]$ exactly, but we can obtain an unbiased estimator.
-Since $\params_t$ is a sample from $q_t(\theta)$, $\log p(\params_t, \data)$ is
-an unbiased estimator of the energy term of \ref{eq:varbound}. The entropy term
+Since $\params_t$ is a sample from $q_t(\theta)$, $\log \subjointdist{}{t}$ is
+an unbiased estimator of the energy term of (\ref{eq:varbound}). The entropy term
 is trickier, since we don't have access to the density $q(\params)$
 directly. However, if we know the entropy of the initial distribution,
-$S[q_0(\params)]$, and we have access to the Jacobian of the optimizer's
-transition operator, $J(\params)$, then we can estimate $S[q_0(\params)]$ by
-looking at the change in entropy at each iteration:
+$S[q_0(\params)]$, then we can estimate $S[q_0(\params)]$ by
+looking at the change in entropy at each iteration, caclulated by considering
+the change of variables formula for a probability density function.
+We require access to the Jacobian of the optimizer's transition operator,
+$J(\params)$.
 %
 \begin{align}
 S[q_{t+1}] - S[q_t] =
@@ -244,19 +252,38 @@ S[q_{t+1}] - S[q_t] =
 \end{align}
 %
 Combining these terms, we have an unbiased estimator of $\varL$ at iteration $T$:
-%
 \begin{align}
 \varL[q_T] \approx
-  \underbrace{\log p(\params_t, \data)}_{\textnormal{\normalsize Energy}} +
+  \underbrace{\log \subjointdist{}{T}}_{\textnormal{\normalsize Energy}} +
   \underbrace{\sum_{t=0}^{T-1} \log \left| J(\params_t) \right| + S[q_0]}_{\textnormal{\normalsize Entropy}}
   \nonumber
 \end{align}
-%
+
+(Talk qualitatively about optimization and entropy reduction)
 
 \subsection{Stochastic Gradient Descent}
 
-Stochastic gradient descent is a popular and effective optimization procedure. 
-(SGD is simple, effective and popular. Derive entropy update rule)
+Stochastic gradient descent is a popular and effective optimization
+procedure with the following update rule:
+\begin{align}
+\params_{t+1} =
+  \params_t - \stepsize \nabla_{\params}
+  \left[-\log \subjointdist{t}{t} \right] \nonumber
+\end{align}
+Where $\subjointdist{t}{}$ are a sequence of unbiased estimators of
+$\jointdist$. Taking the Jacobian of this update rule, we get the following
+unbiased estimator for the change in entropy:
+\begin{align}
+S[q_{t+1}] - S[q_t] \approx \log \left| I - \stepsize H_t(\params_t) \right|
+\end{align}
+where $H_t$ is the Hessian of $-\log\subjointdist{t}{}$. Note that the Hessian does not
+need to be positive definite or even non-singular.
+
+(Mention that there are restrictions on $\stepsize$. It can't be larger than the
+inverse of the smallest eigenvalue of $H$. If it was exactly that, it would
+correspond to flattening to a line. Beyond that, it corresponds to folding
+over. In any case, optimization is unstable near there.)
+
 (Maybe mention that treating sgd as a deterministic procedure is a bit
 disingenuous: it might be formally deterministic but the selection of
 minibatches is certainly arbitrary. Perhaps you could get better performance by
