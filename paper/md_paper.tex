@@ -66,7 +66,7 @@
 
 %% \newcommand{\params}{\vx}
 \newcommand{\params}{\theta}
-
+\newcommand{\trans}{T}
 \newcommand{\paramsrv}{\vX}  % Random variable.
 \newcommand{\numsteps}{T}
 \newcommand{\decay}{\gamma}
@@ -199,8 +199,10 @@ inequality for the marginal likelihood:
 %
 \begin{align}
 \log p(\data)
-& \geq \underbrace{  \int q(\params) \log p(\params, \data) d\params}_{\textnormal{\normalsize Energy $-E[q]$}}
-       \underbrace{- \int q(\params) \log q(\params)        d\params}_{\textnormal{\normalsize Entropy $H[q]$}} \nonumber \\
+%% & \geq \underbrace{  \int q(\params) \log p(\params, \data) d\params}_{\textnormal{\normalsize Energy $-E[q]$}}
+%%        \underbrace{- \int q(\params) \log q(\params)        d\params}_{\textnormal{\normalsize Entropy $H[q]$}} \nonumber \\
+& \geq \underbrace{  \expectargs{q(\params)}{\log p(\params, \data)}}_{\textnormal{\normalsize Energy $-E[q]$}}
+       \underbrace{- \expectargs{q(\params)}{\log q(\params)}       }_{\textnormal{\normalsize Entropy $H[q]$}} \nonumber \\
 & := \varL[q] \label{eq:varbound}
 \end{align}
 %
@@ -215,10 +217,43 @@ As shown in \ref{eq:varbound}, $\varL$ consists of an `energy' term and an
 `entropy' term. The energy term measures how well $q$ fits the data and the
 entropy term encourages the probability mass of $q$ to spread out.
 
-(Variational distribution for a general optimizer. Discuss qualitatively what
-this optimizer does. Energy is followed entropy reduction is a
-consequence. Discuss optimization as entropy reduction. Quantify entropy in
-terms of Jacobian)
+Consider a general optimization procedure which initializes $\params$ according
+to some distribution $q_0(\params)$ and updates $\params$ at each
+iteration according to a transition operation $\trans$,
+%
+\begin{align}
+\params_0 \sim q_0(\params) \nonumber \\
+\params_{t + 1} = \trans(\params_t), \nonumber
+\end{align}
+%
+and let $q_t(\params)$ be the distribution over $\params_t$.
+
+We can't evaluate $\varL[q_t]$ exactly, but we can obtain an unbiased estimator.
+Since $\params_t$ is a sample from $q_t(\theta)$, $\log p(\params_t, \data)$ is
+an unbiased estimator of the energy term of \ref{eq:varbound}. The entropy term
+is trickier, since we don't have access to the density $q(\params)$
+directly. However, if we know the entropy of the initial distribution,
+$H[q_0(\params)]$, and we have access to the Jacobian of the optimizer's
+transition operator then we can estimate $H[q_0(\params)]$ by looking at the
+change in entropy at each iteration:
+%
+\begin{align}
+H[q_{t+1}] - H[q_t] =
+  \expectargs{q_t(\params_t)}{\log
+    \left|\pderiv{\params_{t+1}}{\params_t}\right|}
+  \nonumber
+\end{align}
+%
+Combining these terms, we have an unbiased estimator of $\varL$ at iteration $T$:
+%
+\begin{align}
+\varL[q_T] \approx
+  \log p(\params_t, \data) +
+  \sum_{t=0}^{T-1} \log \left|\pderiv{\params_{t+1}}{\params_t}\right| +
+  H[q_0]
+  \nonumber
+\end{align}
+%
 
 \subsection{Stochastic Gradient Descent}
 
