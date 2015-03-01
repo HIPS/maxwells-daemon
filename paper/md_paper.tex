@@ -65,7 +65,7 @@
 \newcommand{\data}{\vx}
 
 %% \newcommand{\params}{\vx}
-\newcommand{\params}{\theta}
+\newcommand{\params}{\mathbf{\theta}}
 \newcommand{\trans}{T}
 \newcommand{\paramsrv}{\vX}  % Random variable.
 \newcommand{\numsteps}{T}
@@ -77,11 +77,16 @@
 \DeclareMathOperator{\SGD}{SGD}
 \newcommand{\entropy}{H}
 \newcommand{\pun}{{\tilde p}}
+\newcommand{\jointdist}{p(\params , \data)}
+\newcommand{\posterior}{p(\params | \data)}
+\newcommand{\subjointdist}[2]{p_{#1}(\params_{#2} , \data)}
+\newcommand{\subjointdistminibatch}[1]{\tilde{p}(\params_{#1} , \data)}
+\newcommand{\reals}{\mathbb{R}}
 
 %\title{Maxwell's D\ae mon: Stochastic Gradient Nonparametric Variational Inference}
 %\title{Entropic Descent: Stochastic Gradient Nonparametric Variational Inference}
 %\title{Stochastic Gradient Descent is Nonparametric Variational Inference}
-\title{Unfinished Stochastic Gradient Descent is Nonparametric Variational Inference}
+\title{Early Stopping is Nonparametric Variational Inference}
 
 \author{} % LEAVE BLANK FOR ORIGINAL SUBMISSION.
           % UAI  reviewing is double-blind.
@@ -111,7 +116,7 @@
 \begin{abstract}
 We show that unconverged stochastic gradient descent and other popular
 optimization methods can be interpreted as procedures that generate samples from
-a nonparametric approximate variational posterior distribution.  This
+a nonparametric variational approximate posterior distribution.  This
 distribution is implicitly defined as the transformation of an initial
 distribution by a certain number of optimization updates. By keeping track of
 the change in entropy of the distribution as optimization proceeds we can form
@@ -169,97 +174,118 @@ each optimization trajectory from a random intialization represents a sample
 from the variational distribution, ensembling random restarts can be viewed as
 building a sample-based approximation of (an approximation to) the posterior.
 
-Of course, this viewpoint is only a curiosity unless (a) we can estimate the
-marginal likelihood and (b) the variational distribution implied by optimization
-is a reasonably good one. We tackle the first question in sections XX and YY and
+To establish whether this viewpoint is helpful in practice we ask (a) whether we
+can estimate the marginal likelihood and (b) whether the variational family
+distribution implied by optimization rule yields a reasonably good approximation
+to the true posterior. We tackle the first question in sections XX and YY and
 show that many popular optimization procedures yield tractable marginal
-likelihood estiamtes. The second question is an empirical one, and we give some
+likelihood estimates. The second question is an empirical one, and we give some
 evidence in both directions in our experiments section.
-
-%% \subsection{Contributions}
-
-%% \begin{itemize}
-%% \item We give a simple algorithm based on stochastic gradient descent that produces samples from a variational posterior along with an estimate of the marginal likelihood.
-%% This algorithm, called entropic descent, performs approximate Bayesian inference in a manner analogous to Hamiltonian Monte Carlo, but without the need for accept-reject steps, and with the ability to operate on minibatches.
-%% This allows regularization parameters to be set within a single training pass.
-%% \item We show that the entropy of our nonparametric variational distribution can be computed exactly by a simple sum of log-momentum decay terms.
-%% \item Early stopping can be viewed as taking a single sample from the implicitly-defined variational distribution.
-%% Tracking the approximate marginal likelihood gives a stopping rule without a validation set.
-%% \end{itemize}
 
 \section{Unfinished optimization as variational inference}
 
 Variational inference (cite) aims to approximate an intractable posterior
-distribution, $p(\params | \data)$, with another distribution, $q(\params)$,
+distribution, $\posterior$, with another distribution, $q(\params)$,
 which belongs to some class of tractable distributions such as factorized
 distributions or a parametric family. The usual approach is to quantify the
 goodness of the approximation using the Kullback-Leibler (KL) divergence from
-$q(\params)$ to $p(\params | \data)$. Rearranging Bayes' rule gives the familiar
+$q(\params)$ to $\jointdist$. Rearranging Bayes' rule gives the familiar
 inequality for the marginal likelihood:
 %
 \begin{align}
 \log p(\data)
-%% & \geq \underbrace{  \int q(\params) \log p(\params, \data) d\params}_{\textnormal{\normalsize Energy $-E[q]$}}
-%%        \underbrace{- \int q(\params) \log q(\params)        d\params}_{\textnormal{\normalsize Entropy $H[q]$}} \nonumber \\
-& \geq \underbrace{  \expectargs{q(\params)}{\log p(\params, \data)}}_{\textnormal{\normalsize Energy $-E[q]$}}
-       \underbrace{- \expectargs{q(\params)}{\log q(\params)}       }_{\textnormal{\normalsize Entropy $H[q]$}} \nonumber \\
+& \geq - \underbrace{\expectargs{q(\params)}{ -\log \jointdist }}_{\textnormal{\normalsize Energy $E[q]$}}
+         \underbrace{- \expectargs{q(\params)}{\log  q(\params)}}_{\textnormal{\normalsize Entropy $S[q]$}} \nonumber \\
 & := \varL[q] \label{eq:varbound}
 \end{align}
 %
 Maximizing $\varL[q]$, the variational lower bound on the marginal likelihood,
-with respect to $q$ minimizes $\KL{q(\params)}{p(\params | \data)}$, the KL
+with respect to $q$ minimizes $\KL{q(\params)}{\posterior}$, the KL
 divergence from $q$ to the true posterior, giving the closest approximation
 available within the variational family. A convenient side effect is that we
-also get a lower bound on $p(\data)$, which can be used, for e.g. model
-selection.
+also get a lower bound on $p(\data)$, which can be used, for model selection.
 
-As shown in \ref{eq:varbound}, $\varL$ consists of an `energy' term and an
-`entropy' term. The energy term measures how well $q$ fits the data and the
-entropy term encourages the probability mass of $q$ to spread out.
-
-Consider a general optimization procedure which initializes $\params$ according
-to some distribution $q_0(\params)$ and updates $\params$ at each
-iteration according to a transition operation $\trans$,
+We now need a family of distributions over which to maximize $\varL[q]$. Consider a
+general procedure to minimize the energy $-\jointdist$ with respect to
+$\params$. The parameters $\params$ are initialized according to some
+distribution $q_0(\params)$ and updated $\params$ at each iteration according to
+a transition operation ${\trans : \reals^D \rightarrow \reals^D}$:
 %
 \begin{align}
 \params_0 \sim q_0(\params) \nonumber \\
 \params_{t + 1} = \trans(\params_t), \nonumber
 \end{align}
 %
-and let $q_t(\params)$ be the distribution over $\params_t$.
+Our variational family consists of the sequence of distributions $\{q_t\}$,
+where $q_t(\params)$ is the distribution over $\params_t$ generated by the above
+procedure.
+
+As shown in (\ref{eq:varbound}), $\varL$ consists of an `energy' term and an
+`entropy' term. The energy term measures how well $q$ fits the data and the
+entropy term encourages the probability mass of $q$ to spread out, preventing
+overfitting. As optimization of $\params$ proceeds, the negative energy term
+grows, since the goal of optimization is to reduce the energy, while the entropy
+term shrinks, since the optimization converges over time. Optimization thus
+generates a sequence of distributions that range from underfitting to
+overfitting and the variational lower bound captures this tradeoff.
 
 We can't evaluate $\varL[q_t]$ exactly, but we can obtain an unbiased estimator.
-Since $\params_t$ is a sample from $q_t(\theta)$, $\log p(\params_t, \data)$ is
-an unbiased estimator of the energy term of \ref{eq:varbound}. The entropy term
+Since $\params_t$ is a sample from $q_t(\theta)$, $\log \subjointdist{}{t}$ is
+an unbiased estimator of the energy term of (\ref{eq:varbound}). The entropy term
 is trickier, since we don't have access to the density $q(\params)$
 directly. However, if we know the entropy of the initial distribution,
-$H[q_0(\params)]$, and we have access to the Jacobian of the optimizer's
-transition operator then we can estimate $H[q_0(\params)]$ by looking at the
-change in entropy at each iteration:
+$S[q_0(\params)]$, then we can estimate $S[q_0(\params)]$ by
+looking at the change in entropy at each iteration, caclulated by considering
+the change of variables formula for a probability density function.
+We require access to the Jacobian of the optimizer's transition operator,
+$J(\params)$. Note that this analysis assumes that the mapping $T$ is bijective.
 %
 \begin{align}
-H[q_{t+1}] - H[q_t] =
+S[q_{t+1}] - S[q_t] =
   \expectargs{q_t(\params_t)}{\log
-    \left|\pderiv{\params_{t+1}}{\params_t}\right|}
+    \left| J(\params_t) \right|}
   \nonumber
 \end{align}
 %
 Combining these terms, we have an unbiased estimator of $\varL$ at iteration $T$:
-%
 \begin{align}
 \varL[q_T] \approx
-  \log p(\params_t, \data) +
-  \sum_{t=0}^{T-1} \log \left|\pderiv{\params_{t+1}}{\params_t}\right| +
-  H[q_0]
+  \underbrace{\log \subjointdist{}{T}}_{\textnormal{\normalsize Energy}} +
+  \underbrace{\sum_{t=0}^{T-1} \log \left| J(\params_t) \right| + S[q_0]}_{\textnormal{\normalsize Entropy}}
   \nonumber
 \end{align}
-%
 
 \subsection{Stochastic Gradient Descent}
 
-(SGD is simple, effective and popular. Derive entropy update rule)
+Stochastic gradient descent is a popular and effective optimization
+procedure with the following update rule:
+\begin{align}
+\params_{t+1} =
+  \params_t - \stepsize \nabla_{\params}
+  \left[-\log \subjointdist{t}{t} \right] \nonumber
+\end{align}
+Where $\subjointdist{t}{}$ are a sequence of unbiased estimators of
+$\jointdist$. Taking the Jacobian of this update rule, we get the following
+unbiased estimator for the change in entropy:
+\begin{align}
+S[q_{t+1}] - S[q_t] \approx \log \left| I - \stepsize H_t(\params_t) \right|
+\end{align}
+where $H_t$ is the Hessian of $-\log\subjointdist{t}{}$. Note that the Hessian does not
+need to be positive definite or even non-singular. If some directions in
+$\params$ have negative curvature, the crest of a hill, it just means that
+optimation near there spreads out probability mass, increasing the entropy.
 
-\subsection{Managing the Jacobian in high dimensions}
+There are, however, restrictions on $\stepsize$. If $\stepsize\lambda_i = 1$,
+for any $i$, where $\lambda_i$ are the eigenvalues of $H_t$, then the change in
+entropy will be undefined (inifinitely negative). Physically, this corresponds
+to a Newton-like update where all points collapse to the optimium in a single
+step giving a distribution with zero variance in a particular direction. But
+gradient descent is unstable anyway if $\stepsize\lambda_{\text{max}} > 2$
+($\lambda_{\text{max}}$ is the largest eigenvalue of $H_t$). So if we
+choose a small enough step size so that $\stepsize\lambda_{\text{max}} < 1$,
+this situation should not be a problem.
+
+\subsection{Estimating the Jacobian in high dimensions}
 
 (In high dimensions Hessian is a bugger to instantiate, let along
 diagonalize. BUT we only care about log det. AND it's very close to the
@@ -272,7 +298,7 @@ traces and Hessian vector products.)
 (Adding noise is the obvious way to increase entropy. If noise variance is
 exactly double step size then this is just stochastic langevin dynamic (cite
 Welling and Teh) and if we're doing MCMC then this is just like bridging the gap
-paper. But the hard part is now estiamting entropy. It requires an estimate of q
+paper. But the hard part is now estimating entropy. It requires an estimate of q
 itself but we don't have access to q directly. Luckily, any q will do, it will
 just be a looser bound if we get it wrong. The approach of Welling et al is
 to make a parametric form which is learned. We propose a simpler approach. We
@@ -280,6 +306,11 @@ expect it to eventually converge to the true posterior, and we know the initial
 distribution. So we approximate as it goes along with a convex combination of
 these two log probs. Annealing so that we're actaully targeting these as we go
 along is another possiblity.)
+
+(Maybe mention that treating sgd as a deterministic procedure is a bit
+disingenuous: it might be formally deterministic but the selection of
+minibatches is certainly arbitrary. Perhaps you could get better performance by
+formalizing the randomness and accounting for it.)
 
 \section{Experiments}
 
@@ -318,12 +349,12 @@ RMSprop~\cite{Tieleman2012} or Adam~\citep{Adam14}
 intrinsically information-destroying process since a (good) optimization
 procedure maps any initial starting point to one or a few final optima. We can
 quantify the loss of information by asking how many bits must be stored in order
-to reverse the optimization. We can think of this as the number of bits
+to reverse the optimization. We can think of this as average the number of bits
 `learned' during the optimization. From this perspective, stopping before optimization
 converges can be seen as a way to limit the number of bits we try to learn,
 since we don't expect to be able to learn more than a finite number of bits; cite reversible
 learning paper. Thus early stopping is one of many ways to reduce the hypothesis
-space.
+space. (cite MDL? Statistical learning theory?)
 
 \paragraph{MCMC for variational inference}
 Our method can be seen as a special case of \citet{Bridging14}.
@@ -645,7 +676,7 @@ apply $\decay$ for which we are rewarded or penalized as appropriate.
 Since we can sample exactly from $q$, we can approximate the first (``energy'') term of $L$ using one or more Monte Carlo samples.
 We can compute the second (``entropy'') term exactly:
 \begin{align}
-H[q_t] = H[q_0] - \sum_{t=1}^{T} \sum_{d=1}^{D} \log \decay_{td}
+S[q_t] = S[q_0] - \sum_{t=1}^{T} \sum_{d=1}^{D} \log \decay_{td}
 \end{align}
 %
 where $f(\params)$ is the negative log-likelihood and $\decay_{td}$ is the velocity decay rate for step $t$ and parameter $d$.
