@@ -50,6 +50,7 @@
 \newcommand{\expect}{\mathbb{E}}
 \newcommand{\expectargs}[2]{\mathbb{E}_{#1} \left[ {#2} \right]}
 \newcommand{\var}{\mathbb{V}}
+\newcommand{\varL}{\mathcal{L}}
 \def\iid{i.i.d.\ }
 \def\simiid{\overset{\mbox{\tiny iid}}{\sim}}
 \newcommand{\defeq}{\mathrel{:\mkern-0.25mu=}}
@@ -62,7 +63,10 @@
 % Symbol definitions.
 \newcommand{\distinit}{q_0(\params, \vv)}
 \newcommand{\data}{\vx}
-\newcommand{\params}{\vx}
+
+%% \newcommand{\params}{\vx}
+\newcommand{\params}{\theta}
+
 \newcommand{\paramsrv}{\vX}  % Random variable.
 \newcommand{\numsteps}{T}
 \newcommand{\decay}{\gamma}
@@ -131,7 +135,7 @@ performance of a validation set. But early stopping is both theoretically
 unsatisfying and problematic from a research perspective.  How can we be
 expected to rationally design better optimization methods if the spec is for
 something `powerful but not \emph{too} powerful'? A related trick is to ensemble
-the results from multiple optimization runs with different starting
+the results from multiple optimization runs from different starting
 positions. Similarly, this must rely on imperfect optimization, since otherwise
 all optimization runs would reach the same optimum.
 
@@ -172,41 +176,45 @@ show that many popular optimization procedures yield tractable marginal
 likelihood estiamtes. The second question is an empirical one, and we give some
 evidence in both directions in our experiments section.
 
-\subsection{Contributions}
+%% \subsection{Contributions}
 
-\begin{itemize}
-\item We give a simple algorithm based on stochastic gradient descent that produces samples from a variational posterior along with an estimate of the marginal likelihood.
-This algorithm, called entropic descent, performs approximate Bayesian inference in a manner analogous to Hamiltonian Monte Carlo, but without the need for accept-reject steps, and with the ability to operate on minibatches.
-This allows regularization parameters to be set within a single training pass.
-\item We show that the entropy of our nonparametric variational distribution can be computed exactly by a simple sum of log-momentum decay terms.
-\item Early stopping can be viewed as taking a single sample from the implicitly-defined variational distribution.
-Tracking the approximate marginal likelihood gives a stopping rule without a validation set.
-\end{itemize}
+%% \begin{itemize}
+%% \item We give a simple algorithm based on stochastic gradient descent that produces samples from a variational posterior along with an estimate of the marginal likelihood.
+%% This algorithm, called entropic descent, performs approximate Bayesian inference in a manner analogous to Hamiltonian Monte Carlo, but without the need for accept-reject steps, and with the ability to operate on minibatches.
+%% This allows regularization parameters to be set within a single training pass.
+%% \item We show that the entropy of our nonparametric variational distribution can be computed exactly by a simple sum of log-momentum decay terms.
+%% \item Early stopping can be viewed as taking a single sample from the implicitly-defined variational distribution.
+%% Tracking the approximate marginal likelihood gives a stopping rule without a validation set.
+%% \end{itemize}
 
 \section{Unfinished optimization as variational inference}
 
-In this paper, we formalize this argument with a Bayesian approach. (optimization as a series of distributions; variational
-inference; marginal likelihood bound)
-
-(Entropy and energy terms; Energy is goodness of fit to training data; entropy
-is trying to force the posterior mass to spread out and avoid overfitting)
-
-[TODO: Talk about the bridging the gap paper]
-
-(We first show how to keep track of entropy; simple experiments illustrating the point
-experiments; Then show how to keep track of entropy scaled up; How to inject
-noise to be more simliar to MCMC)
-
-We're trying to maximize the variational lower bound on the marginal likelihood of a model:
+Variational inference (cite) aims to approximate an intractable posterior
+distribution, $p(\params | \data)$, with another distribution, $q(\params)$,
+which belongs to some class of tractable distributions such as factorized
+distributions or a parametric family. The usual approach is to quantify the
+goodness of the approximation using the Kullback-Leibler (KL) divergence from
+$q(\params)$ to $p(\params | \data)$. Rearranging Bayes' rule gives the familiar
+inequality for the marginal likelihood:
 %
 \begin{align}
-\log Z & = \int q(\params) \log \pun(\params) d\params - \int q(\params) \log q(\params) d\params \nonumber \\ & \quad - \KL{p(\vv|\vx)}{q(\vv|\vx)} \\
-& \geq \int q(\params) \log \pun(\params) d\params \underbrace{- \int q(\params) \log q(\params) d\params}_{\textnormal{\normalsize Entropy $H[q]$}}
-%  & = \mathbb{E}_q[\log p(\params)] + H[q]
+\log p(\data)
+& \geq \underbrace{  \int q(\params) \log p(\params, \data) d\params}_{\textnormal{\normalsize Energy $-E[q]$}}
+       \underbrace{- \int q(\params) \log q(\params)        d\params}_{\textnormal{\normalsize Entropy $H[q]$}} \nonumber \\
+& := \varL[q] \\
+\label{eq:varbound}
 \end{align}
 %
-where $q(\params)$ is a variational distribution.
-The two terms can be interpreted as (negative) energy and entropy terms, respectively.
+Maximizing $\varL[q]$, the variational lower bound on the marginal likelihood,
+with respect to $q$ minimizes $\KL{q(\params)}{p(\params | \data)}$, the KL
+divergence from $q$ to the true posterior, giving the closest approximation
+available within the variational family. A convenient side effect is that we
+also get a lower bound on $p(\data)$, which can be used, for e.g. model
+selection.
+
+As shown in \ref{eq:varbound}, $\varL$ consists of an `energy' term and an
+`entropy' term. The energy term measures how well $q$ fits the data and the
+entropy term encourages the probability mass of $q$ to spread out.
 
 We define a nonparametric variational distribution implicitly as the output of a random initialization run through $T$ iterations of stochastic gradient descent (SGD):
 %
@@ -364,9 +372,12 @@ Combining these two procedures would allow one to set all hyperparameters using 
 \bibliography{references.bib}
 \bibliographystyle{uai2015stylefiles/icml2015}
 
-
-
 \end{document}
+
+% ==============================================================================
+
+
+
 
 
 
