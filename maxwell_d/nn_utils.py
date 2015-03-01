@@ -100,12 +100,12 @@ def make_nn_funs(layer_sizes):
         """Outputs normalized log-probabilities."""
         W = parser.new_vect(W_vect)
         cur_units = X
-        N_iter = len(layer_sizes) - 1
-        for i in range(N_iter):
+        N_layers = len(layer_sizes) - 1
+        for i in range(N_layers):
             cur_W = W[('weights', i)]
             cur_B = W[('biases',  i)]
             cur_units = np.dot(cur_units, cur_W) + cur_B
-            if i == (N_iter - 1):
+            if i == (N_layers - 1):
                 cur_units = cur_units - logsumexp(cur_units, axis=1)
             else:
                 cur_units = np.tanh(cur_units)
@@ -120,6 +120,37 @@ def make_nn_funs(layer_sizes):
         return np.mean(np.argmax(T, axis=1) != preds)
 
     return parser, predictions, loss, frac_err
+
+def make_regression_nn_funs(layer_sizes):
+    """Same as above but outputs mean predictions.
+    Loss is normalized Gaussian pdfs with variance 1."""
+    parser = VectorParser()
+    for i, shape in enumerate(zip(layer_sizes[:-1], layer_sizes[1:])):
+        parser.add_shape(('weights', i), shape)
+        parser.add_shape(('biases', i), (1, shape[1]))
+
+    def predictions(W_vect, X):
+        """Outputs mean prediction."""
+        W = parser.new_vect(W_vect)
+        cur_units = X
+        N_layers = len(layer_sizes) - 1
+        for i in range(N_layers):
+            cur_W = W[('weights', i)]
+            cur_B = W[('biases',  i)]
+            cur_units = np.dot(cur_units, cur_W) + cur_B
+            if i < (N_layers - 1):
+                cur_units = np.tanh(cur_units)
+        return cur_units
+
+    def loss(W_vect, X, T):
+        """Outputs average normalized log-probabilities of Gaussians with variance of 1"""
+        # log_prior = - 0.5 * L2_reg * np.dot(W_vect, W_vect)
+        return np.mean((predictions(W_vect, X) - T)**2) + 0.5*np.log(2*np.pi)
+
+    def rmse(W_vect, X, T):
+        return np.sqrt(np.mean((predictions(W_vect, X) - T)**2))
+
+    return parser, predictions, loss, rmse
 
 def nice_layer_name(weight_key):
     """Takes a tuple like ('weights', 2) and returns a nice string like "2nd layer weights"
@@ -149,4 +180,3 @@ def plot_images(images, ax, ims_per_row=5, padding=5, digit_dimensions=(28,28),
     plt.yticks(np.array([]))
     return cax
 
-plot_mnist_images = plot_images

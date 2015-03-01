@@ -6,7 +6,7 @@ import numpy as np
 import pickle
 
 def datapath(fname):
-    datadir = os.path.expanduser('~/repos/hypergrad/data/mnist')
+    datadir = os.path.expanduser('~/repos/maxwells-daemon/data')
     return os.path.join(datadir, fname)
 
 def mnist():
@@ -20,20 +20,20 @@ def mnist():
         with gzip.open(filename, 'rb') as fh:
             magic, num_data, rows, cols = struct.unpack(">IIII", fh.read(16))
             return np.array(array.array("B", fh.read()), dtype=np.uint8).reshape(num_data, rows, cols)
-    train_images = parse_images(datapath('train-images-idx3-ubyte.gz'))
-    train_labels = parse_labels(datapath('train-labels-idx1-ubyte.gz'))
-    test_images  = parse_images(datapath('t10k-images-idx3-ubyte.gz'))
-    test_labels  = parse_labels(datapath('t10k-labels-idx1-ubyte.gz'))
+    train_images = parse_images(datapath('mnist/train-images-idx3-ubyte.gz'))
+    train_labels = parse_labels(datapath('mnist/train-labels-idx1-ubyte.gz'))
+    test_images  = parse_images(datapath('mnist/t10k-images-idx3-ubyte.gz'))
+    test_labels  = parse_labels(datapath('mnist/t10k-labels-idx1-ubyte.gz'))
 
     return train_images, train_labels, test_images, test_labels
 
 def lecun_gz_to_pickle():
     data = mnist()
-    with open(datapath("mnist_data.pkl"), "w") as f:
+    with open(datapath("mnist/mnist_data.pkl"), "w") as f:
         pickle.dump(data, f, 1)
 
 def load_data(normalize=False):
-    with open(datapath("mnist_data.pkl")) as f:
+    with open(datapath("mnist/mnist_data.pkl")) as f:
         train_images, train_labels, test_images, test_labels = pickle.load(f)
 
     one_hot = lambda x, K : np.array(x[:,None] == np.arange(K)[None, :], dtype=int)
@@ -65,6 +65,33 @@ def load_data_subset(*args):
 def load_data_dicts(*args):
     datapairs = load_data_subset(*args)
     return [{"X" : dat[0], "T" : dat[1]} for dat in datapairs]
+
+
+def load_boston_housing(train_frac=0.5):
+    data = np.loadtxt(datapath('boston_housing.txt'))
+    X = data[:,:-1]
+    y = data[:,-1][:, None]
+
+    # Create train and test sets with 90% and 10% of the data
+    np.random.seed(2)
+    permutation = np.random.choice(range(X.shape[0]), X.shape[0], replace=False)
+    size_train = np.round(X.shape[0] * train_frac)
+    train_ixs = permutation[0:size_train]
+    test_ixs = permutation[size_train:]
+
+    X = X - np.mean(X[train_ixs, :])
+    X = X / np.std(X[train_ixs, :])
+
+    y_mean = np.mean(y[train_ixs])
+    y = y - y_mean
+    y_std = np.std(y[train_ixs])
+    y = y / y_std
+
+    def unscale_y(y):
+        return y * y_std
+
+    return X[train_ixs,:], y[train_ixs], X[test_ixs,:], y[test_ixs], unscale_y
+
 
 if __name__=="__main__":
     lecun_gz_to_pickle()
