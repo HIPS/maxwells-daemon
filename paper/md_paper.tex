@@ -76,7 +76,8 @@
 
 %\title{Maxwell's D\ae mon: Stochastic Gradient Nonparametric Variational Inference}
 %\title{Entropic Descent: Stochastic Gradient Nonparametric Variational Inference}
-\title{Stochastic Gradient Descent is Nonparametric Variational Inference}
+%\title{Stochastic Gradient Descent is Nonparametric Variational Inference}
+\title{Unfinished Stochastic Gradient Descent is Nonparametric Variational Inference}
 
 \author{} % LEAVE BLANK FOR ORIGINAL SUBMISSION.
           % UAI  reviewing is double-blind.
@@ -104,30 +105,35 @@
 \maketitle
 
 \begin{abstract}
-We show that stochastic gradient descent and other popular optimization methods
-can be interpreted as procedures that generate samples from a nonparametric
-approximate variational posterior distribution.  This distribution is implicitly
-defined as the transformation of an initial distribution by a certain number of
-optimization updates. By keeping track of the change in entropy of the
-distribution as optimization proceeds we can form an unbiased estimator of a
-lower bound on the marginal likelihood and maximize this bound with respect
-to the optimizer's hyperparameters instead of using a validation set.  This
-Bayesian interpretation of SGD suggests improved overfitting-resistant
-optimization procedures and gives a theoretical foundation for popular tools
-such as early stopping and ensembling.
+We show that unconverged stochastic gradient descent and other popular
+optimization methods can be interpreted as procedures that generate samples from
+a nonparametric approximate variational posterior distribution.  This
+distribution is implicitly defined as the transformation of an initial
+distribution by a certain number of optimization updates. By keeping track of
+the change in entropy of the distribution as optimization proceeds we can form
+an unbiased estimator of a lower bound on the marginal likelihood and maximize
+this bound with respect to the optimizer's hyperparameters instead of using a
+validation set.  This Bayesian interpretation of SGD suggests improved
+overfitting-resistant optimization procedures and gives a theoretical foundation
+for popular tricks such as early stopping and ensembling.
 \end{abstract}
 
 \section{Introduction}
 
 In much of machine learning, the central computational challenge is
-optimization; we try to minimize some training set loss with respect to a set of
-model parameters. Paradoxically, over-zealous optimization can yield worse test
-set results than incomplete optimization. A popular appraoch is to invoke `early
+optimization; we try to maximize some training set objective with respect to a
+set of model parameters. If we treat the training objective as a (negative)
+log-posterior, this amounts to searching for a maximum \emph{a posteriori} (MAP)
+solution. Paradoxically, over-zealous optimization can yield worse test set
+results than incomplete optimization. A popular appraoch is to invoke `early
 stopping' in which optimization is halted based on the continually monitored
 performance of a validation set. But early stopping is both theoretically
 unsatisfying and problematic from a research perspective.  How can we be
 expected to rationally design better optimization methods if the spec is for
-something `powerful but not \emph{too} powerful'?
+something `powerful but not \emph{too} powerful'? A related trick is to ensemble
+the results from multiple optimization runs with different starting
+positions. Similarly, this must rely on imperfect optimization, since otherwise
+all optimization runs would reach the same optimum.
 
 \begin{figure}[ht]
 %\vskip 0.2in
@@ -140,26 +146,31 @@ something `powerful but not \emph{too} powerful'?
 \end{center}
 \end{figure}
 
-Optimization is an intrinsically information-destroying process. A good optimization
-procedure maps any initial starting point to one or a few final optima. (keeping
-track of entropy lets us know how many bits we have `learned'; one advantage of
-stopping before optimization is complete is that it limits the number of bits we
-can learn; given a finite amount of data we don't expect to be able to learn
-more than a finite number of bits; cite reversible learning paper. Thus early
-stopping is one of many ways to reduce the hypothesis space. Cite statistical
-learning theory, MDL.)
+We propose an interpretation of unfinished optimization in terms of variational
+Bayesian inference.  The main idea is that an optimization procedure, initialized
+according to some distribution, generates a sequence of distributions implicitly
+defined by the action of the optimization update rule on the previous
+distribution. We can treat these distributions as variational approximations to
+the true posterior distribution. A single optimization run for $N$ iterations
+represents a draw from the $N$th such distribution. For many popular
+optimization methods we can form an unbiased estimate of the variational lower
+bound on the marginal likelihood.
 
-In this paper, we formalize this argument with a Bayesian approach. (optimization as a series of distributions; variational
-inference; marginal likelihood bound)
+With this interpretation, the number of optimization iterations can be seen as a
+variational parameter, one that trades off fitting the data well against
+maintaining a broad (high entropy) distribution. Early stopping amounts to
+optimizing the variational lower bound (or an approximation based on a
+validation set) with respect to this variational parameter. Similarly, since
+each optimization trajectory from a random intialization represents a sample
+from the variational distribution, ensembling random restarts can be viewed as
+building a sample-based approximation of (an approximation to) the posterior.
 
-(Entropy and energy terms; Energy is goodness of fit to training data; entropy
-is trying to force the posterior mass to spread out and avoid overfitting)
-
-[TODO: Talk about the bridging the gap paper]
-
-(We first show how to keep track of entropy; simple experiments illustrating the point
-experiments; Then show how to keep track of entropy scaled up; How to inject
-noise to be more simliar to MCMC)
+Of course, this viewpoint is only a curiosity unless (a) we can estimate the
+marginal likelihood and (b) the variational distribution implied by optimization
+is a reasonably good one. We tackle the first question in sections XX and YY and
+show that many popular optimization procedures yield tractable marginal
+likelihood estiamtes. The second question is an empirical one, and we give some
+evidence in both directions in our experiments section.
 
 \subsection{Contributions}
 
@@ -172,8 +183,19 @@ This allows regularization parameters to be set within a single training pass.
 Tracking the approximate marginal likelihood gives a stopping rule without a validation set.
 \end{itemize}
 
+\section{Unfinished optimization as variational inference}
 
-\section{Constructing a tight variational bound}
+In this paper, we formalize this argument with a Bayesian approach. (optimization as a series of distributions; variational
+inference; marginal likelihood bound)
+
+(Entropy and energy terms; Energy is goodness of fit to training data; entropy
+is trying to force the posterior mass to spread out and avoid overfitting)
+
+[TODO: Talk about the bridging the gap paper]
+
+(We first show how to keep track of entropy; simple experiments illustrating the point
+experiments; Then show how to keep track of entropy scaled up; How to inject
+noise to be more simliar to MCMC)
 
 We're trying to maximize the variational lower bound on the marginal likelihood of a model:
 %
@@ -274,6 +296,17 @@ If we didn't anneal, the KL term in equation \ref{eq:r slack} wouldn't go to zer
 
 
 RMSprop~\cite{Tieleman2012} or Adam~\citep{Adam14}
+
+\paragraph{Reversible learning} \citet{MacDuvAda2015hyper}. Optimization is an
+intrinsically information-destroying process since a (good) optimization
+procedure maps any initial starting point to one or a few final optima. We can
+quantify the loss of information by asking how many bits must be stored in order
+to reverse the optimization. We can think of this as the number of bits
+`learned' during the optimization. From this perspective, stopping before optimization
+converges can be seen as a way to limit the number of bits we try to learn,
+since we don't expect to be able to learn more than a finite number of bits; cite reversible
+learning paper. Thus early stopping is one of many ways to reduce the hypothesis
+space.
 
 \paragraph{MCMC for variational inference}
 Our method can be seen as a special case of \citet{Bridging14}.
