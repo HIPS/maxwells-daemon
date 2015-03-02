@@ -146,7 +146,7 @@ the results from multiple optimization runs from different starting
 positions. Similarly, this must rely on imperfect optimization, since otherwise
 all optimization runs would reach the same optimum.
 
-\begin{figure}[ht]
+\begin{figure}[t]
 %\vskip 0.2in
 \begin{center}
 \includegraphics[width=\columnwidth]{../experiments/2015_02_28_front_page_cartoon/1/cartoon.png}
@@ -358,6 +358,19 @@ In general, what do we most care about in this section?
 \end{itemize}
 
 \subsection{Boston Housing Data}
+
+
+\begin{figure}[t]
+%\vskip 0.2in
+\begin{center}
+\includegraphics[width=\columnwidth]{../experiments/2015_03_01_housing/1/marglik}
+\vskip -0.1in
+\caption{\emph{Top}: Test-set error on the Boston housing dataset.
+\emph{Bottom}: Marginal likelihood estimate.
+The marginal likelihood, estimated during training using only the training set, has a maximum at an iteration near that where the test error is best.}
+\label{fig:cartoon}
+\end{center}
+\end{figure}
 
 (Use SGD with exact Hessian and no noise. Show overfitting and show that marginal
 likelihood peaks at a similar (?) place to peak of held-out log-likelihood.)
