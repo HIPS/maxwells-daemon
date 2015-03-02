@@ -20,7 +20,7 @@ seed = 0
 init_scale = 0.1
 N_iter = 500
 alpha_un = 0.004
-reg = 0.1
+reg = 0.0
 # ------ Plot parameters -------
 N_samples = 1
 N_checkpoints = 50
