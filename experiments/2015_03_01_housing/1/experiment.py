@@ -95,23 +95,22 @@ def plot():
     rc('font',**{'family':'serif'})
     fig = plt.figure(0); fig.clf()
     ax = fig.add_subplot(211)
-    plt.plot(first_results["iterations"], first_results["train_rmse"], label="Train error")
-    plt.plot(first_results["iterations"], first_results["tests_rmse"], label="Test error")
+    #plt.plot(first_results["iterations"], first_results["train_rmse"], label="Train error")
+    plt.plot(first_results["iterations"], first_results["tests_rmse"], 'g', label="Test error")
     ax.legend(numpoints=1, loc=1, frameon=False, prop={'size':'12'})
     ax.set_ylabel('RMSE')
 
     ax = fig.add_subplot(212)
-    plt.plot(first_results["iterations"], first_results["marg_likelihood"], label="Marginal likelihood")
+    plt.plot(first_results["iterations"], first_results["marg_likelihood"], 'b', label="Marginal likelihood")
     ax.legend(numpoints=1, loc=1, frameon=False, prop={'size':'12'})
     ax.set_ylabel('Marginal likelihood')
     ax.set_xlabel('Training iteration')
     #low, high = ax.get_ylim()
     #ax.set_ylim([0, high])
 
-    fig.set_size_inches((6,3))
+    fig.set_size_inches((6,4))
     ax.legend(numpoints=1, loc=1, frameon=False, prop={'size':'12'})
-    fig.set_size_inches((6,8))
-    plt.savefig('marglik.pdf', pad_inches=0.0, bbox_inches='tight')
+    plt.savefig('marglik.pdf', pad_inches=0.05, bbox_inches='tight')
 
 def plot_traces_and_mean(results, trace_type, X=None):
     fig = plt.figure(0); fig.clf()
@@ -129,7 +128,7 @@ def plot_traces_and_mean(results, trace_type, X=None):
 
 
 if __name__ == '__main__':
-    results = run()
-    with open('results.pkl', 'w') as f:
-        pickle.dump(results, f, 1)
+    #results = run()
+    #with open('results.pkl', 'w') as f:
+    #    pickle.dump(results, f, 1)
     plot()
