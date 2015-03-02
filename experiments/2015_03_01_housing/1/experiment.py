@@ -13,14 +13,14 @@ from maxwell_d.nn_utils import make_regression_nn_funs
 from maxwell_d.data import load_boston_housing
 
 # ------ Problem parameters -------
-layer_sizes = [13, 500, 1]
-train_frac = 0.5
+layer_sizes = [13, 100, 1]
+train_frac = 0.1
 # ------ Variational parameters -------
 seed = 0
-init_scale = 0.01
+init_scale = 0.1
 N_iter = 500
-alpha_un = 0.01
-reg = 0.0
+alpha_un = 0.004
+reg = 0.1
 # ------ Plot parameters -------
 N_samples = 1
 N_checkpoints = 50
@@ -95,20 +95,20 @@ def plot():
     rc('font',**{'family':'serif'})
     fig = plt.figure(0); fig.clf()
     ax = fig.add_subplot(211)
-    #plt.plot(first_results["iterations"], first_results["train_rmse"], label="Train error")
+    plt.plot(first_results["iterations"], first_results["train_rmse"], 'b', label="Train error")
     plt.plot(first_results["iterations"], first_results["tests_rmse"], 'g', label="Test error")
     ax.legend(numpoints=1, loc=1, frameon=False, prop={'size':'12'})
     ax.set_ylabel('RMSE')
 
     ax = fig.add_subplot(212)
-    plt.plot(first_results["iterations"], first_results["marg_likelihood"], 'b', label="Marginal likelihood")
+    plt.plot(first_results["iterations"], first_results["marg_likelihood"], 'r', label="Marginal likelihood")
     ax.legend(numpoints=1, loc=1, frameon=False, prop={'size':'12'})
     ax.set_ylabel('Marginal likelihood')
     ax.set_xlabel('Training iteration')
     #low, high = ax.get_ylim()
     #ax.set_ylim([0, high])
 
-    fig.set_size_inches((6,4))
+    fig.set_size_inches((5,3.5))
     ax.legend(numpoints=1, loc=1, frameon=False, prop={'size':'12'})
     plt.savefig('marglik.pdf', pad_inches=0.05, bbox_inches='tight')
 
@@ -128,7 +128,7 @@ def plot_traces_and_mean(results, trace_type, X=None):
 
 
 if __name__ == '__main__':
-    #results = run()
-    #with open('results.pkl', 'w') as f:
-    #    pickle.dump(results, f, 1)
+    results = run()
+    with open('results.pkl', 'w') as f:
+        pickle.dump(results, f, 1)
     plot()
