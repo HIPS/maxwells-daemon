@@ -3,6 +3,7 @@ import gzip
 import struct
 import array
 import numpy as np
+import numpy.random as npr
 import pickle
 
 def datapath(fname):
@@ -67,25 +68,25 @@ def load_data_dicts(*args):
     return [{"X" : dat[0], "T" : dat[1]} for dat in datapairs]
 
 
-def load_boston_housing(train_frac=0.5):
+def load_boston_housing(train_frac=0.5, rs=npr.RandomState(0)):
     data = np.loadtxt(datapath('boston_housing.txt'))
     X = data[:,:-1]
     y = data[:,-1][:, None]
 
     # Create train and test sets with 90% and 10% of the data
-    np.random.seed(2)
-    permutation = np.random.choice(range(X.shape[0]), X.shape[0], replace=False)
+    permutation = rs.choice(range(X.shape[0]), X.shape[0], replace=False)
     size_train = np.round(X.shape[0] * train_frac)
     train_ixs = permutation[0:size_train]
     test_ixs = permutation[size_train:]
 
-    X = X - np.mean(X[train_ixs, :])
-    X = X / np.std(X[train_ixs, :])
+    X = X - np.mean(X[train_ixs, :], axis=0, keepdims=True)
+    X = X / np.std(X[train_ixs, :], axis=0, keepdims=True)
 
     y_mean = np.mean(y[train_ixs])
     y = y - y_mean
     y_std = np.std(y[train_ixs])
     y = y / y_std
+    print "Scaling boston housing prices by {0}".format(y_std)
 
     def unscale_y(y):
         return y * y_std
