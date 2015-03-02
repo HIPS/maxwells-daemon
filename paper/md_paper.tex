@@ -82,6 +82,8 @@
 \newcommand{\subjointdist}[2]{p_{#1}(\params_{#2} , \data)}
 \newcommand{\subjointdistminibatch}[1]{\tilde{p}(\params_{#1} , \data)}
 \newcommand{\reals}{\mathbb{R}}
+\newcommand{\bigo}[1]{\mathcal{O}\left(#1\right)}
+\newcommand{\trace}[1]{\text{Tr}\left[#1\right]}
 
 %\title{Maxwell's D\ae mon: Stochastic Gradient Nonparametric Variational Inference}
 %\title{Entropic Descent: Stochastic Gradient Nonparametric Variational Inference}
@@ -155,7 +157,7 @@ all optimization runs would reach the same optimum.
 \end{center}
 \end{figure}
 
-We propose an interpretation of unfinished optimization in terms of variational
+We propose an interpretation of incomplete optimization in terms of variational
 Bayesian inference.  The main idea is that an optimization procedure, initialized
 according to some distribution, generates a sequence of distributions implicitly
 defined by the action of the optimization update rule on the previous
@@ -182,7 +184,7 @@ show that many popular optimization procedures yield tractable marginal
 likelihood estimates. The second question is an empirical one, and we give some
 evidence in both directions in our experiments section.
 
-\section{Unfinished optimization as variational inference}
+\section{Incomplete optimization as variational inference}
 
 Variational inference (cite) aims to approximate an intractable posterior
 distribution, $\posterior$, with another distribution, $q(\params)$,
@@ -207,7 +209,7 @@ also get a lower bound on $p(\data)$, which can be used, for model selection.
 
 We now need a family of distributions over which to maximize $\varL[q]$. Consider a
 general procedure to minimize the energy $-\jointdist$ with respect to
-$\params$. The parameters $\params$ are initialized according to some
+$\params \in \reals^D$. The parameters $\params$ are initialized according to some
 distribution $q_0(\params)$ and updated $\params$ at each iteration according to
 a transition operation ${\trans : \reals^D \rightarrow \reals^D}$:
 %
@@ -268,7 +270,8 @@ Where $\subjointdist{t}{}$ are a sequence of unbiased estimators of
 $\jointdist$. Taking the Jacobian of this update rule, we get the following
 unbiased estimator for the change in entropy:
 \begin{align}
-S[q_{t+1}] - S[q_t] \approx \log \left| I - \stepsize H_t(\params_t) \right|
+S[q_{t+1}] - S[q_t] \approx \log \left| I - \stepsize H_t(\params_t)
+\right| \label{eq:exact hessian}
 \end{align}
 where $H_t$ is the Hessian of $-\log\subjointdist{t}{}$. Note that the Hessian does not
 need to be positive definite or even non-singular. If some directions in
@@ -287,11 +290,31 @@ this situation should not be a problem.
 
 \subsection{Estimating the Jacobian in high dimensions}
 
-(In high dimensions Hessian is a bugger to instantiate, let along
-diagonalize. BUT we only care about log det. AND it's very close to the
-identity. Indeed, if we assume step size is sufficiently small (and it must be
-so for optimization to be stable, then we can do the whole thing with randomized
-traces and Hessian vector products.)
+The expression for the change in entropy given by (\ref{eq:exact hessian}) is
+impractical for large-scale problems since it requires an $\bigo{D^3}$
+determinant computation. Fortunately, we can make a good approximation using
+just one or two Hessian-vector products, which can usually be performed in
+$\bigo{D}$ time using reverse-mode differentiation (cite Perlmutter).
+
+The idea is that since $\stepsize\lambda_{\text{max}}$ is small, the Jacobian is
+actually just a small pertubration to the identity and we can approximate its
+determinant using traces as follows:
+\begin{align}
+\log \left| I - \stepsize H \right|
+& =    \sum_{i=0}^D \log\left(1 - \stepsize\lambda_i\right) \nonumber \\
+& \geq \sum_{i=0}^D \left[- \stepsize\lambda_i 
+                        - (\stepsize\lambda_i)^2 \right] \label{eq:logbound} \\
+& = - \stepsize \trace{H} - \stepsize^2 \trace{HH}
+\end{align}
+The bound in (\ref{eq:logbound}) is just a second order Taylor expansion of
+$\log(1 - x)$ about $x = 0$ and is valid if $\stepsize\lambda_i < 0.7$.
+(Mention closeness of bound). The trace of the Hessian can be estimated using
+inner products of random vectors:
+\begin{align}
+\trace{H} = \expectargs{}{\vr^TH\vr}, \qquad \vr \sim \N{0}{I} \nonumber
+\end{align}
+(Note that it's different to the common case finding the determinant of the
+Hessian itself. Can be poorly conditioned, and must be positive definite etc)
 
 \subsection{Adding noise to increase entropy}
 
