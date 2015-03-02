@@ -311,10 +311,35 @@ $\log(1 - x)$ about $x = 0$ and is valid if $\stepsize\lambda_i < 0.7$.
 (Mention closeness of bound). The trace of the Hessian can be estimated using
 inner products of random vectors:
 \begin{align}
-\trace{H} = \expectargs{}{\vr^TH\vr}, \qquad \vr \sim \N{0}{I} \nonumber
+\trace{H} = \expectargs{}{\vr^TH\vr}, \qquad \vr \sim \N{0}{I}
+\label{eq:approx-log-det}
 \end{align}
 (Note that it's different to the common case finding the determinant of the
 Hessian itself. Can be poorly conditioned, and must be positive definite etc)
+
+
+\begin{algorithm}[t]
+   \caption{gradient descent with marginal likelihood estimate}
+   \label{alg:sgd-with-estimate}
+\begin{algorithmic}[1]
+	\State {\bfseries input:}
+	Weight initialization scale $\sigma_0$, step size $\stepsize$, \\	
+	negative log likelihood $L(\params, t)$	
+	\State initialize $\params_1 \sim \N{0}{\sigma_0 \vI_D}$
+	\State $\entropy = \frac{D}{2} (1 + \log 2 \pi) + D \log\sigma_0$
+	\For{$t=1$ {\bfseries to} $T$}
+%		\State $\vg = \gradparams$             \Comment{Evaluate gradient}
+%		\State $\vr \sim \N{0}{\vI_D}$         \Comment{Draw random direction}
+%		\State $\vr\tra \left[ -2 \vr + 3 \left(  R1 - R2 \right) \right]$      \Comment{Estimate determinant}
+		\State $\entropy = \entropy - \log \det | \vI - \stepsize H_t |$  \Comment{Update entropy} \label{step:entropy-update}
+		\State $\params_{t+1} = \params_t + \stepsize \gradparams$  \Comment{Update position}		
+   \EndFor
+   \State \textbf{output} sample $\params_T$, estimate of entropy $\entropy$
+\end{algorithmic}
+\end{algorithm}
+%
+Algorithm~\ref{alg:sgd-with-estimate} combines these steps into an algorithm that tracks the approximate entropy during optimization.
+In high dimensions, step~\ref{step:entropy-update} should be replaced with equation~\eqref{eq:approx-log-det}.
 
 \subsection{Adding noise to increase entropy}
 
