@@ -311,12 +311,17 @@ $\log(1 - x)$ about $x = 0$ and is valid if $\stepsize\lambda_i < 0.7$.
 (Mention closeness of bound). The trace of the Hessian can be estimated using
 inner products of random vectors:
 \begin{align}
-\trace{H} = \expectargs{}{\vr^TH\vr}, \qquad \vr \sim \N{0}{I} \nonumber
+\trace{H} = \expectargs{}{\vr^TH\vr}, \qquad \vr \sim \N{0}{I}\nonumber
 \end{align}
-(Note that it's different to the common case finding the determinant of the
-Hessian itself. Can be poorly conditioned, and must be positive definite etc)
+A common problem, similar to the one we tackle here, is to compute the log of
+the determinant of the Hessian itself. This arises, for example, in making the
+Laplace approximation to the posterior (cite Mackay). This is a much harder
+problem since the Hessian can be very ill-conditioned, unlike our small
+(though Hessian-based) perturbation to the identity.
 
 \subsection{Adding noise to increase entropy}
+
+
 
 (Adding noise is the obvious way to increase entropy. If noise variance is
 exactly double step size then this is just stochastic langevin dynamic (cite
