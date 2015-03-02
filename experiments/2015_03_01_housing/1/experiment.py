@@ -1,4 +1,6 @@
 """Experiment on a small real dataset."""
+import matplotlib.pyplot as plt
+from matplotlib import rc
 
 import numpy as np
 import pickle
@@ -55,7 +57,8 @@ def run():
         results["iterations"      ].append(t)
         results["train_likelihood"].append(-nllfun(x, train_inputs, train_targets))
         results["tests_likelihood"].append(-nllfun(x, tests_inputs, tests_targets))
-        results["tests_rmse"     ].append(unscale_y(rmse(x, tests_inputs, tests_targets)))
+        results["train_rmse"      ].append(unscale_y(rmse(x, train_inputs, train_targets)))
+        results["tests_rmse"      ].append(unscale_y(rmse(x, tests_inputs, tests_targets)))
         results["marg_likelihood" ].append(estimate_marginal_likelihood(
             results["train_likelihood"][-1], results["entropy_per_dpt"][-1]))
                                            
@@ -81,25 +84,49 @@ def estimate_marginal_likelihood(likelihood, entropy):
 def plot():
     print "Plotting results..."
     with open('results.pkl') as f:
-          all_results = pickle.load(f)
+          results = pickle.load(f)
 
-    for key in all_results[0]:
-        plot_traces_and_mean(all_results, key)
+    first_results = results[0]
+    # Diagnostic plots of everything for us.
+    for key in first_results:
+        plot_traces_and_mean(results, key)
 
-def plot_traces_and_mean(all_results, trace_type, X=None):
-    import matplotlib.pyplot as plt
+    # Nice plots for paper.
+    rc('font',**{'family':'serif'})
+    fig = plt.figure(0); fig.clf()
+    ax = fig.add_subplot(211)
+    plt.plot(first_results["iterations"], first_results["train_rmse"], label="Train error")
+    plt.plot(first_results["iterations"], first_results["tests_rmse"], label="Test error")
+    ax.legend(numpoints=1, loc=1, frameon=False, prop={'size':'12'})
+    ax.set_ylabel('RMSE')
+
+    ax = fig.add_subplot(212)
+    plt.plot(first_results["iterations"], first_results["marg_likelihood"], label="Marginal likelihood")
+    ax.legend(numpoints=1, loc=1, frameon=False, prop={'size':'12'})
+    ax.set_ylabel('Marginal likelihood')
+    ax.set_xlabel('Training iteration')
+    #low, high = ax.get_ylim()
+    #ax.set_ylim([0, high])
+
+    fig.set_size_inches((6,3))
+    ax.legend(numpoints=1, loc=1, frameon=False, prop={'size':'12'})
+    fig.set_size_inches((6,8))
+    plt.savefig('marglik.pdf', pad_inches=0.0, bbox_inches='tight')
+
+def plot_traces_and_mean(results, trace_type, X=None):
     fig = plt.figure(0); fig.clf()
     ax = fig.add_subplot(211)
     if X is None:
         X = np.arange(len(results[0][trace_type]))
     for i in xrange(N_samples):
-        plt.plot(X, all_results[i][trace_type])
+        plt.plot(X, results[i][trace_type])
     ax.set_xlabel("Iteration")
     ax.set_ylabel(trace_type)
     ax = fig.add_subplot(212)
     all_Y = [np.array(results[i][trace_type]) for i in range(N_samples)]
     plt.plot(X, sum(all_Y) / float(len(all_Y)))
     plt.savefig(trace_type + '.png')
+
 
 if __name__ == '__main__':
     results = run()
