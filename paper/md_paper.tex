@@ -393,19 +393,32 @@ In general, what do we most care about in this section?
 \caption{\emph{Top}: Test-set error on the Boston housing dataset.
 \emph{Bottom}: Marginal likelihood estimate.
 The marginal likelihood, estimated during training using only the training set, has a maximum at an iteration near that where the test error is best.}
-\label{fig:cartoon}
+\label{fig:housing}
 \end{center}
 \end{figure}
 
-(Use SGD with exact Hessian and no noise. Show overfitting and show that marginal
-likelihood peaks at a similar (?) place to peak of held-out log-likelihood.)
+
+Figure \ref{fig:housing} shows overfitting and show marginal likelihood peaks at a similar place to the peak of held-out log-likelihood.
+[TODO: Use SGD with exact Hessian and no noise.]
+
 
 \subsection{MNIST}
-
 (Show that noiseless version doesn't perform particularly well. Noise does a
 good job with the overfitting problem. But does can we capture the marginal
 likelood well? Do we need to do AIS to check?)
 
+\begin{figure}
+%\vskip 0.2in
+\begin{center}
+\includegraphics[width=\columnwidth]{../experiments/2015_02_27_first_entropic_sgd/6_ensemble/ensemble}
+\vskip -0.1in
+\caption{\emph{Top}: Marginal likelihood estimate.
+\emph{Bottom}: Test-set error on the MNIST dataset.}
+\label{fig:ensemble}
+\end{center}
+\end{figure}
+
+Figure \ref{fig:ensemble} shows...
 
 \section{Related work}
 
