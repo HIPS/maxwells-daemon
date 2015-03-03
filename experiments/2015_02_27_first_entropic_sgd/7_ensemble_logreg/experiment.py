@@ -13,14 +13,15 @@ from maxwell_d.nn_utils import make_nn_funs
 from maxwell_d.data import load_data_subset
 
 # ------ Problem parameters -------
-layer_sizes = [784, 300, 10]
-N_train = 10000
+layer_sizes = [784, 10]
+N_train = 100
 batch_size = 200
 N_tests = 1000
 # ------ Variational parameters -------
 seed = 0
-init_scale = 0.3
-N_iter = 2000
+init_scale = 0.2
+reg = 0.5
+N_iter = 500
 alpha = 0.5 / N_train
 # ------ Plot parameters -------
 N_samples = 5
@@ -28,8 +29,8 @@ N_checkpoints = 50
 thin = np.ceil(N_iter/N_checkpoints)
 
 def neg_log_prior(w):
-    # return 0.5 * np.dot(w, w) / init_scale**2
-    return 0.0
+    return 0.5 * np.dot(w, w) * reg
+    #return 0.0
 
 def run():
     (train_images, train_labels),\
@@ -71,7 +72,7 @@ def run():
     for i in xrange(N_samples):
         results = defaultdict(list)
         rs = RandomState((seed, i))
-        sgd_entropic_damped(gradfun, np.full(N_param, init_scale), N_iter, alpha, rs, callback, width=100)
+        sgd_entropic_damped(gradfun, np.full(N_param, init_scale), N_iter, alpha, rs, callback, width=0)
         all_results.append(results)
 
     # Make ensemble prediction by averaging predicted class-conditional probabilities.

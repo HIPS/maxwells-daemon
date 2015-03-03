@@ -204,8 +204,10 @@ def exact_log_det(mvp, D, rs=None):
     return np.log(np.linalg.det(mat))
 
 def squash_grad(g, width):
+    if width < 1e-3: return g
     return g - width*np.tanh(g/width)
 def grad_squad_grad(g, width):
+    if width < 1e-3: return 1.0
     return 1 - 1/(np.cosh(g/width)**2)
 
 def sgd_entropic_damped(gradfun, x_scale, N_iter, learn_rate, rs, callback, approx=True, width=0.1):
