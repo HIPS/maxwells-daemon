@@ -216,6 +216,7 @@ def sgd_entropic_damped(gradfun, x_scale, N_iter, learn_rate, rs, callback, appr
 
     entropy = 0.5 * D * (1 + np.log(2*np.pi)) + np.sum(np.log(x_scale))
     for t in xrange(N_iter):
+        if callback: callback(x=x, t=t, entropy=entropy)
         g = gradfun(x, t)
         hvp = grad(lambda x, vect : np.dot(gradfun(x, t), vect)) # Hessian vector product
         jvp = lambda vect : vect - learn_rate * grad_squad_grad(g, width) * hvp(x, vect) # Jacobian vector product
@@ -223,7 +224,18 @@ def sgd_entropic_damped(gradfun, x_scale, N_iter, learn_rate, rs, callback, appr
             entropy += approx_log_det(jvp, D, rs)
         else:
             entropy += exact_log_det(jvp, D, rs)
-        if callback: callback(x=x, t=t, entropy=entropy)
         x -= learn_rate * squash_grad(g, width)
 
     return x, entropy
+
+
+def sgd_damped(grad, x, v=None, callback=None, iters=200, learn_rate=0.1, decay=0.9, width=0.1):
+    """Stochastic gradient descent with momentum."""
+    if v is None: v = np.zeros(len(x))
+    for t in xrange(iters):
+        g = grad(x, t)
+        if callback: callback(x, t, g, v)
+        v = v - squash_grad(g, width)
+        x += learn_rate * v
+        v *= decay
+    return x

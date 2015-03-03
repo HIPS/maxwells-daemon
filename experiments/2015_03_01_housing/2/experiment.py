@@ -20,16 +20,15 @@ seed = 0
 init_scale = 0.1
 N_iter = 500
 alpha_un = 0.004
-reg = 0.0
+
 # ------ Plot parameters -------
 N_samples = 1
 N_checkpoints = 50
 thin = np.ceil(N_iter/N_checkpoints)
 
 def neg_log_prior(w):
-    # return 0.5 * np.dot(w, w) / init_scale**2
-    return 0.5 * reg * np.dot(w, w)
-    # return 0.0
+    D = len(w)
+    return 0.5 * D * np.log(2*np.pi) + 0.5 * np.dot(w, w) / init_scale**2 + D * np.log(init_scale)
 
 def run():
     train_inputs, train_targets,\
@@ -44,8 +43,7 @@ def run():
         rs = RandomState((seed, i, i_iter))
         idxs = rs.randint(N_train, size=batch_size)
         nll = nllfun(w, train_inputs[idxs], train_targets[idxs]) * N_train
-        nlp = neg_log_prior(w)
-        return nll + nlp
+        return nll
     gradfun = grad(indexed_loss_fun)
 
     def callback(x, t, entropy):
