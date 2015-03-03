@@ -102,8 +102,8 @@ def plot():
     ax = fig.add_subplot(211)
     final_train = [all_results[i]["train_likelihood"][-1] for i, w in enumerate(widths)]
     final_tests = [all_results[i]["tests_likelihood"][-1] for i, w in enumerate(widths)]
-    plt.plot(final_train, label='training likelihood')
-    plt.plot(final_tests, label='test likelihood')
+    plt.plot(final_train, label='Training likelihood')
+    plt.plot(final_tests, label='Test likelihood')
     # plt.plot(widths, final_train, label='training likelihood')
     # plt.plot(widths, final_tests, label='test likelihood')
     plt.xticks(range(len(widths)), widths)
@@ -113,7 +113,7 @@ def plot():
 
     ax = fig.add_subplot(212)
     final_marg = [all_results[i]["marg_likelihood"][-1] for i, w in enumerate(widths)]
-    plt.plot(final_marg, 'r', label='marginal likelihood')
+    plt.plot(final_marg, 'r', label='Marginal likelihood')
     ax.legend(numpoints=1, loc=3, frameon=False, prop={'size':'12'})
     # plt.plot(widths, final_marg, label='marginal likelihood')
     ax.set_ylabel('Marginal likelihood')

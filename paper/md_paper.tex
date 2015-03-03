@@ -382,7 +382,7 @@ The effect is that entropy is not removed from parameters which are sufficiently
 \begin{figure}[h]
 \vskip 0.2in
 \begin{center}
-\includegraphics[width=\columnwidth]{../experiments/2015_03_02_funnel/3_grad_threshold/dists.pdf}
+\includegraphics[width=0.9\columnwidth]{../experiments/2015_03_02_funnel/3_grad_threshold/dists.pdf}
 \caption{The variational distribution implied by the modified SGD algorithm.
 Compared to Figure \ref{fig:cartoon}, the variational distributions are slower to collapse into low-entropy filaments.}
 \label{fig:cartoon-fatter}
@@ -433,12 +433,16 @@ The marginal likelihood estimate is also comparable between training runs, allow
 \includegraphics[width=\columnwidth]{../experiments/2015_03_03_vary_width/6_hidden_units/vary_widths.pdf}
 \vskip -0.1in
 \caption{\emph{Top}: Training and test-set likelihood as a function of the number of hidden units in the first layer of a network.
-\emph{Bottom}: Marginal likelihood estimates.}
+\emph{Bottom}: Marginal likelihood estimates.
+In this case, the training and test-set likelihood continue to increase no matter how many hidden units are used.}
 \label{fig:num hiddens}
 \end{center}
 \end{figure}
 
 Figure \ref{fig:num hiddens} shows marginal likelihood estimates as a function of the number of hidden units in the first hidden layer of a 3-layer deep neural network, trained on 50000 MNIST handwritten digits.
+Strangely, the performance of the network continues to increase even up to 3000 hidden units.
+The marginal likelihood estimate begins to decrease for more than 300 hidden units.
+We conjecture that this is due to the marginal likelihood estimate penalizing the loss of entropy in hidden units whose contribution to predictive likelihood is small.
 
 
 

@@ -99,14 +99,14 @@ def plot():
     #for key in all_results[0]:
     #    plot_traces_and_mean(all_results, key)
 
-
+    rc('font',**{'family':'serif'})
     fig = plt.figure(0); fig.clf()
     X = all_results[0]["iterations"]
     ax = fig.add_subplot(211)
     final_train = [all_results[i]["train_likelihood"][-1] for i, w in enumerate(widths)]
     final_tests = [all_results[i]["tests_likelihood"][-1] for i, w in enumerate(widths)]
-    plt.plot(final_train, label='training likelihood')
-    plt.plot(final_tests, label='test likelihood')
+    plt.plot(final_train, label='Training likelihood')
+    plt.plot(final_tests, label='Test likelihood')
     plt.xticks(range(len(widths)), widths)
     ax.legend(numpoints=1, loc=4, frameon=False, prop={'size':'12'})
     ax.set_ylabel('Train/test Likelihood')
@@ -114,7 +114,8 @@ def plot():
 
     ax = fig.add_subplot(212)
     final_marg = [all_results[i]["marg_likelihood"][-1] for i, w in enumerate(widths)]
-    plt.plot(final_marg, label='marginal likelihood')
+    plt.plot(final_marg, 'r', label='Marginal likelihood')
+    ax.legend(numpoints=1, loc=3, frameon=False, prop={'size':'12'})
     ax.set_ylabel('Marginal likelihood')
     ax.set_xlabel('Number of hidden units')
     plt.xticks(range(len(widths)), widths)
