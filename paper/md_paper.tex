@@ -151,7 +151,10 @@ all optimization runs would reach the same optimum.
 \begin{center}
 \includegraphics[width=\columnwidth]{../experiments/2015_03_02_funnel/2/dists.pdf}
 \caption{A series of variational distributions implicitly defined by
-  stochastic gradient descent.}
+  stochastic gradient descent on the log-likelihood.
+  The initial distribution from which parameters are drawn (red) doesn't match the posterior (black).
+  Intermediate distributions (green and blue) are implicitly defined by mapping each initial point through many iterations of gradient descent.
+  These distributions don't have fixed parametric shapes, but depend on the shape of the entire posterior.}
 \label{fig:cartoon}
 \end{center}
 \end{figure}
@@ -182,6 +185,13 @@ to the true posterior. We tackle the first question in sections XX and YY and
 show that many popular optimization procedures yield tractable marginal
 likelihood estimates. The second question is an empirical one, and we give some
 evidence in both directions in our experiments section.
+
+\subsection{Contributions}
+\begin{itemize}
+\item We give a new interpretation to optimization algorithms as samplers from a variational distribution that adapts to the true posterior.
+\item We give a scalable estimate the entropy of the implicit variational distributions, allowing us to estimate a lower bound on the marginal likelihood even on problems with hundreds of thousands of parameters.
+\item We investigate the performance of these estimators empirically.
+\end{itemize}
 
 \section{Incomplete optimization as variational inference}
 
@@ -236,7 +246,7 @@ an unbiased estimator of the energy term of (\ref{eq:varbound}). The entropy ter
 is trickier, since we don't have access to the density $q(\params)$
 directly. However, if we know the entropy of the initial distribution,
 $S[q_0(\params)]$, then we can estimate $S[q_0(\params)]$ by
-looking at the change in entropy at each iteration, caclulated by considering
+looking at the change in entropy at each iteration, calculated by considering
 the change of variables formula for a probability density function.
 We require access to the Jacobian of the optimizer's transition operator,
 $J(\params)$. Note that this analysis assumes that the mapping $T$ is bijective.
@@ -255,6 +265,8 @@ Combining these terms, we have an unbiased estimator of $\varL$ at iteration $T$
   \underbrace{\sum_{t=0}^{T-1} \log \left| J(\params_t) \right| + S[q_0]}_{\textnormal{\normalsize Entropy}}
   \nonumber
 \end{align}
+
+
 
 \subsection{Stochastic Gradient Descent}
 
@@ -343,26 +355,7 @@ problem since the Hessian can be very ill-conditioned, unlike our small
 Algorithm~\ref{alg:sgd-with-estimate} combines these steps into an algorithm that tracks the approximate entropy during optimization.
 In high dimensions, step~\ref{step:entropy-update} should be replaced with equation~\eqref{eq:approx-log-det}.
 
-\subsection{Adding noise to increase entropy}
 
-
-
-(Adding noise is the obvious way to increase entropy. If noise variance is
-exactly double step size then this is just stochastic langevin dynamic (cite
-Welling and Teh) and if we're doing MCMC then this is just like bridging the gap
-paper. But the hard part is now estimating entropy. It requires an estimate of q
-itself but we don't have access to q directly. Luckily, any q will do, it will
-just be a looser bound if we get it wrong. The approach of Welling et al is
-to make a parametric form which is learned. We propose a simpler approach. We
-expect it to eventually converge to the true posterior, and we know the initial
-distribution. So we approximate as it goes along with a convex combination of
-these two log probs. Annealing so that we're actaully targeting these as we go
-along is another possiblity.)
-
-(Maybe mention that treating sgd as a deterministic procedure is a bit
-disingenuous: it might be formally deterministic but the selection of
-minibatches is certainly arbitrary. Perhaps you could get better performance by
-formalizing the randomness and accounting for it.)
 
 \section{Experiments}
 
@@ -493,6 +486,29 @@ Combining these two procedures would allow one to set all hyperparameters using 
 \end{document}
 
 % ==============================================================================
+
+
+
+
+\subsection{Adding noise to increase entropy}
+(Adding noise is the obvious way to increase entropy. If noise variance is
+exactly double step size then this is just stochastic langevin dynamic (cite
+Welling and Teh) and if we're doing MCMC then this is just like bridging the gap
+paper. But the hard part is now estimating entropy. It requires an estimate of q
+itself but we don't have access to q directly. Luckily, any q will do, it will
+just be a looser bound if we get it wrong. The approach of Welling et al is
+to make a parametric form which is learned. We propose a simpler approach. We
+expect it to eventually converge to the true posterior, and we know the initial
+distribution. So we approximate as it goes along with a convex combination of
+these two log probs. Annealing so that we're actaully targeting these as we go
+along is another possiblity.)
+
+(Maybe mention that treating sgd as a deterministic procedure is a bit
+disingenuous: it might be formally deterministic but the selection of
+minibatches is certainly arbitrary. Perhaps you could get better performance by
+formalizing the randomness and accounting for it.)
+
+
 
 We define a nonparametric variational distribution implicitly as the output of a
 random initialization run through $T$ iterations of stochastic gradient descent
