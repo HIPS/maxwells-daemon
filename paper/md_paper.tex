@@ -13,6 +13,7 @@
 \usepackage{natbib}
 \usepackage{color}
 \usepackage{algorithm}
+\usepackage{todonotes}
 
 \definecolor{mydarkblue}{rgb}{0,0.08,0.45}
 \hypersetup{ %
@@ -126,20 +127,13 @@ Moreover, this procedure hints at a middle ground between point estimates arisin
 
 \section{Introduction}
 
-In much of machine learning, the central computational challenge is
-optimization; we try to maximize some training set objective with respect to a
-set of model parameters. If we treat the training objective as a (negative)
-log-posterior, this amounts to searching for a maximum \emph{a posteriori} (MAP)
-solution. Paradoxically, over-zealous optimization can yield worse test set
-results than incomplete optimization. A popular appraoch is to invoke `early
-stopping' in which optimization is halted based on the continually monitored
-performance of a validation set. But early stopping is both theoretically
-unsatisfying and problematic from a research perspective.  How can we be
-expected to rationally design better optimization methods if the spec is for
-something `powerful but not \emph{too} powerful'? A related trick is to ensemble
-the results from multiple optimization runs from different starting
-positions. Similarly, this must rely on imperfect optimization, since otherwise
-all optimization runs would reach the same optimum.
+In much of machine learning, the central computational challenge is optimization; we try to maximize some training set objective with respect to a set of model parameters.
+If we treat the training objective as a (negative) log-posterior, this amounts to searching for a maximum \emph{a posteriori} (MAP) solution.
+Paradoxically, over-zealous optimization can yield worse test set results than incomplete optimization due to the phenomenon of \emph{over-training}.
+A popular remedy to over-training is to invoke ``early stopping'' in which optimization is halted based on the continually monitored performance of the parameters on a separate validation set.
+However, early stopping is both theoretically unsatisfying and incoherent from a research perspective: how can one rationally design better optimization methods if the goal is to achieve something ``powerful but not \emph{too} powerful''?
+A related trick is to ensemble the results from multiple optimization runs from different starting positions.
+Similarly, this must rely on imperfect optimization, since otherwise all optimization runs would reach the same optimum.
 
 \begin{figure}[t]
 \vskip 0.2in
@@ -151,32 +145,21 @@ all optimization runs would reach the same optimum.
 \end{center}
 \end{figure}
 
-We propose an interpretation of incomplete optimization in terms of variational
-Bayesian inference.  The main idea is that an optimization procedure, initialized
-according to some distribution, generates a sequence of distributions implicitly
-defined by the action of the optimization update rule on the previous
-distribution. We can treat these distributions as variational approximations to
-the true posterior distribution. A single optimization run for $N$ iterations
-represents a draw from the $N$th such distribution. For many popular
-optimization methods we can form an unbiased estimate of the variational lower
-bound on the marginal likelihood.
+We propose an interpretation of incomplete optimization in terms of variational Bayesian inference.
+Our starting point is a Bayesian posterior distribution for a potentially complicated model, in which there is an empirical loss that can be interpreted as a negative log likelihood and regularizers that have interpretations as priors.
+One might proceed with MAP inference in such a setting and perform an optimization to find the best parameters.
+The main idea of this paper is that such an optimization procedure, initialized according to some distribution that can be chosen freely, generates a sequence of distributions that are implicitly defined by the action of the optimization update rule on the previous distribution.
+We can treat these distributions as variational approximations to the true posterior distribution.
+A single optimization run for~$N$ iterations represents a draw from the~$N$th such distribution in the sequence.
+For many popular optimization methods this sequence of distributions can be used to form an unbiased estimate of a lower bound on the log marginal likelihood.
 
-With this interpretation, the number of optimization iterations can be seen as a
-variational parameter, one that trades off fitting the data well against
-maintaining a broad (high entropy) distribution. Early stopping amounts to
-optimizing the variational lower bound (or an approximation based on a
-validation set) with respect to this variational parameter. Similarly, since
-each optimization trajectory from a random intialization represents a sample
-from the variational distribution, ensembling random restarts can be viewed as
-building a sample-based approximation of (an approximation to) the posterior.
+With this interpretation, the number of optimization iterations can be seen as a variational parameter, one that trades off fitting the data well against maintaining a broad (high entropy) distribution.
+Early stopping amounts to optimizing the variational lower bound (or an approximation based on a validation set) with respect to this variational parameter.
+Similarly, since each optimization trajectory from a random initialization represents a sample from the variational distribution, ensembling random restarts can be viewed as building a sample-based approximation of (an approximation to) the posterior.
 
-To establish whether this viewpoint is helpful in practice we ask (a) whether we
-can estimate the marginal likelihood and (b) whether the variational family
-distribution implied by optimization rule yields a reasonably good approximation
-to the true posterior. We tackle the first question in sections XX and YY and
-show that many popular optimization procedures yield tractable marginal
-likelihood estimates. The second question is an empirical one, and we give some
-evidence in both directions in our experiments section.
+To establish whether this viewpoint is helpful in practice we ask (a)~whether we can estimate the marginal likelihood, and (b)~whether the family of variational distributions implied by the optimization rule yields a reasonably good approximation to the true posterior.
+We tackle the first question in sections \todo{XX} and \todo{YY} and show that many popular optimization procedures yield tractable estimates of the marginal likelihood.
+The second question is an empirical one, and we give some experimental evidence in both directions.
 
 \section{Incomplete optimization as variational inference}
 
