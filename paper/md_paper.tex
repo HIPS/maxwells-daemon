@@ -384,7 +384,7 @@ We performed regression on the Boston housing dataset
 %[citation needed]
 using a neural network with 100 hidden units, and no regularization.
 
-\begin{figure}[h]
+\begin{figure}[h!]
 %\vskip 0.2in
 \begin{center}
 \includegraphics[width=\columnwidth]{../experiments/2015_03_01_housing/2/marglik}
@@ -407,13 +407,13 @@ Figure \ref{fig:housing} shows overfitting and show marginal likelihood peaks at
 
 The marginal likelihood estimate is also comparable between training runs, allowing us to use it to select model hyperparameters, such as the number of hidden units.
 
-\begin{figure}[h]
+\begin{figure}[h!]
 %\vskip 0.2in
 \begin{center}
-\includegraphics[width=\columnwidth]{../experiments/2015_03_03_vary_width/2_num_hidden/vary_widths.pdf}
+\includegraphics[width=\columnwidth]{../experiments/2015_03_03_vary_width/6_hidden_units/vary_widths.pdf}
 \vskip -0.1in
 \caption{\emph{Top}: Training and test-set likelihood as a function of the number of hidden units in the first layer of a network.
-\emph{Bottom}: Marginal likelihood.}
+\emph{Bottom}: Marginal likelihood estimates.}
 \label{fig:num hiddens}
 \end{center}
 \end{figure}
@@ -424,7 +424,10 @@ Figure \ref{fig:num hiddens} shows marginal likelihood estimates as a function o
 
 \subsection{Optimizing training hyperparameters}
 
-\begin{figure}[h]
+We can also use marginal likelihoods to optimize training parameters such as learning rates, or initial distributions.
+As an example, Figure \ref{fig:threshold} shows the marginal likelihood estimate as a function of the gradient threshold in the modified SGD algorithm, again trained on 50000 MNIST handwritten digits.
+
+\begin{figure}[h!]
 %\vskip 0.2in
 \begin{center}
 \includegraphics[width=\columnwidth]{../experiments/2015_03_03_vary_width/5_grad_threshold/vary_widths.pdf}
@@ -436,30 +439,42 @@ A gradient threshold of zero corresponds to standard SGD.}
 \end{center}
 \end{figure}
 
-Figure \ref{fig:threshold} shows marginal likelihood estimates as a function of the gradient threshold in the modified SGD algorithm.
 As the level of thresholding increases, training and test error get worse due to under-fitting.
 However, for intermediate thresholds, the lower bound increases.
+Because it is a lower bound, its increase means that the estimate of the marginal likelihood is becoming \emph{more accurate}, even though the actual model happens to be getting worse at the same time.
 
 
 
 \section{Limitations}
 
-Because estimating marginal likelihood in high dimensions is known to be hard, 
+Estimating marginal likelihood is known to be sharp-P hard in general.
+When do we expect the estimate of the marginal likelihood to be poor?
+
+
+
 
 \section{Related work}
 
-RMSprop~\cite{Tieleman2012} or Adam~\citep{Adam14}
+\paragraph{Early stopping}
 
-\paragraph{Reversible learning} \citet{MacDuvAda2015hyper}. Optimization is an
-intrinsically information-destroying process since a (good) optimization
+\citet{raskutti2014early} derive a data-dependent early-stopping rule for kernel regression methods.
+
+
+\paragraph{Reversible learning} 
+Optimization is an
+intrinsically information-destroying process, since a (good) optimization
 procedure maps any initial starting point to one or a few final optima. We can
-quantify the loss of information by asking how many bits must be stored in order
-to reverse the optimization. We can think of this as average the number of bits
-`learned' during the optimization. From this perspective, stopping before optimization
+quantify this loss of information by asking how many bits must be stored in order
+to reverse the optimization, as in \citet{MacDuvAda2015hyper}.
+ We can think of this as average the number of bits
+`learned' during the optimization.
+
+From this perspective, stopping before optimization
 converges can be seen as a way to limit the number of bits we try to learn,
-since we don't expect to be able to learn more than a finite number of bits; cite reversible
-learning paper. Thus early stopping is one of many ways to reduce the hypothesis
-space. (cite MDL? Statistical learning theory?)
+since we don't expect to be able to learn more than a finite number of bits from a finite dataset.
+
+Thus, early stopping can also be seen as one of many ways to reduce the hypothesis space to improve generalization.
+% (cite MDL? Statistical learning theory?)
 
 \paragraph{MCMC for variational inference}
 Our method can be seen as a special case of \citet{Bridging14}.
@@ -498,8 +513,13 @@ However, they constrain their variational approximation to be Gaussian, as oppos
 
 We can design optimization algorithms that do a better job of producing samples from the true posterior.
 
-We could derive a variational inference algorithm based on RMSProp, and a corresponding variant of Hamiltonian Monte Carlo.
+\paragraph{Optimization with momentum}
+One obvious extension would be to design an estimator of the entropy lost by momentum-based optimizers such as stochastic gradient descent with momentum, or Adam~\citep{Adam14}.
+However, it is difficult to track the entropy change during the updates to the momentum variables.
 
+We could derive a variational inference algorithm based on RMSprop~\cite{Tieleman2012}, and a corresponding variant of Hamiltonian Monte Carlo.
+
+\paragraph{Gradient-based hyperparameter optimization}
 Hyperparameters typically come in two forms:
 Regularization parameters and training parameters.
 Optimizing marginal likelihood rather than training loss lets us set regularization parameters during training without using a validation set.
