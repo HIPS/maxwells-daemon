@@ -170,9 +170,9 @@ def aed3_anneal(grad, x_scale, callback=None, learn_rate=0.1, init_log_decay=np.
         log_decays += decay_learn_rate * np.sign( 1 - v**2 )
     return x, entropy + 0.5 * (D - norm(v) **2)
 
-def sgd_entropic(gradfun, x_scale, N_iter, learn_rate, rs, callback, approx=True, mu=0.0):
+def sgd_entropic(gradfun, x_scale, N_iter, learn_rate, rs, callback, approx=True):
     D = len(x_scale)
-    x = rs.randn(D) * x_scale + mu
+    x = rs.randn(D) * x_scale
     entropy = 0.5 * D * (1 + np.log(2*np.pi)) + np.sum(np.log(x_scale))
     for t in xrange(N_iter):
         g = gradfun(x, t)
@@ -202,3 +202,26 @@ def exact_log_det(mvp, D, rs=None):
     for i in range(D):
         mat[:, i] = mvp(eye[:, i])
     return np.log(np.linalg.det(mat))
+
+def squash_grad(g, width):
+    return g - width*np.tanh(g/width)
+def grad_squad_grad(g, width):
+    return 1 - 1/(np.cosh(g/width)**2)
+
+def sgd_entropic_damped(gradfun, x_scale, N_iter, learn_rate, rs, callback, approx=True, width=0.1):
+    D = len(x_scale)
+    x = rs.randn(D) * x_scale
+
+    entropy = 0.5 * D * (1 + np.log(2*np.pi)) + np.sum(np.log(x_scale))
+    for t in xrange(N_iter):
+        g = gradfun(x, t)
+        hvp = grad(lambda x, vect : np.dot(gradfun(x, t), vect)) # Hessian vector product
+        jvp = lambda vect : vect - learn_rate * grad_squad_grad(g, width) * hvp(x, vect) # Jacobian vector product
+        if approx:
+            entropy += approx_log_det(jvp, D, rs)
+        else:
+            entropy += exact_log_det(jvp, D, rs)
+        if callback: callback(x=x, t=t, entropy=entropy)
+        x -= learn_rate * squash_grad(g, width)
+
+    return x, entropy
