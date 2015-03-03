@@ -322,28 +322,62 @@ Algorithm~\ref{alg:sgd-with-estimate} combines these steps into an algorithm tha
 In high dimensions, the exact evaluation of the determinant in step~\ref{step:entropy-update} should be replaced with the approximation given by equation~\eqref{eq:approx-log-det}.
 
 
-\subsection{Parameter initialization and priors}
+\subsection{Parameter initialization, priors, and objective functions}
 
 What initial parameter distribution should we use for SGD?
-The marginal likelihood estimate given be \eqref{eq:entropy-bound} is valid no matter which initial distribution we choose.
+The marginal likelihood estimate given by \eqref{eq:entropy-bound} is valid no matter which initial distribution we choose.
 We could conceivably optimize this distribution in an outer loop using the marginal likelihood estimate itself.
 
 However, using the prior distribution has several advantages.
-First of all, it is usually designed to have broader support than the likelihood.
-Since SGD usually decreases entropy, starting with a high-entropy distribution seems like a good heuristic.
+First, it is usually designed to have broader support than the likelihood.
+Since SGD usually decreases entropy, starting with a high-entropy distribution
+is a good heuristic.
 
-(Also makes sense to optimize an
-objective that is just the log likelihood - has the prior subtracted off - so
-that the prior stays as the prior)
-
+Another question we can ask is what to use as our objective loss. The obvious choice is the (unnormalized, negative) log-posterior but we can actually use any function we like.
+The marginal likelihood estimate remains valid provided we can comptue its Hessian
+(or appropriate Hessian vector products). A more sensible choice is to ignore the prior
+in our SGD optimization and just take gradients and Hessians with respect to the log likelihood.
+This way, if we use the prior to initialize the parameters, we only move away from this
+initial distribution to the extent that the posterior differs from the prior.
+This difference is just the log-likelihood.
 
 \subsection{Designing entropy-friendly optimization methods}
 
 The variational distribution implied by SGD does not optimize the variational lower bound directly.
-In a sense, if creates a good variational distribution, it's only by accident.
-In place of SGD, we can use any optimization method for which we can approximate the change in entropy.
+If it happens to create a good variational distribution, it's only by accident.
+In place of SGD, we can use any optimization method for which we can approximate the change in entropy, which in practice means any optimization for which we can compute Jacobian vector products.
+Now that we have a variational interpretation of optimization we can start to design new 
+optimization procedures with posterior-fitting in mind.
 
-In practice, SGD can collapse the variational distribution into low-entropy filaments, shrinking in some directions to be orders of magnitude smaller than the width of the true posterior.
+An obvious place to start is with stochastic update rule inspired by Markov Chain Monte Carlo (MCMC). 
+Procedures like Hamiltonian Monte Carlo \citep{neal2011mcmc} and Langevin dynamics MCMC \citep{welling2011bayesian} look very much like optimiztion procedures but actually have the posterior as their stationary distribution.
+This is exactly the approach taken by \citet{Bridging14}.
+One difficulty with using stochastic updates, however, is that the calculating the change in
+entropy at each iterationcan't requires access to the current distribution over parameters.
+As an example, consider that convolving a delta function with a Gaussian yields an
+infinite entropy increase, whereas convolving a uniform distribution with a Gaussian
+yields no change in entropy. The authors \citep{welling2011bayesian} handle this
+by learning a highly parameterized ``inverse model'' which implicitly models the distribution
+over parameters. The downside of this is that the parameters of this model, which can be thought
+of as variational parameters, must be learned in an outer loop.
+
+Another, complementary approach, is to try to develop deterministic update rules
+that avoid some of the pathologies of conventional update rules like sgd.
+This could could be a research agenda in itself, but we give one example here of a modifcation to
+sgd which can improve the variational lower bound.
+One potential pathology of SGD in the context of posterior approximation, is that sgd can collapse the variational distribution into low-entropy filaments, shrinking in some directions to be orders of magnitude smaller than the width of the true posterior.
+A simple trick to prevent this from happening is to apply a nonlinear, parameter-wise warping
+to the gradient, such that directions of very small gradient do not get optimized all the way
+to the optimium. For example,
+%% \begin{align}
+
+%% \end{align}
+where $\g_0$ is a parameter that sets the scale of this shrinkage. Computing the Jacobian
+of this new update rule gives a new rule to update the entropy estimate.
+%% \begin{align}
+
+%% \end{align}
+The effect is that entropy is not removed from parameters which are sufficiently close to the optimum. An experiment showing the effect of this modified sgd is shown in Figure \cite{fig:cartoon-fatter}.
 
 \begin{figure}[h]
 \vskip 0.2in
@@ -354,20 +388,6 @@ Compared to Figure \ref{fig:cartoon}, the variational distributions are slower t
 \label{fig:cartoon-fatter}
 \end{center}
 \end{figure}
-
-(We now have a new way to motivate optimization algorithms. We can try to find
-ones that do a better job of modelling posterior.)
-
-(One approach is mcmc but it requires estimate of the distribution)
-
-(Another approach is One example is avoiding delta functions)
-
-(There's a whole world of possiblities. Optimization routines that can both track
-entropy and maintaining high entropy)
-
-
-
-
 
 \section{Experiments}
 \label{sec:experiments}
