@@ -85,6 +85,7 @@
 \newcommand{\reals}{\mathbb{R}}
 \newcommand{\bigo}[1]{\mathcal{O}\left(#1\right)}
 \newcommand{\trace}[1]{\text{Tr}\left[#1\right]}
+\newcommand{\loss}{L(\params)}
 
 %\title{Maxwell's D\ae mon: Stochastic Gradient Nonparametric Variational Inference}
 %\title{Entropic Descent: Stochastic Gradient Nonparametric Variational Inference}
@@ -232,14 +233,15 @@ based on the sequence of parameters, $\params_0, \ldots, \params_T$, from a sing
 
 \subsection{Stochastic Gradient Descent}
 
-Stochastic gradient descent is a popular and effective optimization procedure with the following update rule:
+Stochastic gradient descent (SGD) is a popular and effective optimization procedure with the following update rule:
 \begin{align}
 \params_{t+1} &=
-  \params_t - \stepsize \nabla_{\params}
-  \left[-\log \subjointdist{t}{t} \right]\,,\nonumber
+  \params_t - \stepsize \nabla \loss,\nonumber
 \end{align}
-where the $\subjointdist{t}{}$ are a sequence of unbiased estimators of~$\jointdist$ and $\stepsize$ is a `step size' hyperparameter.
-Taking the Jacobian of this update rule, we get the following unbiased estimator for the change in entropy:
+where the $\loss$ the objective loss (or an unbiased estimator of it e.g. using minibatches)
+for example ~$-\log\jointdist$, and $\stepsize$ is a `step size' hyperparameter.
+Taking the Jacobian of this update rule gives the following unbiased estimator
+for the change in entropy at each iteration:
 \begin{align}
 S[q_{t+1}] - S[q_t] \approx \log \left| I - \stepsize H_t(\params_t)
 \right| \label{eq:exact hessian}
@@ -254,6 +256,13 @@ Physically, this corresponds to a Newton-like update where multiple points colla
 However, gradient descent is unstable anyway if ${\stepsize\lambda_{\text{max}} > 2}$, where~$\lambda_{\text{max}}$ is the largest eigenvalue of~$H_t$.
 So if we choose a sufficiently conservative step size, such that $\stepsize\lambda_{\text{max}} < 1$,
 this situation should not arise.
+
+So far, we have treated SGD as a deterministic procedure even though, as the name suggests,
+the gradient of the loss at each iteration may be replaced by a stochastic version. Our analysis of the entropy is still if we fix the sequence of stochastic gradients to be the same for each optimization run, so that the only randomness comes from the parameter initialization.
+This is a pedantic argument, similar to arguing that a pseudorandom sequence of numbers has only as much entropy as its seed.
+However, if we do choose to randomize the gradient estimator differently for each training run
+(e.g. choosing different minibatches) then the expression for the change in entropy, Equation \ref{eq:exact hessian}, remains valid as a \emph{lower bound} on the change in entropy and the 
+subsequent calculation of $\varL$ remains a true lower bound on the log marginal likelihood.
 
 \subsection{Estimating the Jacobian in high dimensions}
 
@@ -280,6 +289,27 @@ A common problem, similar to the one we tackle here, is to compute the log of th
 This arises, for example, in making the Laplace approximation to the posterior \citep{mackay1992practical}.
 This is a much harder problem since the Hessian can be arbitrarily ill-conditioned, unlike our small Hessian-based perturbation to the identity.
 
+Algorithm~\ref{alg:sgd-with-estimate} combines these steps into an algorithm that tracks the approximate entropy during optimization.
+In high dimensions, step~\ref{step:entropy-update} should be replaced with equation~\eqref{eq:approx-log-det}.
+
+\subsection{Parameter initialization and priors}
+
+(Makes sense to initialize with the prior. Also makes sense to optimize an
+objective that is just the log likelihood - has the prior subtracted off - so
+that the prior stays as the prior)
+
+\subsection{Desigining entropy-friendly optimization algorithms}
+
+(We now have a new way to motivate optimization algorithms. We can try to find
+ones that do a better job of modelling posterior.)
+
+(One approach is mcmc but it requires estimate of the distribution)
+
+(Another approach is One example is avoiding delta functions)
+
+(There's a whole world of possiblities. Optimization routines that can both track
+entropy and maintaining high entropy)
+
 \begin{algorithm}[t]
    \caption{stochastic gradient descent with marginal likelihood estimate}
    \label{alg:sgd-with-estimate}
@@ -300,29 +330,8 @@ This is a much harder problem since the Hessian can be arbitrarily ill-condition
 \end{algorithmic}
 \end{algorithm}
 %
-Algorithm~\ref{alg:sgd-with-estimate} combines these steps into an algorithm that tracks the approximate entropy during optimization.
-In high dimensions, step~\ref{step:entropy-update} should be replaced with equation~\eqref{eq:approx-log-det}.
-
-
-
-
 \section{Experiments}
 \label{sec:experiments}
-
-(Planning to test out how well it performs in practice. Not claiming it's the
-best thing ever. Just scientifically interested in how good of an approximation
-it is.)
-
-In general, what do we most care about in this section?
-\begin{itemize}
-\item Quality of marginal likelihood estiamte
-\item Quality of approximating distribution
-\item Comparison between marginal likelihood estimate and held-out likelihood
-\item Slackness of bound due to imperfect guessing of distribution when using
-  noisy/mcmc version
-\item Quality of Hessian randomized trace estimate
-\item Noisiness of stochastic estimates
-\end{itemize}
 
 \subsection{Boston Housing Data}
 
@@ -718,3 +727,19 @@ S[q_t] = S[q_0] - \sum_{t=1}^{T} \sum_{d=1}^{D} \log \decay_{td}
 %
 where $f(\params)$ is the negative log-likelihood and $\decay_{td}$ is the velocity decay rate for step $t$ and parameter $d$.
 [Maybe: mention that it's only a lower bound on the entropy in the case of finite precision.]
+
+(Planning to test out how well it performs in practice. Not claiming it's the
+best thing ever. Just scientifically interested in how good of an approximation
+it is.)
+
+In general, what do we most care about in this section?
+\begin{itemize}
+\item Quality of marginal likelihood estiamte
+\item Quality of approximating distribution
+\item Comparison between marginal likelihood estimate and held-out likelihood
+\item Slackness of bound due to imperfect guessing of distribution when using
+  noisy/mcmc version
+\item Quality of Hessian randomized trace estimate
+\item Noisiness of stochastic estimates
+\end{itemize}
+
