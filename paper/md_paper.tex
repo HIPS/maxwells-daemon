@@ -317,15 +317,26 @@ This is a much harder problem since the Hessian can be arbitrarily ill-condition
 Algorithm~\ref{alg:sgd-with-estimate} combines these steps into an algorithm that tracks the approximate entropy during optimization.
 In high dimensions, step~\ref{step:entropy-update} should be replaced with equation~\eqref{eq:approx-log-det}.
 
+
 \subsection{Parameter initialization and priors}
+
+What initial parameter distribution should we use for SGD?
+The lower bound is valid no matter which distribution we choose.
 
 (Makes sense to initialize with the prior. Also makes sense to optimize an
 objective that is just the log likelihood - has the prior subtracted off - so
 that the prior stays as the prior)
 
-\subsection{Desigining entropy-friendly optimization algorithms}
 
-\begin{figure}[t]
+\subsection{Designing entropy-friendly optimization methods}
+
+The variational distribution implied by SGD does not optimize the variational lower bound directly.
+In a sense, if creates a good variational distribution, it's only by accident.
+In place of SGD, we can use any optimization method for which we can approximate the change in entropy.
+
+In practice, SGD can collapse the variational distribution into low-entropy filaments, shrinking in some directions to be orders of magnitude smaller than the width of the true posterior.
+
+\begin{figure}[h]
 \vskip 0.2in
 \begin{center}
 \includegraphics[width=\columnwidth]{../experiments/2015_03_02_funnel/3_grad_threshold/dists.pdf}
@@ -352,17 +363,24 @@ entropy and maintaining high entropy)
 \section{Experiments}
 \label{sec:experiments}
 
-\subsection{Boston Housing Data}
+In this section we show that the marginal likelihood estimate can be used to choose the number of training iterations, and to choose model capacity, without the need for a validation set.
 
+\subsection{Boston housing data}
 
-\begin{figure}[t]
+As a simple demonstration of the usefulness of our marginal likelihood estimate, we show that it can be used to estimate the optimal number of training iterations before overfitting begins.
+We performed regression on the Boston housing dataset 
+%[citation needed]
+using a neural network with 100 hidden units, and no regularization.
+
+\begin{figure}[h]
 %\vskip 0.2in
 \begin{center}
 \includegraphics[width=\columnwidth]{../experiments/2015_03_01_housing/2/marglik}
 \vskip -0.1in
 \caption{\emph{Top}: Test-set error on the Boston housing dataset.
 \emph{Bottom}: Marginal likelihood estimate.
-The marginal likelihood, estimated during training using only the training set, has a maximum at an iteration near that where the test error is best.}
+The dashed line indicates the iteration with highest marginal likelihood.
+The marginal likelihood, estimated online using only the training set, has a maximum at an iteration close to when the test error is best.}
 \label{fig:housing}
 \end{center}
 \end{figure}
@@ -370,25 +388,13 @@ The marginal likelihood, estimated during training using only the training set, 
 
 Figure \ref{fig:housing} shows overfitting and show marginal likelihood peaks at a similar place to the peak of held-out log-likelihood.
 
-\subsection{MNIST}
-(Show that noiseless version doesn't perform particularly well. Noise does a
-good job with the overfitting problem. But does can we capture the marginal
-likelood well? Do we need to do AIS to check?)
+\subsection{MNIST handwritten digits}
 
-\begin{figure}
-%\vskip 0.2in
-\begin{center}
-\includegraphics[width=\columnwidth]{../experiments/2015_02_27_first_entropic_sgd/6_ensemble/ensemble}
-\vskip -0.1in
-\caption{\emph{Top}: Marginal likelihood estimate.
-\emph{Bottom}: Test-set error on the MNIST dataset.}
-\label{fig:ensemble}
-\end{center}
-\end{figure}
+%(Show that noiseless version doesn't perform particularly well. Noise does a good job with the overfitting problem. But does can we capture the marginal likelood well? Do we need to do AIS to check?)
 
-Figure \ref{fig:ensemble} shows...
 
-\begin{figure}
+
+\begin{figure}[h]
 %\vskip 0.2in
 \begin{center}
 \includegraphics[width=\columnwidth]{../experiments/2015_03_03_vary_width/5_grad_threshold/vary_widths.pdf}
@@ -398,8 +404,6 @@ Figure \ref{fig:ensemble} shows...
 \label{fig:threshold}
 \end{center}
 \end{figure}
-
-
 
 Figure \ref{fig:threshold} shows
 
@@ -468,10 +472,9 @@ Talk about the possibility of further work on entropy-friendly optimizers,
 or optimizers that handle different parameters more gracefull, are parameterization-invariant etc.
 
 %\subsection{Acknowledgements}
-%We thank Roger Grosse for helpful discussions. Also Miguel and Matt Johnson.
+%We thank Roger Grosse for helpful discussions. Also Miguel and Matt Johnson, and Oren Rippel.
 
 
-[TODO: Cite Nando's variational MCMC paper]
 
 
 \bibliography{references.bib}
@@ -482,7 +485,18 @@ or optimizers that handle different parameters more gracefull, are parameterizat
 % ==============================================================================
 
 
+\begin{figure}
+%\vskip 0.2in
+\begin{center}
+\includegraphics[width=\columnwidth]{../experiments/2015_02_27_first_entropic_sgd/6_ensemble/ensemble}
+\vskip -0.1in
+\caption{\emph{Top}: Marginal likelihood estimate.
+\emph{Bottom}: Test-set error on the MNIST dataset.}
+\label{fig:ensemble}
+\end{center}
+\end{figure}
 
+Figure \ref{fig:ensemble} shows...
 
 \subsection{Adding noise to increase entropy}
 (Adding noise is the obvious way to increase entropy. If noise variance is
