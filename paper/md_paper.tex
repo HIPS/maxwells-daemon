@@ -116,17 +116,12 @@
 \maketitle
 
 \begin{abstract}
-We show that unconverged stochastic gradient descent and other popular
-optimization methods can be interpreted as procedures that generate samples from
-a nonparametric variational approximate posterior distribution.  This
-distribution is implicitly defined as the transformation of an initial
-distribution by a certain number of optimization updates. By keeping track of
-the change in entropy of the distribution as optimization proceeds we can form
-an unbiased estimator of a lower bound on the marginal likelihood and maximize
-this bound with respect to the optimizer's hyperparameters instead of using a
-validation set.  This Bayesian interpretation of SGD suggests improved
-overfitting-resistant optimization procedures and gives a theoretical foundation
-for popular tricks such as early stopping and ensembling.
+We show that unconverged stochastic gradient descent and other popular optimization methods can be interpreted as procedures that generate samples from a nonparametric variational approximate posterior distribution.
+This distribution is implicitly defined as the transformation of an initial distribution by a sequence of optimization updates into a final approximation.
+Each step of the optimization results in an intermediate distribution and by keeping track of the changes in entropy over this sequence of distributions, we can form an unbiased estimator of a lower bound on the log marginal likelihood.
+We can then maximize this bound with respect to the models' hyperparameters instead of using a separate validation set.
+This Bayesian interpretation of SGD suggests improved overfitting-resistant optimization procedures and gives a theoretical foundation for popular tricks such as early stopping and ensembling.
+Moreover, this procedure hints at a middle ground between point estimates arising from MAP inference, and fully-factored variational approximations.
 \end{abstract}
 
 \section{Introduction}
