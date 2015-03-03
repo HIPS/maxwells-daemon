@@ -234,18 +234,22 @@ based on the sequence of parameters, $\params_0, \ldots, \params_T$, from a sing
 \subsection{Stochastic Gradient Descent}
 
 Stochastic gradient descent (SGD) is a popular and effective optimization procedure with the following update rule:
+%
 \begin{align}
 \params_{t+1} &=
-  \params_t - \stepsize \nabla \loss,\nonumber
+  \params_t - \stepsize \nabla \loss,
 \end{align}
+%
 where the $\loss$ the objective loss (or an unbiased estimator of it e.g. using minibatches)
 for example ~$-\log\jointdist$, and $\stepsize$ is a `step size' hyperparameter.
 Taking the Jacobian of this update rule gives the following unbiased estimator
 for the change in entropy at each iteration:
+%
 \begin{align}
 S[q_{t+1}] - S[q_t] \approx \log \left| I - \stepsize H_t(\params_t)
 \right| \label{eq:exact hessian}
 \end{align}
+%
 where $H_t$ is the Hessian of $-\log\subjointdist{t}{}$ with respect to~$\params$.
 
 Note that the Hessian does not need to be positive definite or even non-singular.
@@ -257,6 +261,27 @@ However, gradient descent is unstable anyway if ${\stepsize\lambda_{\text{max}} 
 So if we choose a sufficiently conservative step size, such that $\stepsize\lambda_{\text{max}} < 1$,
 this situation should not arise.
 
+\begin{algorithm}[t]
+   \caption{stochastic gradient descent with marginal likelihood estimate}
+   \label{alg:sgd-with-estimate}
+\begin{algorithmic}[1]
+	\State {\bfseries input:}
+	Weight initialization scale $\sigma_0$, step size $\stepsize$, 	
+	twice-differentiable negative log likelihood $L(\params, t)$	
+	\State {\bfseries initialize} $\params_1 \sim \N{0}{\sigma_0 \vI_D}$
+	\State {\bfseries initialize} $\entropy_{1} = \frac{D}{2} (1 + \log 2 \pi) + D \log\sigma_0$
+	\For{$t=1$ {\bfseries to} $T$}
+%		\State $\vg = \gradparams$             \Comment{Evaluate gradient}
+%		\State $\vr \sim \N{0}{\vI_D}$         \Comment{Draw random direction}
+%		\State $\vr\tra \left[ -2 \vr + 3 \left(  R1 - R2 \right) \right]$      \Comment{Estimate determinant}
+		\State $\entropy_{t+1} = \entropy_t - \log \left| \vI - \stepsize H_t \right|$  \Comment{Update entropy} \label{step:entropy-update}
+		\State $\params_{t+1} = \params_t + \stepsize \gradparams$  \Comment{Update position}		
+   \EndFor
+   \State \textbf{output} sample $\params_T$, estimate of entropy $\entropy_T$
+\end{algorithmic}
+\end{algorithm}
+%
+
 So far, we have treated SGD as a deterministic procedure even though, as the name suggests,
 the gradient of the loss at each iteration may be replaced by a stochastic version. Our analysis of the entropy is still if we fix the sequence of stochastic gradients to be the same for each optimization run, so that the only randomness comes from the parameter initialization.
 This is a pedantic argument, similar to arguing that a pseudorandom sequence of numbers has only as much entropy as its seed.
@@ -264,8 +289,8 @@ However, if we do choose to randomize the gradient estimator differently for eac
 (e.g. choosing different minibatches) then the expression for the change in entropy, Equation \ref{eq:exact hessian}, remains valid as a \emph{lower bound} on the change in entropy and the 
 subsequent calculation of $\varL$ remains a true lower bound on the log marginal likelihood.
 
-\subsection{Estimating the Jacobian in high dimensions}
 
+\subsection{Estimating the Jacobian in high dimensions}
 The expression for the change in entropy given by (\ref{eq:exact hessian}) is impractical for large-scale problems since it requires an~$\bigo{D^3}$ determinant computation.
 Fortunately, we can make a good approximation using just one or two Hessian-vector products, which can usually be performed in~$\bigo{D}$ time using reverse-mode differentiation \citep{pearlmutter1994fast}.
 
@@ -320,26 +345,10 @@ ones that do a better job of modelling posterior.)
 (There's a whole world of possiblities. Optimization routines that can both track
 entropy and maintaining high entropy)
 
-\begin{algorithm}[t]
-   \caption{stochastic gradient descent with marginal likelihood estimate}
-   \label{alg:sgd-with-estimate}
-\begin{algorithmic}[1]
-	\State {\bfseries input:}
-	Weight initialization scale $\sigma_0$, step size $\stepsize$, 	
-	twice-differentiable negative log likelihood $L(\params, t)$	
-	\State initialize $\params_1 \sim \N{0}{\sigma_0 \vI_D}$
-	\State $\entropy_{1} = \frac{D}{2} (1 + \log 2 \pi) + D \log\sigma_0$
-	\For{$t=1$ {\bfseries to} $T$}
-%		\State $\vg = \gradparams$             \Comment{Evaluate gradient}
-%		\State $\vr \sim \N{0}{\vI_D}$         \Comment{Draw random direction}
-%		\State $\vr\tra \left[ -2 \vr + 3 \left(  R1 - R2 \right) \right]$      \Comment{Estimate determinant}
-		\State $\entropy_{t+1} = \entropy_t - \log \det | \vI - \stepsize H_t |$  \Comment{Update entropy} \label{step:entropy-update}
-		\State $\params_{t+1} = \params_t + \stepsize \gradparams$  \Comment{Update position}		
-   \EndFor
-   \State \textbf{output} sample $\params_T$, estimate of entropy $\entropy_T$
-\end{algorithmic}
-\end{algorithm}
-%
+
+
+
+
 \section{Experiments}
 \label{sec:experiments}
 
@@ -378,6 +387,21 @@ likelood well? Do we need to do AIS to check?)
 \end{figure}
 
 Figure \ref{fig:ensemble} shows...
+
+\begin{figure}
+%\vskip 0.2in
+\begin{center}
+\includegraphics[width=\columnwidth]{../experiments/2015_03_03_vary_width/5_grad_threshold/vary_widths.pdf}
+\vskip -0.1in
+\caption{\emph{Top}: Training and test-set likelihood as a function of the gradient threshold.
+\emph{Bottom}: Marginal likelihood as a function of the gradient threshold.}
+\label{fig:threshold}
+\end{center}
+\end{figure}
+
+
+
+Figure \ref{fig:threshold} shows
 
 \section{Related work}
 
