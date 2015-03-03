@@ -368,15 +368,11 @@ sgd which can improve the variational lower bound.
 One potential pathology of SGD in the context of posterior approximation, is that sgd can collapse the variational distribution into low-entropy filaments, shrinking in some directions to be orders of magnitude smaller than the width of the true posterior.
 A simple trick to prevent this from happening is to apply a nonlinear, parameter-wise warping
 to the gradient, such that directions of very small gradient do not get optimized all the way
-to the optimium. For example,
-%% \begin{align}
-
-%% \end{align}
-where $\g_0$ is a parameter that sets the scale of this shrinkage. Computing the Jacobian
-of this new update rule gives a new rule to update the entropy estimate.
-%% \begin{align}
-
-%% \end{align}
+to the optimium. For example the modifiend gradient (and resulting modified Jacobian) could \begin{align}
+g' & = g - g_0 \tanh \left(g / g_0 \right) \nolabel \\
+J' & = \left(1 - \cosh^{-2} \left(g / g_0) \right) J  \nolabel 
+\end{align}
+where $g_0$ is a parameter that sets the scale of this shrinkage.
 The effect is that entropy is not removed from parameters which are sufficiently close to the optimum. An experiment showing the effect of this modified sgd is shown in Figure \cite{fig:cartoon-fatter}.
 
 \begin{figure}[h]
