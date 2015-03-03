@@ -21,11 +21,11 @@ N_tests = 1000
 seed = 0
 init_scale = 0.2
 reg = 0.5
-N_iter = 500
-alpha = 0.5 / N_train
+N_iter = 5000
+alpha = 0.1 / N_train
 # ------ Plot parameters -------
-N_samples = 5
-N_checkpoints = 50
+N_samples = 10
+N_checkpoints = 500
 thin = np.ceil(N_iter/N_checkpoints)
 
 def neg_log_prior(w):
