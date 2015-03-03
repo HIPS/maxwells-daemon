@@ -29,7 +29,7 @@ init_mu = np.array([-1.0, 1.0])
 N_iter = 300
 alpha = 0.01
 
-grad_threshold=1.0
+grad_threshold=0.25
 
 # ------ Plot parameters -------
 N_samples = 250
