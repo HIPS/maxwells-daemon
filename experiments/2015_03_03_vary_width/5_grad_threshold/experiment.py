@@ -20,13 +20,14 @@ N_tests = 1000
 # ------ Variational parameters -------
 seed = 0
 
-N_iter = 3000
+N_iter = 1500
 alpha = 0.1 / N_train
 
-widths = [0.1, 1, 10, 100]
+widths = [0, 1, 3, 10, 30, 100, 300, 1000]
+layer_sizes = [784, 100, 10]
 
 # ------ Plot parameters -------
-N_samples = 10
+N_samples = len(widths)
 N_checkpoints = 10
 thin = np.ceil(N_iter/N_checkpoints)
 
@@ -35,14 +36,13 @@ def run():
     all_results = []
     for width in widths:
 
-        init_scale = np.min( 0.5 / np.sqrt(width), 0.5/np.sqrt(784))
+        init_scale = np.min( 0.5 / np.sqrt(layer_sizes[1]), 0.5/np.sqrt(784))
         def neg_log_prior(w):
             D = len(w)
             return 0.5 * D * np.log(2*np.pi) + 0.5 * np.dot(w, w) / init_scale**2 + D * np.log(init_scale)
 
         (train_images, train_labels),\
         (tests_images, tests_labels) = load_data_subset(N_train, N_tests)
-        layer_sizes = [784, 100, 10]
         parser, pred_fun, nllfun, frac_err = make_nn_funs(layer_sizes)
         N_param = len(parser.vect)
         print "Number of parameters in model: ", N_param
@@ -93,9 +93,8 @@ def plot():
     with open('results.pkl') as f:
           all_results = pickle.load(f)
 
-    #for key in all_results[0]:
-    #    plot_traces_and_mean(all_results, key)
-
+    for key in all_results[0]:
+       plot_traces_and_mean(all_results, key)
 
     fig = plt.figure(0); fig.clf()
     X = all_results[0]["iterations"]
@@ -104,6 +103,8 @@ def plot():
     final_tests = [all_results[i]["tests_likelihood"][-1] for i, w in enumerate(widths)]
     plt.plot(final_train, label='training likelihood')
     plt.plot(final_tests, label='test likelihood')
+    # plt.plot(widths, final_train, label='training likelihood')
+    # plt.plot(widths, final_tests, label='test likelihood')
     plt.xticks(range(len(widths)), widths)
     ax.legend(numpoints=1, loc=3, frameon=False, prop={'size':'12'})
     ax.set_ylabel('Test Likelihood')
@@ -112,8 +113,9 @@ def plot():
     ax = fig.add_subplot(212)
     final_marg = [all_results[i]["marg_likelihood"][-1] for i, w in enumerate(widths)]
     plt.plot(final_marg, label='marginal likelihood')
+    # plt.plot(widths, final_marg, label='marginal likelihood')
     ax.set_ylabel('Marginal likelihood')
-    ax.set_xlabel('Training iteration')
+    ax.set_xlabel('Widths')
     plt.xticks(range(len(widths)), widths)
     #low, high = ax.get_ylim()
     #ax.set_ylim([0, high])
@@ -123,48 +125,46 @@ def plot():
     plt.savefig('vary_widths.pdf', pad_inches=0.05, bbox_inches='tight')
 
 
-    # # Nice plots for paper.
-    # rc('font',**{'family':'serif'})
-    # fig = plt.figure(0); fig.clf()
-    # X = all_results[0]["iterations"]
-    # ax = fig.add_subplot(212)
-    # for i, w in enumerate(widths):
-    #     plt.plot(X, all_results[i]["marg_likelihood"],
-    #              label='{0} hidden units'.format(w))
-    # ax.legend(numpoints=1, loc=3, frameon=False, prop={'size':'12'})
-    # ax.set_ylabel('Marginal likelihood')
+    # Nice plots for paper.
+    rc('font',**{'family':'serif'})
+    fig = plt.figure(0); fig.clf()
+    X = all_results[0]["iterations"]
+    ax = fig.add_subplot(212)
+    for i, w in enumerate(widths):
+        plt.plot(X, all_results[i]["marg_likelihood"],
+                 label='{0} hidden units'.format(w))
+    ax.legend(numpoints=1, loc=3, frameon=False, prop={'size':'12'})
+    ax.set_ylabel('Marginal likelihood')
 
-    # ax = fig.add_subplot(211)
-    # for i, w in enumerate(widths):
-    #     plt.plot(X, all_results[i]["tests_likelihood"])
-    # ax.legend(numpoints=1, loc=1, frameon=False, prop={'size':'12'})
-    # ax.set_ylabel('Test Likelihood')
-    # ax.set_xlabel('Training iteration')
-    # #low, high = ax.get_ylim()
-    # #ax.set_ylim([0, high])
-    # fig.set_size_inches((5,3.5))
-    # #ax.legend(numpoints=1, loc=1, frameon=False, prop={'size':'12'})
-    # plt.savefig('vary_widths.pdf', pad_inches=0.05, bbox_inches='tight')
-
-
+    ax = fig.add_subplot(211)
+    for i, w in enumerate(widths):
+        plt.plot(X, all_results[i]["tests_likelihood"])
+    ax.legend(numpoints=1, loc=1, frameon=False, prop={'size':'12'})
+    ax.set_ylabel('Test Likelihood')
+    ax.set_xlabel('Training iteration')
+    #low, high = ax.get_ylim()
+    #ax.set_ylim([0, high])
+    fig.set_size_inches((5,3.5))
+    #ax.legend(numpoints=1, loc=1, frameon=False, prop={'size':'12'})
+    plt.savefig('vary_widths_trajectories.pdf', pad_inches=0.05, bbox_inches='tight')
 
 def plot_traces_and_mean(all_results, trace_type, X=None):
     import matplotlib.pyplot as plt
     fig = plt.figure(0); fig.clf()
     ax = fig.add_subplot(211)
     if X is None:
-        X = np.arange(len(results[0][trace_type]))
+        X = np.arange(len(all_results[0][trace_type]))
     for i in xrange(N_samples):
         plt.plot(X, all_results[i][trace_type])
     ax.set_xlabel("Iteration")
     ax.set_ylabel(trace_type)
     ax = fig.add_subplot(212)
-    all_Y = [np.array(results[i][trace_type]) for i in range(N_samples)]
+    all_Y = [np.array(all_results[i][trace_type]) for i in range(N_samples)]
     plt.plot(X, sum(all_Y) / float(len(all_Y)))
     plt.savefig(trace_type + '.png')
 
 if __name__ == '__main__':
-    # results = run()
-    # with open('results.pkl', 'w') as f:
-    #     pickle.dump(results, f, 1)
+    results = run()
+    with open('results.pkl', 'w') as f:
+        pickle.dump(results, f, 1)
     plot()
