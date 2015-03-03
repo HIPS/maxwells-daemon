@@ -270,12 +270,12 @@ The idea is that since~$\stepsize\lambda_{\text{max}}$ is small, the Jacobian is
 \end{align}
 The bound in (\ref{eq:logbound}) is just a second order Taylor expansion of~$\log(1 - x)$ about~${x = 0}$ and is valid if ${\stepsize\lambda_i < 0.7}$. \todo{little o terms here for clarity?}
 \todo{Mention closeness of bound.}
-The trace of the Hessian can be estimated using inner products of random vectors:
+The trace of the Hessian can be estimated using inner products of random vectors
+\citep{bai1996some}:
 \begin{align}
 \trace{H} = \expectargs{}{\vr^TH\vr}, \qquad \vr \sim \N{0}{I}\,.
 \label{eq:approx-log-det}
 \end{align}
-\todo{wouldn't mind a ref for that}
 A common problem, similar to the one we tackle here, is to compute the log of the determinant of the Hessian itself.
 This arises, for example, in making the Laplace approximation to the posterior \citep{mackay1992practical}.
 This is a much harder problem since the Hessian can be arbitrarily ill-conditioned, unlike our small Hessian-based perturbation to the identity.
@@ -302,6 +302,7 @@ This is a much harder problem since the Hessian can be arbitrarily ill-condition
 %
 Algorithm~\ref{alg:sgd-with-estimate} combines these steps into an algorithm that tracks the approximate entropy during optimization.
 In high dimensions, step~\ref{step:entropy-update} should be replaced with equation~\eqref{eq:approx-log-det}.
+
 
 
 
@@ -340,8 +341,6 @@ The marginal likelihood, estimated during training using only the training set, 
 
 
 Figure \ref{fig:housing} shows overfitting and show marginal likelihood peaks at a similar place to the peak of held-out log-likelihood.
-[TODO: Use SGD with exact Hessian and no noise.]
-
 
 \subsection{MNIST}
 (Show that noiseless version doesn't perform particularly well. Noise does a
