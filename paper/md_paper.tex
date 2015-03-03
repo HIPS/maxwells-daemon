@@ -285,18 +285,18 @@ This is a much harder problem since the Hessian can be arbitrarily ill-condition
    \label{alg:sgd-with-estimate}
 \begin{algorithmic}[1]
 	\State {\bfseries input:}
-	Weight initialization scale $\sigma_0$, step size $\stepsize$, \\	
-	negative log likelihood $L(\params, t)$	
+	Weight initialization scale $\sigma_0$, step size $\stepsize$, 	
+	twice-differentiable negative log likelihood $L(\params, t)$	
 	\State initialize $\params_1 \sim \N{0}{\sigma_0 \vI_D}$
-	\State $\entropy = \frac{D}{2} (1 + \log 2 \pi) + D \log\sigma_0$
+	\State $\entropy_{1} = \frac{D}{2} (1 + \log 2 \pi) + D \log\sigma_0$
 	\For{$t=1$ {\bfseries to} $T$}
 %		\State $\vg = \gradparams$             \Comment{Evaluate gradient}
 %		\State $\vr \sim \N{0}{\vI_D}$         \Comment{Draw random direction}
 %		\State $\vr\tra \left[ -2 \vr + 3 \left(  R1 - R2 \right) \right]$      \Comment{Estimate determinant}
-		\State $\entropy = \entropy - \log \det | \vI - \stepsize H_t |$  \Comment{Update entropy} \label{step:entropy-update}
+		\State $\entropy_{t+1} = \entropy_t - \log \det | \vI - \stepsize H_t |$  \Comment{Update entropy} \label{step:entropy-update}
 		\State $\params_{t+1} = \params_t + \stepsize \gradparams$  \Comment{Update position}		
    \EndFor
-   \State \textbf{output} sample $\params_T$, estimate of entropy $\entropy$
+   \State \textbf{output} sample $\params_T$, estimate of entropy $\entropy_T$
 \end{algorithmic}
 \end{algorithm}
 %
