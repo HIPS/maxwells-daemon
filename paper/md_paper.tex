@@ -168,8 +168,8 @@ The second question is an empirical one, and we give some experimental evidence 
 \subsection{Contributions}
 \begin{itemize}
 \item We introduce a new interpretation of optimization algorithms as samplers from a variational distribution that adapts to the true posterior.
-\item We provide a scalable estimator for the entropy of these implicit variational distributions, allowing us to estimate a lower bound on the marginal likelihood even on problems with hundreds of thousands of parameters.
-\item We investigate the performance of these estimators empirically.
+\item We provide a scalable estimator for the entropy of these implicit variational distributions, allowing us to estimate a lower bound on the marginal likelihood even on problems with millions of parameters.
+\item We investigate the performance of these estimators empirically, and show that they have reasonable properties.
 \end{itemize}
 
 \section{Incomplete optimization as variational inference}
@@ -218,7 +218,6 @@ To compute how the volume shrinks or expands due to this change of variables, we
 S[q_{t+1}] - S[q_t] =
   \expectargs{q_t(\params_t)}{\log
     \left| J(\params_t) \right|} \,.
-  \nonumber
 \end{align}
 %
 Note that this analysis assumes that the mapping $T$ is bijective.
@@ -228,7 +227,7 @@ based on the sequence of parameters, $\params_0, \ldots, \params_T$, from a sing
 \varL[q_T] \approx
   \underbrace{\log \subjointdist{}{T}}_{\textnormal{\normalsize Energy}} +
   \underbrace{\sum_{t=0}^{T-1} \log \left| J(\params_t) \right| + S[q_0]}_{\textnormal{\normalsize Entropy}} \,.
-  \nonumber
+\label{eq:entropy-bound}
 \end{align}
 
 \subsection{Stochastic Gradient Descent}
@@ -295,6 +294,7 @@ The expression for the change in entropy given by (\ref{eq:exact hessian}) is im
 Fortunately, we can make a good approximation using just one or two Hessian-vector products, which can usually be performed in~$\bigo{D}$ time using reverse-mode differentiation \citep{pearlmutter1994fast}.
 
 The idea is that since~$\stepsize\lambda_{\text{max}}$ is small, the Jacobian is actually just a small perturbation to the identity and we can approximate its determinant using traces as follows:
+%
 \begin{align}
 \log \left| I - \stepsize H \right|
 & =    \sum_{i=0}^D \log\left(1 - \stepsize\lambda_i\right) \nonumber \\
@@ -302,28 +302,36 @@ The idea is that since~$\stepsize\lambda_{\text{max}}$ is small, the Jacobian is
                         - (\stepsize\lambda_i)^2 \right] \label{eq:logbound} \\
 & = - \stepsize \trace{H} - \stepsize^2 \trace{HH}\,.
 \end{align}
+%
 The bound in (\ref{eq:logbound}) is just a second order Taylor expansion of~$\log(1 - x)$ about~${x = 0}$ and is valid if ${\stepsize\lambda_i < 0.7}$. \todo{little o terms here for clarity?}
 \todo{Mention closeness of bound.}
 The trace of the Hessian can be estimated using inner products of random vectors
 \citep{bai1996some}:
+%
 \begin{align}
 \trace{H} = \expectargs{}{\vr^TH\vr}, \qquad \vr \sim \N{0}{I}\,.
 \label{eq:approx-log-det}
 \end{align}
+%
 A common problem, similar to the one we tackle here, is to compute the log of the determinant of the Hessian itself.
 This arises, for example, in making the Laplace approximation to the posterior \citep{mackay1992practical}.
 This is a much harder problem since the Hessian can be arbitrarily ill-conditioned, unlike our small Hessian-based perturbation to the identity.
 
 Algorithm~\ref{alg:sgd-with-estimate} combines these steps into an algorithm that tracks the approximate entropy during optimization.
-In high dimensions, step~\ref{step:entropy-update} should be replaced with equation~\eqref{eq:approx-log-det}.
+In high dimensions, the exact evaluation of the determinant in step~\ref{step:entropy-update} should be replaced with the approximation given by equation~\eqref{eq:approx-log-det}.
 
 
 \subsection{Parameter initialization and priors}
 
 What initial parameter distribution should we use for SGD?
-The lower bound is valid no matter which distribution we choose.
+The marginal likelihood estimate given be \eqref{eq:entropy-bound} is valid no matter which initial distribution we choose.
+We could conceivably optimize this distribution in an outer loop using the marginal likelihood estimate itself.
 
-(Makes sense to initialize with the prior. Also makes sense to optimize an
+However, using the prior distribution has several advantages.
+First of all, it is usually designed to have broader support than the likelihood.
+Since SGD usually decreases entropy, starting with a high-entropy distribution seems like a good heuristic.
+
+(Also makes sense to optimize an
 objective that is just the log likelihood - has the prior subtracted off - so
 that the prior stays as the prior)
 
@@ -363,9 +371,12 @@ entropy and maintaining high entropy)
 \section{Experiments}
 \label{sec:experiments}
 
-In this section we show that the marginal likelihood estimate can be used to choose the number of training iterations, and to choose model capacity, without the need for a validation set.
+In this section we show that the marginal likelihood estimate can be used to choose when to stop training, to choose model capacity, and to optimize training hyperparameters without the need for a validation set.
+We are not attempting to motivate SGD variational inference as a superior alternative to other procedures. 
+We simply wish to give a proof of concept that the marginal likelihood estimator has reasonable properties.
 
-\subsection{Boston housing data}
+%\subsection{Boston housing data}
+\subsection{Choosing when to stop optimization}
 
 As a simple demonstration of the usefulness of our marginal likelihood estimate, we show that it can be used to estimate the optimal number of training iterations before overfitting begins.
 We performed regression on the Boston housing dataset 
@@ -377,7 +388,7 @@ using a neural network with 100 hidden units, and no regularization.
 \begin{center}
 \includegraphics[width=\columnwidth]{../experiments/2015_03_01_housing/2/marglik}
 \vskip -0.1in
-\caption{\emph{Top}: Test-set error on the Boston housing dataset.
+\caption{\emph{Top}: Training and test-set error on the Boston housing dataset.
 \emph{Bottom}: Marginal likelihood estimate.
 The dashed line indicates the iteration with highest marginal likelihood.
 The marginal likelihood, estimated online using only the training set, has a maximum at an iteration close to when the test error is best.}
@@ -388,11 +399,29 @@ The marginal likelihood, estimated online using only the training set, has a max
 
 Figure \ref{fig:housing} shows overfitting and show marginal likelihood peaks at a similar place to the peak of held-out log-likelihood.
 
-\subsection{MNIST handwritten digits}
+%\subsection{MNIST handwritten digits}
+\subsection{Choosing the number of hidden units}
 
 %(Show that noiseless version doesn't perform particularly well. Noise does a good job with the overfitting problem. But does can we capture the marginal likelood well? Do we need to do AIS to check?)
 
+The marginal likelihood estimate is also comparable between training runs, allowing us to use it to select model hyperparameters, such as the number of hidden units.
 
+\begin{figure}[h]
+%\vskip 0.2in
+\begin{center}
+\includegraphics[width=\columnwidth]{../experiments/2015_03_03_vary_width/2_num_hidden/vary_widths.pdf}
+\vskip -0.1in
+\caption{\emph{Top}: Training and test-set likelihood as a function of the number of hidden units in the first layer of a network.
+\emph{Bottom}: Marginal likelihood.}
+\label{fig:num hiddens}
+\end{center}
+\end{figure}
+
+Figure \ref{fig:num hiddens} shows marginal likelihood estimates as a function of the number of hidden units in the first hidden layer of a 3-layer deep neural network, trained on 50000 MNIST handwritten digits.
+
+
+
+\subsection{Optimizing training hyperparameters}
 
 \begin{figure}[h]
 %\vskip 0.2in
@@ -400,12 +429,21 @@ Figure \ref{fig:housing} shows overfitting and show marginal likelihood peaks at
 \includegraphics[width=\columnwidth]{../experiments/2015_03_03_vary_width/5_grad_threshold/vary_widths.pdf}
 \vskip -0.1in
 \caption{\emph{Top}: Training and test-set likelihood as a function of the gradient threshold.
-\emph{Bottom}: Marginal likelihood as a function of the gradient threshold.}
+\emph{Bottom}: Marginal likelihood as a function of the gradient threshold.
+A gradient threshold of zero corresponds to standard SGD.}
 \label{fig:threshold}
 \end{center}
 \end{figure}
 
-Figure \ref{fig:threshold} shows
+Figure \ref{fig:threshold} shows marginal likelihood estimates as a function of the gradient threshold in the modified SGD algorithm.
+As the level of thresholding increases, training and test error get worse due to under-fitting.
+However, for intermediate thresholds, the lower bound increases.
+
+
+
+\section{Limitations}
+
+Because estimating marginal likelihood in high dimensions is known to be hard, 
 
 \section{Related work}
 
@@ -456,6 +494,8 @@ However, they constrain their variational approximation to be Gaussian, as oppos
 
 
 \section{Future Work and Extensions}
+
+We can design optimization algorithms that do a better job of producing samples from the true posterior.
 
 We could derive a variational inference algorithm based on RMSProp, and a corresponding variant of Hamiltonian Monte Carlo.
 
