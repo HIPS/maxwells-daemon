@@ -286,7 +286,8 @@ this situation should not arise.
 %
 
 So far, we have treated SGD as a deterministic procedure even though, as the name suggests,
-the gradient of the loss at each iteration may be replaced by a stochastic version. Our analysis of the entropy is still if we fix the sequence of stochastic gradients to be the same for each optimization run, so that the only randomness comes from the parameter initialization.
+the gradient of the loss at each iteration may be replaced by a stochastic
+version. Our analysis of the entropy is technically valid if we fix the sequence of stochastic gradients to be the same for each optimization run, so that the only randomness comes from the parameter initialization.
 This is a pedantic argument, similar to arguing that a pseudorandom sequence of numbers has only as much entropy as its seed.
 However, if we do choose to randomize the gradient estimator differently for each training run
 (e.g. choosing different minibatches) then the expression for the change in entropy, Equation \ref{eq:exact hessian}, remains valid as a \emph{lower bound} on the change in entropy and the 
@@ -353,26 +354,28 @@ In place of SGD, we can use any optimization method for which we can approximate
 Now that we have a variational interpretation of optimization we can start to design new 
 optimization procedures with posterior-fitting in mind.
 
-An obvious place to start is with stochastic update rule inspired by Markov Chain Monte Carlo (MCMC). 
+An obvious place to start is with stochastic update rules inspired by Markov Chain Monte Carlo (MCMC). 
 Procedures like Hamiltonian Monte Carlo \citep{neal2011mcmc} and Langevin dynamics MCMC \citep{welling2011bayesian} look very much like optimization procedures but actually have the posterior as their stationary distribution.
 This is exactly the approach taken by \citet{Bridging14}.
-One difficulty with using stochastic updates, however, is that the calculating the change in
-entropy at each iteration can't requires access to the current distribution over parameters.
+One difficulty with using stochastic updates, however, is that calculating the change in
+entropy at each iteration requires access to the current distribution over parameters.
 As an example, consider that convolving a delta function with a Gaussian yields an
 infinite entropy increase, whereas convolving a uniform distribution with a Gaussian
-yields no change in entropy. The authors \citep{welling2011bayesian} handle this
+yields no change in entropy. \citet{welling2011bayesian} handle this
 by learning a highly parameterized ``inverse model'' which implicitly models the distribution
-over parameters. The downside of this is that the parameters of this model, which can be thought
-of as variational parameters, must be learned in an outer loop.
+over parameters. The downside of this approach is that the parameters of this model must be learned in an outer loop.
 
-Another, complementary approach, is to try to develop deterministic update rules
-that avoid some of the pathologies of conventional update rules like sgd.
+Another approach is to try to develop deterministic update rules
+that avoid some of the pathologies of update rules like SGD.
 This could could be a research agenda in itself, but we give one example here of a modification to
-sgd which can improve the variational lower bound.
-One potential pathology of SGD in the context of posterior approximation, is that sgd can collapse the variational distribution into low-entropy filaments, shrinking in some directions to be orders of magnitude smaller than the width of the true posterior.
-A simple trick to prevent this from happening is to apply a nonlinear, parameter-wise warping
+SGD which can improve the variational lower bound.
+One potential pathology of SGD in the context of posterior approximation is that
+SGD can collapse the variational distribution into low-entropy filaments, shrinking in some directions to be orders of magnitude smaller than the width of the true posterior.
+A simple trick to prevent this is to apply a nonlinear, parameter-wise warping
 to the gradient, such that directions of very small gradient do not get optimized all the way
-to the optimium. For example the modifiend gradient (and resulting modified Jacobian) could \begin{align}
+to the optimium. For example the modified gradient (and resulting modified
+Jacobian) could be
+\begin{align}
 g' & = g - g_0 \tanh \left(g / g_0 \right) \nonumber \\
 J' & = \left(1 - \cosh^{-2} (g / g_0) \right) J  \nonumber 
 \end{align}
