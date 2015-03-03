@@ -277,8 +277,8 @@ this situation should not arise.
 %		\State $\vg = \gradparams$             \Comment{Evaluate gradient}
 %		\State $\vr \sim \N{0}{\vI_D}$         \Comment{Draw random direction}
 %		\State $\vr\tra \left[ -2 \vr + 3 \left(  R1 - R2 \right) \right]$      \Comment{Estimate determinant}
-		\State $\entropy_{t+1} = \entropy_t - \log \left| \vI - \stepsize H_t \right|$  \Comment{Update entropy} \label{step:entropy-update}
-		\State $\params_{t+1} = \params_t + \stepsize \gradparams$  \Comment{Update position}		
+		\State $\entropy_{t+1} = \entropy_t + \log \left| \vI - \stepsize H_t \right|$  \Comment{Update entropy} \label{step:entropy-update}
+		\State $\params_{t+1} = \params_t - \stepsize \gradparams$  \Comment{Update position}		
    \EndFor
    \State \textbf{output} sample $\params_T$, estimate of entropy $\entropy_T$
 \end{algorithmic}
@@ -470,15 +470,10 @@ As the level of thresholding increases, training and test error get worse due to
 However, for intermediate thresholds, the lower bound increases.
 Because it is a lower bound, its increase means that the estimate of the marginal likelihood is becoming \emph{more accurate}, even though the actual model happens to be getting worse at the same time.
 
+%% \section{Limitations}
 
-
-\section{Limitations}
-
-Estimating marginal likelihood is known to be sharp-P hard in general.
-When do we expect the estimate of the marginal likelihood to be poor?
-
-
-
+%% Estimating marginal likelihood is known to be sharp-P hard in general.
+%% When do we expect the estimate of the marginal likelihood to be poor?
 
 \section{Related work}
 
