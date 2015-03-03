@@ -96,6 +96,7 @@ def plot():
     for key in all_results[0]:
        plot_traces_and_mean(all_results, key)
 
+    rc('font',**{'family':'serif'})
     fig = plt.figure(0); fig.clf()
     X = all_results[0]["iterations"]
     ax = fig.add_subplot(211)
@@ -112,10 +113,11 @@ def plot():
 
     ax = fig.add_subplot(212)
     final_marg = [all_results[i]["marg_likelihood"][-1] for i, w in enumerate(widths)]
-    plt.plot(final_marg, label='marginal likelihood')
+    plt.plot(final_marg, 'r', label='marginal likelihood')
+    ax.legend(numpoints=1, loc=3, frameon=False, prop={'size':'12'})
     # plt.plot(widths, final_marg, label='marginal likelihood')
     ax.set_ylabel('Marginal likelihood')
-    ax.set_xlabel('Widths')
+    ax.set_xlabel('Gradient threshold')
     plt.xticks(range(len(widths)), widths)
     #low, high = ax.get_ylim()
     #ax.set_ylim([0, high])
@@ -164,7 +166,7 @@ def plot_traces_and_mean(all_results, trace_type, X=None):
     plt.savefig(trace_type + '.png')
 
 if __name__ == '__main__':
-    results = run()
-    with open('results.pkl', 'w') as f:
-        pickle.dump(results, f, 1)
+    #results = run()
+    #with open('results.pkl', 'w') as f:
+    #    pickle.dump(results, f, 1)
     plot()

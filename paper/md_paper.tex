@@ -477,7 +477,7 @@ Stein's unbiased risk estimator (SURE)~\citep{stein1981estimation} provides an u
 Interestingly, this estimator depends on the `shrinkage matrix' $\prod_{t=0}^{T} ( \vI - \stepsize_t H_T )$, which is just the Jacobian of the entire SGD procedure along a particular path.
 However, this estimator depends on an estimate of the variance of noise variance, and does not provide a lower bound.
 
-\citet{raskutti2014early} also derive a data-dependent early-stopping rule for kernel regression methods, but it not clear whether this stopping rule could be adapted to arbitrary twice-differentiable models, or whether it could be used to select all training and model hyperparameters.
+\citet{raskutti2014early} also derive a data-dependent early-stopping rule for kernel regression methods, but it not clear whether this stopping rule could be adapted to more general settings, or whether it could be used to select all training and model hyperparameters.
 
 
 
@@ -565,7 +565,8 @@ The gradient-thresholding method proposed in this paper is a simple first exampl
 
 Optimization algorithms with random initializations implicitly define a series of distributions which converge to posterior modes.
 We showed that these nonparametric distributions can be seen as variational approximations to the true posterior, when the optimization objective is a log-likelihood.
-We showed how to produce an unbiased estimate of this variational lower bound by approximately tracking the entropy.
+We showed how to produce an unbiased estimate of this variational lower bound by approximately tracking the entropy change at each step of optimization.
+
 This simple and inexpensive calculation turns standard gradient descent into an inference algorithm, and allows the optimization of hyperparameters without a validation set.
 Our estimate is compatible with using data minibatches, and scales linearly with the number of parameters, making it suitable to large-scale problems.
 
