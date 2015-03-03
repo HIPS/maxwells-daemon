@@ -23,9 +23,9 @@ seed = 0
 N_iter = 1000
 alpha = 0.1 / N_train
 
-# widths = [3, 10, 30, 100, 300, 1000, 3000]
-widths = [3, 10, 30, 100]
-grad_threshold = 30
+widths = [3, 10, 30, 100, 300, 1000, 3000]
+# widths = [3, 10, 30, 100]
+grad_threshold = 0.0
 
 # ------ Plot parameters -------
 N_samples = 10
@@ -109,14 +109,14 @@ def plot():
     plt.plot(final_tests, label='test likelihood')
     plt.xticks(range(len(widths)), widths)
     ax.legend(numpoints=1, loc=4, frameon=False, prop={'size':'12'})
-    ax.set_ylabel('Test Likelihood')
+    ax.set_ylabel('Train/test Likelihood')
 
 
     ax = fig.add_subplot(212)
     final_marg = [all_results[i]["marg_likelihood"][-1] for i, w in enumerate(widths)]
     plt.plot(final_marg, label='marginal likelihood')
     ax.set_ylabel('Marginal likelihood')
-    ax.set_xlabel('Training iteration')
+    ax.set_xlabel('Number of hidden units')
     plt.xticks(range(len(widths)), widths)
     #low, high = ax.get_ylim()
     #ax.set_ylim([0, high])
