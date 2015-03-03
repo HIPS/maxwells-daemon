@@ -177,7 +177,8 @@ The second question is an empirical one, and we give some experimental evidence 
 Variational inference \citep{wainwright2008graphical} \todo{cite Hinton and possibly Ghahramani et al} aims to approximate an intractable posterior distribution, $\posterior$, with another distribution, $q(\params)$.
 Ideally, the distribution~$q(\params)$ would belong to a simpler and tractable class, such as factored distributions or a parametric family.
 The usual approach is to quantify the quality of the approximation using the Kullback-Leibler (KL) divergence from $q(\params)$ to $\jointdist$.
-Such a measure also provides a lower bound on the marginal likelihood of the original model; rearranging Bayes' rule gives the familiar inequality:
+Such a measure also provides a lower bound on the marginal likelihood of the original model;
+applying Bayes' rule to the definition of $\KL{q(\params)}{\posterior}$ gives the familiar inequality:
 %
 \begin{align}
 \log p(\data)
