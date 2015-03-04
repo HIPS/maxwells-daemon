@@ -128,7 +128,7 @@ Moreover, this procedure hints at a middle ground between point estimates arisin
 
 \section{Introduction}
 
-In much of machine learning, the central computational challenge is optimization; we try to minimize some training set loss with respect to a set of model parameters.
+In much of machine learning, the central computational challenge is optimization; we try to minimize some training-set loss with respect to a set of model parameters.
 If we treat the training loss as a (negative) log-posterior, this amounts to searching for a maximum \emph{a posteriori} (MAP) solution.
 Paradoxically, over-zealous optimization can yield worse test set results than incomplete optimization due to the phenomenon of \emph{over-training}.
 A popular remedy to over-training is to invoke ``early stopping'' in which optimization is halted based on the continually monitored performance of the parameters on a separate validation set.
@@ -379,7 +379,7 @@ Jacobian) could be
 g' & = g - g_0 \tanh \left(g / g_0 \right) \nonumber \\
 J' & = \left(1 - \cosh^{-2} (g / g_0) \right) J  \nonumber 
 \end{align}
-where $g_0$ is a parameter that sets the scale of this shrinkage.
+where $g_0$ is a ``gradient threshold'' parameter that sets the scale of this shrinkage.
 The effect is that entropy is not removed from parameters which are sufficiently close to the optimum. An experiment showing the effect of this modified SGD is shown in Figure~\ref{fig:cartoon-fatter}.
 
 \begin{figure}[h]
@@ -396,8 +396,8 @@ Compared to Figure \ref{fig:cartoon}, the variational distributions are slower t
 \label{sec:experiments}
 
 In this section we show that the marginal likelihood estimate can be used to choose when to stop training, to choose model capacity, and to optimize training hyperparameters without the need for a validation set.
-We are not attempting to motivate SGD variational inference as a superior alternative to other procedures. 
-We simply wish to give a proof of concept that the marginal likelihood estimator has reasonable properties.
+We are not attempting to motivate SGD variational inference as a superior alternative to other procedures;
+we simply wish to give a proof of concept that the marginal likelihood estimator has reasonable properties.
 
 %\subsection{Boston housing data}
 \subsection{Choosing when to stop optimization}
@@ -406,6 +406,7 @@ As a simple demonstration of the usefulness of our marginal likelihood estimate,
 We performed regression on the Boston housing dataset 
 %[citation needed]
 using a neural network with 100 hidden units, and no regularization.
+Figure \ref{fig:housing} shows overfitting and shows that marginal likelihood peaks at a similar place to the peak of held-out log-likelihood.
 
 \begin{figure}[h!]
 %\vskip 0.2in
@@ -415,13 +416,13 @@ using a neural network with 100 hidden units, and no regularization.
 \caption{\emph{Top}: Training and test-set error on the Boston housing dataset.
 \emph{Bottom}: Marginal likelihood estimate.
 The dashed line indicates the iteration with highest marginal likelihood.
-The marginal likelihood, estimated online using only the training set, has a maximum at an iteration close to when the test error is best.}
+The marginal likelihood, estimated online using only the training set, and the
+test error peak at a similar number of iterations.}
 \label{fig:housing}
 \end{center}
 \end{figure}
 
 
-Figure \ref{fig:housing} shows overfitting and show marginal likelihood peaks at a similar place to the peak of held-out log-likelihood.
 
 %\subsection{MNIST handwritten digits}
 \subsection{Choosing the number of hidden units}
@@ -442,8 +443,8 @@ In this case, the training and test-set likelihood continue to increase no matte
 \end{center}
 \end{figure}
 
-Figure \ref{fig:num hiddens} shows marginal likelihood estimates as a function of the number of hidden units in the first hidden layer of a 3-layer deep neural network, trained on 50000 MNIST handwritten digits.
-Strangely, the performance of the network continues to increase even up to 3000 hidden units.
+Figure \ref{fig:num hiddens} shows marginal likelihood estimates as a function of the number of hidden units in the first hidden layer of a 3-layer deep neural network, trained on 50,000 MNIST handwritten digits.
+Strangely, the performance of the network continues to increase even up to 3,000 hidden units.
 The marginal likelihood estimate begins to decrease for more than 300 hidden units.
 We conjecture that this is due to the marginal likelihood estimate penalizing the loss of entropy in hidden units whose contribution to predictive likelihood is small.
 
@@ -452,7 +453,7 @@ We conjecture that this is due to the marginal likelihood estimate penalizing th
 \subsection{Optimizing training hyperparameters}
 
 We can also use marginal likelihoods to optimize training parameters such as learning rates, or initial distributions.
-As an example, Figure \ref{fig:threshold} shows the marginal likelihood estimate as a function of the gradient threshold in the modified SGD algorithm, again trained on 50000 MNIST handwritten digits.
+As an example, Figure \ref{fig:threshold} shows the marginal likelihood estimate as a function of the gradient threshold in the modified SGD algorithm, again trained on 50,000 MNIST handwritten digits.
 
 \begin{figure}[h!]
 %\vskip 0.2in
@@ -512,7 +513,7 @@ In contrast, our dynamics are deterministic, and our estimate of the entropy has
 
 
 \paragraph{Bayesian neural networks}
-Variational inference in Bayesian neural-network models such as deep Gaussian processes~\citep{deepGPVar14}.
+Variational inference has been performed in Bayesian neural-network models such as deep Gaussian processes~\citep{deepGPVar14}.
 \citet{kingma2014efficient} show how neural networks having unknown weights can be reformulated as neural networks having known weights but stochastic hidden units, and exploit this connection to preform efficient gradient-based inference in Bayesian neural networks.
 
 
@@ -536,13 +537,15 @@ However, they constrain their variational approximation to be Gaussian, as oppos
 %\citet{betancourt2015fundamental} argues that minibatches are fundamentally incompatible with HMC.
 
 
-\section{Future Work and Extensions}
+\section{Future work and extensions}
 
 \paragraph{Optimization with momentum}
-One obvious extension would be to design an estimator of the entropy lost by momentum-based optimizers such as stochastic gradient descent with momentum, or Adam~\citep{Adam14}.
+One obvious extension would be to design an estimator of the entropy lost by
+momentum-based optimizers such as stochastic gradient descent with momentum, or
+refinements such as Adam~\citep{Adam14}.
 However, it is difficult to track the entropy change during the updates to the momentum variables.
 
-We could derive a variational inference algorithm based on RMSprop~\cite{Tieleman2012}, and a corresponding variant of Hamiltonian Monte Carlo.
+%% We could derive a variational inference algorithm based on RMSprop~\cite{Tieleman2012}, and a corresponding variant of Hamiltonian Monte Carlo.
 
 \paragraph{Gradient-based hyperparameter optimization}
 Hyperparameters typically come in two forms:
@@ -565,9 +568,7 @@ However, estimating the entropy becomes much more difficult in this case.
 More generally, we are free to design optimization algorithms that do a better job of producing samples from the true posterior, as long as we can track their entropy.
 The gradient-thresholding method proposed in this paper is a simple first example of a refinement to SGD that maintains a tractable entropy estimate while improving the quality of the intermediate distributions.
 
-
-
-\section{Conclusions}
+\section{Conclusion}
 
 Optimization algorithms with random initializations implicitly define a series of distributions which converge to posterior modes.
 We showed that these nonparametric distributions can be seen as variational approximations to the true posterior, when the optimization objective is a log-likelihood.
