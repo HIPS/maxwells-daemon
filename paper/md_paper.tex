@@ -119,18 +119,18 @@
 
 \begin{abstract}
 We show that unconverged stochastic gradient descent and other popular optimization methods can be interpreted as procedures that generate samples from a nonparametric variational approximate posterior distribution.
-This distribution is implicitly defined as the transformation of an initial distribution by a sequence of optimization updates into a final approximation.
+This distribution is implicitly defined as the transformation of an initial distribution by a sequence of optimization updates. % into a final approximation.
 Each step of the optimization results in an intermediate distribution and by keeping track of the changes in entropy over this sequence of distributions, we can form an unbiased estimator of the variational lower bound on the log marginal likelihood.
 We can then maximize this bound with respect to the models' hyperparameters instead of using a separate validation set.
 This Bayesian interpretation of SGD suggests improved overfitting-resistant optimization procedures and gives a theoretical foundation for popular tricks such as early stopping and ensembling.
-Moreover, this procedure hints at a middle ground between point estimates arising from MAP inference, and fully-factored variational approximations.
+%Moreover, this procedure hints at a middle ground between point estimates arising from MAP inference, and fully-factored variational approximations.
 \end{abstract}
 
 \section{Introduction}
 
-In much of machine learning, the central computational challenge is optimization; we try to minimize some training-set loss with respect to a set of model parameters.
+In much of machine learning, the central computational challenge is optimization: we try to minimize some training-set loss with respect to a set of model parameters.
 If we treat the training loss as a (negative) log-posterior, this amounts to searching for a maximum \emph{a posteriori} (MAP) solution.
-Paradoxically, over-zealous optimization can yield worse test set results than incomplete optimization due to the phenomenon of \emph{over-training}.
+Paradoxically, over-zealous optimization can yield worse test-set results than incomplete optimization due to the phenomenon of \emph{over-training}.
 A popular remedy to over-training is to invoke ``early stopping'' in which optimization is halted based on the continually monitored performance of the parameters on a separate validation set.
 However, early stopping is both theoretically unsatisfying and incoherent from a research perspective: how can one rationally design better optimization methods if the goal is to achieve something ``powerful but not \emph{too} powerful''?
 A related trick is to ensemble the results from multiple optimization runs from different starting positions.
@@ -143,31 +143,35 @@ Similarly, this must rely on imperfect optimization, since otherwise all optimiz
 \caption{A series of variational distributions implicitly defined by
   stochastic gradient descent on the log-likelihood.
   The initial distribution from which parameters are drawn (red) doesn't match the posterior (black).
-  Intermediate distributions (green and blue) are implicitly defined by mapping each initial point through many iterations of gradient descent.
-  These distributions don't have fixed parametric shapes, but depend on the shape of the entire posterior.}
+  Intermediate distributions (green and blue) are implicitly defined by mapping each initial point through many iterations of gradient descent on the posterior log-likelihood.
+  These distributions don't have fixed parametric shapes -- their shapes depend on the shape of the posterior.}
 \label{fig:cartoon}
 \end{center}
 \end{figure}
 
-We propose an interpretation of incomplete optimization in terms of variational Bayesian inference.
+We propose an interpretation of incomplete optimization in terms of variational Bayesian inference, and provide a simple method for estimating the marginal likelihood of the approximate posterior.
 Our starting point is a Bayesian posterior distribution for a potentially complicated model, in which there is an empirical loss that can be interpreted as a negative log likelihood and regularizers that have interpretations as priors.
-One might proceed with MAP inference in such a setting and perform an optimization to find the best parameters.
+One might proceed with MAP inference, and perform an optimization to find the best parameters.
 The main idea of this paper is that such an optimization procedure, initialized according to some distribution that can be chosen freely, generates a sequence of distributions that are implicitly defined by the action of the optimization update rule on the previous distribution.
 We can treat these distributions as variational approximations to the true posterior distribution.
-A single optimization run for~$N$ iterations represents a draw from the~$N$th such distribution in the sequence.
-For many popular optimization methods this sequence of distributions can be used to form an unbiased estimate of a lower bound on the log marginal likelihood.
+A single optimization run for $N$ iterations represents a draw from the $N$th such distribution in the sequence.
+For some popular optimization methods, we show how this sequence of distributions can be used to form an unbiased estimate of a lower bound on the log marginal likelihood.
 
 With this interpretation, the number of optimization iterations can be seen as a variational parameter, one that trades off fitting the data well against maintaining a broad (high entropy) distribution.
 Early stopping amounts to optimizing the variational lower bound (or an approximation based on a validation set) with respect to this variational parameter.
 Similarly, since each optimization trajectory from a random initialization represents a sample from the variational distribution, ensembling random restarts can be viewed as building a sample-based approximation of (an approximation to) the posterior.
 
-To establish whether this viewpoint is helpful in practice we ask (a)~whether we can estimate the marginal likelihood, and (b)~whether the family of variational distributions implied by the optimization rule yields a reasonably good approximation to the true posterior.
-We tackle the first question in sections \ref{sec:techintro} and show that many popular optimization procedures yield tractable estimates of the marginal likelihood.
+To establish whether this viewpoint is helpful in practice, we ask: (a)~whether we can efficiently estimate the marginal likelihood, and (b)~whether model selection based on these marginal likelihood estimates leads us to choose models with good test-time performance.
+% family of variational distributions implied by the optimization rule yields a reasonably good approximation to the true posterior.
+We tackle the first question in section \ref{sec:techintro}, showing that many popular optimization procedures yield tractable estimates of the marginal likelihood.
 The second question is an empirical one, and we give some experimental evidence in both directions in section \ref{sec:experiments}.
+
+A third question, beyond the scope of this paper, is how close the variational distributions implied by various optimization rules approximate the true posterior.
 
 \subsection{Contributions}
 \begin{itemize}
 \item We introduce a new interpretation of optimization algorithms as samplers from a variational distribution that adapts to the true posterior.
+% albeit one that does not converge to an optimal approximation.
 \item We provide a scalable estimator for the entropy of these implicit variational distributions, allowing us to estimate a lower bound on the marginal likelihood even on problems with millions of parameters.
 \item We investigate the performance of these estimators empirically, and show that they have reasonable properties.
 \end{itemize}
@@ -193,7 +197,7 @@ Maximizing $\varL[q]$, the variational lower bound on the marginal likelihood, w
 A convenient side effect is that we also get a lower bound on $p(\data)$, which can be used for model selection.
 
 To perform variational inference, we require a family of distributions over which to maximize $\varL[q]$. 
-Consider a general procedure to minimize the energy~$-\log\jointdist$ with respect to~${\params \in \reals^D}$.
+Consider a general procedure to minimize the energy~$(-\log\jointdist)$ with respect to~${\params \in \reals^D}$.
 The parameters~$\params$ are initialized according to some distribution~$q_0(\params)$ and updated at each iteration according to a transition operation~${\trans : \reals^D \rightarrow \reals^D}$:
 %
 \begin{align}
@@ -220,8 +224,8 @@ To compute how the volume shrinks or expands due to this change of variables, we
 %
 \begin{align}
 S[q_{t+1}] - S[q_t] =
-  \expectargs{q_t(\params_t)}{\log
-    \left| J(\params_t) \right|} \,.
+  \expect_{q_t(\params_t)} \big[ \log
+    \left| J(\params_t) \right| \big] \,.
 \end{align}
 %
 Note that this analysis assumes that the mapping $T$ is bijective.
@@ -269,18 +273,18 @@ this situation should not arise.
    \label{alg:sgd-with-estimate}
 \begin{algorithmic}[1]
 	\State {\bfseries input:}
-	Weight initialization scale $\sigma_0$, step size $\stepsize$, 	
-	twice-differentiable negative log likelihood $L(\params, t)$	
-	\State {\bfseries initialize} $\params_1 \sim \N{0}{\sigma_0 \vI_D}$
-	\State {\bfseries initialize} $\entropy_{1} = \frac{D}{2} (1 + \log 2 \pi) + D \log\sigma_0$
+	Weight initialization scale $\sigma_0$, step size $\stepsize$,
+	twice-differentiable negative log-likelihood $L(\params, t)$
+	\State {\bfseries initialize} $\params_0 \sim \N{0}{\sigma_0 \vI_D}$
+	\State {\bfseries initialize} $\entropy_{0} = \frac{D}{2} (1 + \log 2 \pi) + D \log\sigma_0$
 	\For{$t=1$ {\bfseries to} $T$}
 %		\State $\vg = \gradparams$             \Comment{Evaluate gradient}
 %		\State $\vr \sim \N{0}{\vI_D}$         \Comment{Draw random direction}
 %		\State $\vr\tra \left[ -2 \vr + 3 \left(  R1 - R2 \right) \right]$      \Comment{Estimate determinant}
-		\State $\entropy_{t+1} = \entropy_t + \log \left| \vI - \stepsize H_t \right|$  \Comment{Update entropy} \label{step:entropy-update}
-		\State $\params_{t+1} = \params_t - \stepsize \gradparams$  \Comment{Update position}		
+		\State $\entropy_{t} = \entropy_{t-1} + \log \left| \vI - \stepsize H_{t-1} \right|$\Comment{Update entropy} \label{step:entropy-update}
+		\State $\params_{t} = \params_{t-1} - \stepsize \gradparams$  \Comment{Update parameters}	
    \EndFor
-   \State \textbf{output} sample $\params_T$, estimate of entropy $\entropy_T$
+   \State \textbf{output} sample $\params_T$, entropy estimate $\entropy_T$
 \end{algorithmic}
 \end{algorithm}
 %
@@ -349,7 +353,7 @@ This difference is just the log-likelihood.
 \subsection{Designing entropy-friendly optimization methods}
 
 The variational distribution implied by SGD does not optimize the variational lower bound directly.
-If it happens to create a good variational distribution, it's only by accident.
+In some sense, if optimization happens to create a good variational distribution, it's only by accident.
 In place of SGD, we can use any optimization method for which we can approximate the change in entropy, which in practice means any optimization for which we can compute Jacobian vector products.
 Now that we have a variational interpretation of optimization we can start to design new 
 optimization procedures with posterior-fitting in mind.
@@ -471,23 +475,29 @@ As the level of thresholding increases, training and test error get worse due to
 However, for intermediate thresholds, the lower bound increases.
 Because it is a lower bound, its increase means that the estimate of the marginal likelihood is becoming \emph{more accurate}, even though the actual model happens to be getting worse at the same time.
 
-%% \section{Limitations}
+\section{Limitations}
 
-%% Estimating marginal likelihood is known to be sharp-P hard in general.
-%% When do we expect the estimate of the marginal likelihood to be poor?
+In practice, the marginal likelihood estimate we present might not be useful for several reasons.
+First, using only a single sample to estimate both the expected likelihood as well as the entropy of an entire distribution will necessarily have high variance under some circumstances.
+These problems could conceivably be addressed by ensembling, which has an interpretation as taking multiple exact independent samples from the implicit variational posterior.
+
+Second, as parameters converge, their entropy estimate (and true entropy) will continue to decrease indefinitely, going to negative infinity.
+However, generalization performance will usually not continue to get worse beyond a certain point.
+
+Third, if a large number of parameters do not affect the predictive likelihood, but are still affected by a regularizer, their convergence will penalize the marginal likelihood estimate even though these parameters do not affect test set performance.
+
+%Estimating marginal likelihood is known to be sharp-P hard in general.
+%When do we expect the estimate of the marginal likelihood to be poor?
 
 \section{Related work}
 
 \paragraph{Early stopping}
-Stein's unbiased risk estimator (SURE)~\citep{stein1981estimation} provides an unbiased estimate of generalization performance under very broad conditions.
-\citet{raskutti2014early} derived a SURE estimate for SGD.
+Stein's unbiased risk estimator (SURE)~\citep{stein1981estimation} provides an unbiased estimate of generalization performance under very broad conditions that can be used as a stopping rule.
+\citet{raskutti2014early} derived a SURE estimate for SGD in a regression setting.
 Interestingly, this estimator depends on the `shrinkage matrix' $\prod_{t=0}^{T} ( \vI - \stepsize_t H_T )$, which is just the Jacobian of the entire SGD procedure along a particular path.
-However, this estimator depends on an estimate of the variance of noise variance, and does not provide a lower bound.
+However, this estimator depends on an estimate of the noise variance, and does not provide a lower bound.
 
 \citet{raskutti2014early} also derive a data-dependent early-stopping rule for kernel regression methods, but it not clear whether this stopping rule could be adapted to more general settings, or whether it could be used to select all training and model hyperparameters.
-
-
-
 
 \paragraph{Reversible learning} 
 Optimization is an
