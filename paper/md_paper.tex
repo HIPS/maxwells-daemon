@@ -92,26 +92,18 @@
 %\title{Stochastic Gradient Descent is Nonparametric Variational Inference}
 \title{Early Stopping is Nonparametric Variational Inference}
 
-\author{} % LEAVE BLANK FOR ORIGINAL SUBMISSION.
-          % UAI  reviewing is double-blind.
-
-% The author names and affiliations should appear only in the accepted paper.
-%
-%\author{ {\bf Harry Q.~Bovik\thanks{Footnote for author to give an
-%alternate address.}} \\
-%Computer Science Dept. \\
-%Cranberry University\\
-%Pittsburgh, PA 15213 \\
-%\And
-%{\bf Coauthor}  \\
-%Affiliation          \\
-%Address \\
-%\And
-%{\bf Coauthor}   \\
-%Affiliation \\
-%Address    \\
-%(if needed)\\
-%}
+\author{ {\bf Dougal Maclaurin} \\
+%\texttt{dmaclaurin@seas.harvard.edu} \\
+Harvard University
+\And
+{\bf David Duvenaud}  \\
+%\texttt{dduvenaud@seas.harvard.edu} \\
+Harvard University
+\And
+{\bf Ryan P. Adams}   \\
+%\texttt{rpa@seas.harvard.edu} \\
+Harvard University
+}
 
 \begin{document}
 
@@ -140,11 +132,10 @@ Similarly, this must rely on imperfect optimization, since otherwise all optimiz
 \vskip 0.2in
 \begin{center}
 \includegraphics[width=\columnwidth]{../experiments/2015_03_02_funnel/2/dists.pdf}
-\caption{A series of variational distributions implicitly defined by
-  stochastic gradient descent on the log-likelihood.
-  The initial distribution from which parameters are drawn (red) doesn't match the posterior (black).
-  Intermediate distributions (green and blue) are implicitly defined by mapping each initial point through many iterations of gradient descent on the posterior log-likelihood.
-  These distributions don't have fixed parametric shapes -- their shapes depend on the shape of the posterior.}
+\caption{A series of variational distributions implicitly defined by gradient descent on the log-likelihood of the posterior.
+%  The initial distribution from which parameters are drawn (red) doesn't match the posterior (black).
+Intermediate distributions (green and blue) are implicitly defined by mapping each possible random initial parameters through many iterations of optimization.
+  These distributions don't have fixed parametric shape, and will eventually concentrate around the mode.}
 \label{fig:cartoon}
 \end{center}
 \end{figure}
@@ -155,26 +146,33 @@ One might proceed with MAP inference, and perform an optimization to find the be
 The main idea of this paper is that such an optimization procedure, initialized according to some distribution that can be chosen freely, generates a sequence of distributions that are implicitly defined by the action of the optimization update rule on the previous distribution.
 We can treat these distributions as variational approximations to the true posterior distribution.
 A single optimization run for $N$ iterations represents a draw from the $N$th such distribution in the sequence.
-For some popular optimization methods, we show how this sequence of distributions can be used to form an unbiased estimate of a lower bound on the log marginal likelihood.
+Figure \ref{fig:cartoon} shows contours of these approximate distributions on an example posterior.
+% of inferring the parameters of a univariate Guassian.
 
 With this interpretation, the number of optimization iterations can be seen as a variational parameter, one that trades off fitting the data well against maintaining a broad (high entropy) distribution.
 Early stopping amounts to optimizing the variational lower bound (or an approximation based on a validation set) with respect to this variational parameter.
-Similarly, since each optimization trajectory from a random initialization represents a sample from the variational distribution, ensembling random restarts can be viewed as building a sample-based approximation of (an approximation to) the posterior.
+Similarly, since each optimization trajectory from a random initialization represents a sample from the variational distribution, ensembling together different random restarts can be viewed as building a sample-based approximation of (an approximation to) the posterior.
 
 To establish whether this viewpoint is helpful in practice, we ask: (a)~whether we can efficiently estimate the marginal likelihood, and (b)~whether model selection based on these marginal likelihood estimates leads us to choose models with good test-time performance.
 % family of variational distributions implied by the optimization rule yields a reasonably good approximation to the true posterior.
-We tackle the first question in section \ref{sec:techintro}, showing that many popular optimization procedures yield tractable estimates of the marginal likelihood.
+We tackle the first question in section \ref{sec:techintro}, showing that popular optimization procedures can yield tractable estimates of the marginal likelihood.
+Spefically, for stochastic gradient descent, we show how to compute an unbiased estimate of a lower bound on the log marginal likelihood of each iteration's implicit variational distribution.
 The second question is an empirical one, and we give some experimental evidence in both directions in section \ref{sec:experiments}.
-
-A third question, beyond the scope of this paper, is how close the variational distributions implied by various optimization rules approximate the true posterior.
+A third question is how close the variational distributions implied by various optimization rules approximate the true posterior.
+We briefly address this question in section \ref{sec:limitations}.
 
 \subsection{Contributions}
 \begin{itemize}
-\item We introduce a new interpretation of optimization algorithms as samplers from a variational distribution that adapts to the true posterior.
+\item We introduce a new interpretation of optimization algorithms as samplers from a variational distribution that adapts to the true posterior, eventually collapsing around its modes.
+%We also Since these variational distributions eventually collapse around local modes, 
 % albeit one that does not converge to an optimal approximation.
-\item We provide a scalable estimator for the entropy of these implicit variational distributions, allowing us to estimate a lower bound on the marginal likelihood even on problems with millions of parameters.
-\item We investigate the performance of these estimators empirically, and show that they have reasonable properties.
+\item We provide a scalable estimator for the entropy of these implicit variational distributions, allowing us to estimate a lower bound on the marginal likelihood of any model whose posterior is twice-differentiable, even on problems with millions of parameters and data points.
+%Our marginal likelihood estimate provides a principled stopping criterion that depends only on the training set, and works for any twice-differentiable probabilistic model.
+\item In principle, this marginal likelihood estimator can be used for hyperparameter selection and early stopping without the need for a validation set.
+We investigate the performance of these estimators empirically, and show that they have reasonable properties.
+However, further refinements are likely to be necessary before this marginal likelihood estimator is more practical than using a validation set.
 \end{itemize}
+%Because the implicit distributions eventually collapse around local modes, early stopping can be seen as choosing a distribution with moderate amounts of entropy to prevent overfitting.
 
 \section{Incomplete optimization as variational inference}
 \label{sec:techintro}
@@ -230,7 +228,7 @@ S[q_{t+1}] - S[q_t] =
 %
 Note that this analysis assumes that the mapping $T$ is bijective.
 Combining these terms, we have an unbiased estimator of $\varL$ at iteration $T$,
-based on the sequence of parameters, $\params_0, \ldots, \params_T$, from a single training run.
+based on the sequence of parameters, $\params_0, \ldots, \params_T$, from a single training run:
 \begin{align}
 \varL[q_T] \approx
   \underbrace{\log \subjointdist{}{T}}_{\textnormal{\normalsize Energy}} +
@@ -238,8 +236,7 @@ based on the sequence of parameters, $\params_0, \ldots, \params_T$, from a sing
 \label{eq:entropy-bound}
 \end{align}
 
-\subsection{Stochastic Gradient Descent}
-
+\subsection{Stochastic gradient descent}
 Stochastic gradient descent (SGD) is a popular and effective optimization procedure with the following update rule:
 %
 \begin{align}
@@ -332,7 +329,7 @@ In high dimensions, the exact evaluation of the determinant in step~\ref{step:en
 
 
 \subsection{Parameter initialization, priors, and objective functions}
-
+\label{sec:priors}
 What initial parameter distribution should we use for SGD?
 The marginal likelihood estimate given by \eqref{eq:entropy-bound} is valid no matter which initial distribution we choose.
 We could conceivably optimize this distribution in an outer loop using the marginal likelihood estimate itself.
@@ -351,7 +348,7 @@ initial distribution to the extent that the posterior differs from the prior.
 This difference is just the log-likelihood.
 
 \subsection{Designing entropy-friendly optimization methods}
-
+\label{sec:entropy friendly}
 The variational distribution implied by SGD does not optimize the variational lower bound directly.
 In some sense, if optimization happens to create a good variational distribution, it's only by accident.
 In place of SGD, we can use any optimization method for which we can approximate the change in entropy, which in practice means any optimization for which we can compute Jacobian vector products.
@@ -377,24 +374,27 @@ One potential pathology of SGD in the context of posterior approximation is that
 SGD can collapse the variational distribution into low-entropy filaments, shrinking in some directions to be orders of magnitude smaller than the width of the true posterior.
 A simple trick to prevent this is to apply a nonlinear, parameter-wise warping
 to the gradient, such that directions of very small gradient do not get optimized all the way
-to the optimium. For example the modified gradient (and resulting modified
-Jacobian) could be
+to the optimium.
+%
+\begin{figure}[h]
+\vskip 0.2in
+\begin{center}
+\includegraphics[width=0.9\columnwidth]{../experiments/2015_03_02_funnel/3_grad_threshold/dists.pdf}
+\caption{The variational distribution implied by the modified, ``entropy-friendly'', SGD algorithm.
+Compared to Figure \ref{fig:cartoon}, the variational distributions are slower to collapse into low-entropy filaments, causing the marginal likelihood to remain higher.}
+\label{fig:cartoon-fatter}
+\end{center}
+\end{figure}
+%
+For example, the modified gradient (and resulting modified Jacobian) could be
 \begin{align}
 g' & = g - g_0 \tanh \left(g / g_0 \right) \nonumber \\
 J' & = \left(1 - \cosh^{-2} (g / g_0) \right) J  \nonumber 
 \end{align}
 where $g_0$ is a ``gradient threshold'' parameter that sets the scale of this shrinkage.
-The effect is that entropy is not removed from parameters which are sufficiently close to the optimum. An experiment showing the effect of this modified SGD is shown in Figure~\ref{fig:cartoon-fatter}.
+The effect is that entropy is not removed from parameters which are sufficiently close to the optimum.
+An experiment showing the effect of this modified SGD is shown in Figure~\ref{fig:cartoon-fatter}.
 
-\begin{figure}[h]
-\vskip 0.2in
-\begin{center}
-\includegraphics[width=0.9\columnwidth]{../experiments/2015_03_02_funnel/3_grad_threshold/dists.pdf}
-\caption{The variational distribution implied by the modified SGD algorithm.
-Compared to Figure \ref{fig:cartoon}, the variational distributions are slower to collapse into low-entropy filaments.}
-\label{fig:cartoon-fatter}
-\end{center}
-\end{figure}
 
 \section{Experiments}
 \label{sec:experiments}
@@ -402,6 +402,7 @@ Compared to Figure \ref{fig:cartoon}, the variational distributions are slower t
 In this section we show that the marginal likelihood estimate can be used to choose when to stop training, to choose model capacity, and to optimize training hyperparameters without the need for a validation set.
 We are not attempting to motivate SGD variational inference as a superior alternative to other procedures;
 we simply wish to give a proof of concept that the marginal likelihood estimator has reasonable properties.
+Further refinements are likely to be necessary before this marginal likelihood estimator is more practical than simply using a validation set.
 
 %\subsection{Boston housing data}
 \subsection{Choosing when to stop optimization}
@@ -448,11 +449,10 @@ In this case, the training and test-set likelihood continue to increase no matte
 \end{figure}
 
 Figure \ref{fig:num hiddens} shows marginal likelihood estimates as a function of the number of hidden units in the first hidden layer of a 3-layer deep neural network, trained on 50,000 MNIST handwritten digits.
+The largest network trained in this experiment contains 2,385,010 parameters.
 Strangely, the performance of the network continues to increase even up to 3,000 hidden units.
 The marginal likelihood estimate begins to decrease for more than 300 hidden units.
 We conjecture that this is due to the marginal likelihood estimate penalizing the loss of entropy in hidden units whose contribution to predictive likelihood is small.
-
-
 
 \subsection{Optimizing training hyperparameters}
 
@@ -460,7 +460,6 @@ We can also use marginal likelihoods to optimize training parameters such as lea
 As an example, Figure \ref{fig:threshold} shows the marginal likelihood estimate as a function of the gradient threshold in the modified SGD algorithm, again trained on 50,000 MNIST handwritten digits.
 
 \begin{figure}[h!]
-%\vskip 0.2in
 \begin{center}
 \includegraphics[width=\columnwidth]{../experiments/2015_03_03_vary_width/5_grad_threshold/vary_widths.pdf}
 \vskip -0.1in
@@ -475,16 +474,30 @@ As the level of thresholding increases, training and test error get worse due to
 However, for intermediate thresholds, the lower bound increases.
 Because it is a lower bound, its increase means that the estimate of the marginal likelihood is becoming \emph{more accurate}, even though the actual model happens to be getting worse at the same time.
 
-\section{Limitations}
+\subsection{Implementation details}
+To allow easy computation of Hessian-vector products in arbitrary models, we implemented
+a reverse-mode automatic differentiation package for Python, available at \url{github.com/HIPS/autograd}.
+This package has the unusual feature operates on standard Numpy~\citep{oliphant2007python} code, and can differentiate code containing loops, branches, and even gradient evaluations.
 
+Code for all experiments in this paper is available at \url{github.com/HIPS/maxwells-daemon}.
+
+\section{Limitations}
+\label{sec:limitations}
 In practice, the marginal likelihood estimate we present might not be useful for several reasons.
 First, using only a single sample to estimate both the expected likelihood as well as the entropy of an entire distribution will necessarily have high variance under some circumstances.
 These problems could conceivably be addressed by ensembling, which has an interpretation as taking multiple exact independent samples from the implicit variational posterior.
 
-Second, as parameters converge, their entropy estimate (and true entropy) will continue to decrease indefinitely, going to negative infinity.
-However, generalization performance will usually not continue to get worse beyond a certain point.
+Second, as parameters converge, their entropy estimate (and true entropy) will continue to decrease indefinitely.
+However, in practice there is usually a limit to the degree of overfitting possible.
+% meaning that generalization performance will usually not continue to get worse indefinitely even as the estimated marginal likelihood continues to decrease.
+This raises the question: when are marginal likelihoods a good guide to predictive accuracy?
+Certainly, comparing between somewhat degenerate and completely degenerate approximate distributions isn't likely to be helpful.
+Presumably the marginal likelihood is more likely to be correlated with predictive performance when the optimization parameters have been optimized to produce reasonable approximating distributions.
+In section \ref{sec:entropy friendly} we attempted to modify the SGD algorithm to be less prone to produce regions of pathologically low entropy, but a more satisfactory solution is probably possible.
 
-Third, if a large number of parameters do not affect the predictive likelihood, but are still affected by a regularizer, their convergence will penalize the marginal likelihood estimate even though these parameters do not affect test set performance.
+Third, if the model includes a large number of parameters that do not affect the predictive likelihood, but which are still affected by a regularizer, their convergence will penalize the marginal likelihood estimate even though these parameters do not affect test set performance.
+This is why in section \ref{sec:priors} we recommend optimizing only the log-likelihood, and incorporating the regularizer directly into the initialization procedure.
+More generally however, entropy could be underestimated if a large group of parameters are initially constrained by the data, but are later ``turned off'' by some other parameters in the model.
 
 %Estimating marginal likelihood is known to be sharp-P hard in general.
 %When do we expect the estimate of the marginal likelihood to be poor?
@@ -492,27 +505,22 @@ Third, if a large number of parameters do not affect the predictive likelihood, 
 \section{Related work}
 
 \paragraph{Early stopping}
-Stein's unbiased risk estimator (SURE)~\citep{stein1981estimation} provides an unbiased estimate of generalization performance under very broad conditions that can be used as a stopping rule.
+Stein's unbiased risk estimator (SURE) \citep{stein1981estimation} provides an unbiased estimate of generalization performance under very broad conditions that can be used as a stopping rule.
 \citet{raskutti2014early} derived a SURE estimate for SGD in a regression setting.
-Interestingly, this estimator depends on the `shrinkage matrix' $\prod_{t=0}^{T} ( \vI - \stepsize_t H_T )$, which is just the Jacobian of the entire SGD procedure along a particular path.
-However, this estimator depends on an estimate of the noise variance, and does not provide a lower bound.
+Interestingly, this estimator depends on the `shrinkage matrix' $\prod_{t=0}^{T} \left( \vI - \stepsize_t H_T \right)$, which is just the Jacobian of the entire SGD procedure along a particular path.
+However, this estimator depends on an estimate of the noise variance, and is restricted to the \iid regression setting.
+It's also not clear if these stopping rules could also be used to select other training parameters or model hyperparameters.
 
-\citet{raskutti2014early} also derive a data-dependent early-stopping rule for kernel regression methods, but it not clear whether this stopping rule could be adapted to more general settings, or whether it could be used to select all training and model hyperparameters.
+%\citet{raskutti2014early} also derive a data-dependent early-stopping rule for kernel regression methods, but it not clear whether this stopping rule could be adapted to more general settings, or whether it could be used to select all training and model hyperparameters.
 
 \paragraph{Reversible learning} 
-Optimization is an
-intrinsically information-destroying process, since a (good) optimization
-procedure maps any initial starting point to one or a few final optima. We can
-quantify this loss of information by asking how many bits must be stored in order
-to reverse the optimization, as in \citet{MacDuvAda2015hyper}.
- We can think of this as average the number of bits
-`learned' during the optimization.
+Optimization is an intrinsically information-destroying process, since a (good) optimization procedure maps any initial starting point to one or a few final optima.
+We can quantify this loss of information by asking how many bits must be stored in order to reverse the optimization, as in \citet{MacDuvAda2015hyper}.
+We can think of the number of bits needed to exactly reverse the optimization procedure as the average number of bits `learned' during the optimization.
 
-From this perspective, stopping before optimization
-converges can be seen as a way to limit the number of bits we try to learn,
-since we don't expect to be able to learn more than a finite number of bits from a finite dataset.
-
-Thus, early stopping can also be seen as one of many ways to reduce the hypothesis space to improve generalization.
+From this perspective, stopping before optimization converges can be seen as a way to limit the number of bits we try to learn about the parameters from the data.
+This is a reasonable strategy, since we don't expect to be able to learn more than a finite number of bits from a finite dataset.
+Thus, early stopping can also be seen as a way to reduce the hypothesis space to improve generalization.
 % (cite MDL? Statistical learning theory?)
 
 \paragraph{MCMC for variational inference}
@@ -521,11 +529,9 @@ However, to provide a tight variational bound, one needs to estimate the entropy
 \citet{Bridging14} do this by defining an inverse model which estimates backwards transition probabilities, and then optimizes this model in an outer loop.
 In contrast, our dynamics are deterministic, and our estimate of the entropy has a simple fixed form.
 
-
 \paragraph{Bayesian neural networks}
 Variational inference has been performed in Bayesian neural-network models such as deep Gaussian processes~\citep{deepGPVar14}.
 \citet{kingma2014efficient} show how neural networks having unknown weights can be reformulated as neural networks having known weights but stochastic hidden units, and exploit this connection to preform efficient gradient-based inference in Bayesian neural networks.
-
 
 \paragraph{Black-box stochastic variational inference}
 \citet{alp2014blackbox} introduce a general scheme for variational inference using only the gradients of the log-likelihood of a model.
@@ -533,8 +539,6 @@ However, they constrain their variational approximation to be Gaussian, as oppos
 
 %\paragraph{Adaptive learning rates for SGD}
 %\citet{courbariaux2014low} give a method based on Hessian-vector products to adapt learning rates for stochastic gradient descent without momentum.
-
-
 
 %\paragraph{Annealed HMC}
 %\citet{sohl2012hamiltonian} used HMC including an accept/reject step for annealed importance sampling to estimate partition functions.
@@ -585,18 +589,10 @@ We showed that these nonparametric distributions can be seen as variational appr
 We showed how to produce an unbiased estimate of this variational lower bound by approximately tracking the entropy change at each step of optimization.
 
 This simple and inexpensive calculation turns standard gradient descent into an inference algorithm, and allows the optimization of hyperparameters without a validation set.
-Our estimate is compatible with using data minibatches, and scales linearly with the number of parameters, making it suitable to large-scale problems.
+Our estimator is compatible with using data minibatches and scales linearly with the number of parameters, making it suitable to large-scale problems.
 
-
-
-
-%or optimizers that handle different parameters more gracefull, are parameterization-invariant etc.
-
-%\subsection{Acknowledgements}
-%We thank Roger Grosse for helpful discussions. Also Miguel and Matt Johnson, and Oren Rippel.
-
-
-
+\subsection{Acknowledgements}
+We are grateful to Roger Grosse, Miguel Hern\'andez-Lobato, Matthew Johnson, and Oren Rippel for helpful discussions.
 
 \bibliography{references.bib}
 \bibliographystyle{uai2015stylefiles/icml2015}
