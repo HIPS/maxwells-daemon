@@ -439,19 +439,20 @@ The marginal likelihood estimate is also comparable between training runs, allow
 \begin{figure}[h!]
 %\vskip 0.2in
 \begin{center}
-\includegraphics[width=\columnwidth]{../experiments/2015_03_03_vary_width/6_hidden_units/vary_widths.pdf}
+\includegraphics[width=\columnwidth]{../experiments/2015_03_03_vary_width/7_hidden_units_higher_learnrate/vary_widths.pdf}
 \vskip -0.1in
-\caption{\emph{Top}: Training and test-set likelihood as a function of the number of hidden units in the first layer of a network.
+\caption{\emph{Top}: Training and test-set likelihood as a function of the number of hidden units in the first layer of a neural network.
 \emph{Bottom}: Marginal likelihood estimates.
-In this case, the training and test-set likelihood continue to increase no matter how many hidden units are used.}
+In this case, the marginal likelihood over-penalizes high numbers of hidden units. 
+}
 \label{fig:num hiddens}
 \end{center}
 \end{figure}
 
 Figure \ref{fig:num hiddens} shows marginal likelihood estimates as a function of the number of hidden units in the first hidden layer of a 3-layer deep neural network, trained on 50,000 MNIST handwritten digits.
-The largest network trained in this experiment contains 2,385,010 parameters.
-Strangely, the performance of the network continues to increase even up to 3,000 hidden units.
-The marginal likelihood estimate begins to decrease for more than 300 hidden units.
+The largest network trained in this experiment contains 2 million parameters.
+
+The marginal likelihood estimate begins to decrease for more than 30 hidden units, even though the test-set likelihood in maximized at 300 hidden units.
 We conjecture that this is due to the marginal likelihood estimate penalizing the loss of entropy in hidden units whose contribution to predictive likelihood is small.
 
 \subsection{Optimizing training hyperparameters}
@@ -498,6 +499,11 @@ In section \ref{sec:entropy friendly} we attempted to modify the SGD algorithm t
 Third, if the model includes a large number of parameters that do not affect the predictive likelihood, but which are still affected by a regularizer, their convergence will penalize the marginal likelihood estimate even though these parameters do not affect test set performance.
 This is why in section \ref{sec:priors} we recommend optimizing only the log-likelihood, and incorporating the regularizer directly into the initialization procedure.
 More generally however, entropy could be underestimated if a large group of parameters are initially constrained by the data, but are later ``turned off'' by some other parameters in the model.
+
+Finally, how viable is optimization as an inference method?
+Standard variational methods find the best approximation in some class, but SGD doesn't even try to produce a good approximate posterior, other than by seeking the modes.
+Indeed, Figure \ref{fig:cartoon} shows that the distribution implied by SGD collapses to a small portion of the true posterior early on, and mainly continues to shrink as optimization proceeds.
+However, the point of early stopping is not that the intermediate distributions are particularly good approximations, but simply that they are better than the point masses that occur when optimization has converged.
 
 %Estimating marginal likelihood is known to be sharp-P hard in general.
 %When do we expect the estimate of the marginal likelihood to be poor?
