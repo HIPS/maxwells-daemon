@@ -280,6 +280,7 @@ This corresponds to a Newton-like update where multiple points collapse to the o
 However, gradient descent is unstable anyway if ${\stepsize\lambda_{\text{max}} > 2}$, where~$\lambda_{\text{max}}$ is the largest eigenvalue of~$H_t$.
 So if we choose a sufficiently conservative step size, such that $\stepsize\lambda_{\text{max}} < 1$,
 this situation should not arise.
+Algorithm~\ref{alg:sgd-with-estimate} combines these steps into an algorithm that tracks the approximate entropy during optimization.
 
 \begin{algorithm}[t]
    \caption{stochastic gradient descent with entropy estimate}
@@ -340,13 +341,29 @@ The trace of the Hessian can be estimated using inner products of random vectors
 \label{eq:approx-log-det}
 \end{align}
 %
+We use this identity to derive algorithm~\ref{alg:fast-logdet-estimate}.
+In high dimensions, the exact evaluation of the determinant in step~\ref{step:entropy-update} should be replaced with the approximation given by algorithm~\ref{alg:fast-logdet-estimate}.
 
-The quantity we are estimating \eqref{eq:exact hessian} is well-conditioned, in contrast to the related problem of computing the log of the determinant of the Hessian itself.
+\begin{algorithm}[t]
+   \caption{linear-time estimate of log-determinant of Jabobian of one iteration of stochastic gradient descent}
+   \label{alg:fast-logdet-estimate}
+\begin{algorithmic}[1]
+	\State {\bfseries input:}
+	step size $\stepsize$, current parameter vector $\params$,
+	twice-differentiable negative log-likelihood $L(\params)$
+	\State {\bfseries initialize} $\vr_0 \sim \N{0}{\sigma_0 \vI_D}$
+	\State $\vr_1 = \vr_0 - \stepsize \vr_0\tra \nabla \nabla L(\params, t)$
+	\State $\vr_2 = \vr_1 - \stepsize \vr_1\tra \nabla \nabla L(\params, t)$
+	\State $\hat \varL = \vr_0\tra \left( -2 \vr_0 + 3 \vr_1 - \vr_2 \right)$
+    \State \textbf{output} $\hat \varL$, an unbiased estimate of a parabolic lower bound on the change in entropy.
+\end{algorithmic}
+\end{algorithm}
+
+Note that the quantity we are estimating \eqref{eq:exact hessian} is well-conditioned, in contrast to the related problem of computing the log of the determinant of the Hessian itself.
 This arises, for example, in making the Laplace approximation to the posterior \citep{mackay1992practical}.
 This is a much harder problem since the Hessian can be arbitrarily ill-conditioned, unlike our small Hessian-based perturbation to the identity.
 
-Algorithm~\ref{alg:sgd-with-estimate} combines these steps into an algorithm that tracks the approximate entropy during optimization.
-In high dimensions, the exact evaluation of the determinant in step~\ref{step:entropy-update} should be replaced with the approximation given by equation~\eqref{eq:approx-log-det}.
+
 
 
 \subsection{Parameter initialization, priors, and objective functions}
