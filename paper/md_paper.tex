@@ -87,16 +87,22 @@
 \newcommand{\trace}[1]{\text{Tr}\left[#1\right]}
 \newcommand{\loss}{L(\params)}
 
+\makeatletter
+\renewcommand*{\@fnsymbol}[1]{\ensuremath{\ifcase#1\or \dagger\or \ddagger\or
+   \mathsection\or \mathparagraph\or \|\or **\or \dagger\dagger
+   \or \ddagger\ddagger \else\@ctrerr\fi}}
+\makeatother
+
 %\title{Maxwell's D\ae mon: Stochastic Gradient Nonparametric Variational Inference}
 %\title{Entropic Descent: Stochastic Gradient Nonparametric Variational Inference}
 %\title{Stochastic Gradient Descent is Nonparametric Variational Inference}
 \title{Early Stopping is Nonparametric Variational Inference}
 
-\author{ {\bf Dougal Maclaurin} \\
+\author{ {\bf Dougal Maclaurin $^\dagger$} \\
 %\texttt{dmaclaurin@seas.harvard.edu} \\
 Harvard University
 \And
-{\bf David Duvenaud}  \\
+{\bf David Duvenaud \thanks{ \hspace{1em}Equal contributors.}}  \\
 %\texttt{dduvenaud@seas.harvard.edu} \\
 Harvard University
 \And
