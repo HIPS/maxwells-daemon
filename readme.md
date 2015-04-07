@@ -1,6 +1,6 @@
 # Early Stopping is Nonparametric Variational Inference
 
-<img src="https://raw.githubusercontent.com/HIPS/maxwells-daemon/experiments/2015_03_02_funnel/2/dists.png" width="400">
+<img src="https://raw.githubusercontent.com/HIPS/maxwells-daemon/master/experiments/2015_03_02_funnel/2/dists.png" width="400">
 
 Source code for http://arxiv.org/abs/1504.01344
 
