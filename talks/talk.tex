@@ -11,6 +11,7 @@
 \usepackage{algorithm}
 \usepackage{caption}
 \usepackage{array}
+\usepackage{booktabs}
 
 % Math typesetting.
 \newcommand{\vx}{\mathbf{x}}
@@ -115,23 +116,23 @@ Dougal Maclaurin, David Duvenaud, Ryan Adams}
 
 \frame[plain] {\titlepage}
 
-
-\frame[plain]{\frametitle{Inference is moving to stochastic optimization}
-%\begin{columns}
-%\hspace{-1cm}\begin{column}{6cm}
-\begin{itemize}
-\item First: Full-batch MCMC
-\item Then: Variational Bayes (optimization)
-\item Then: Stochastic variational inference (minibatches)
-\item Then: SVI for deep GPs (neural networks)
-\item Looks like training a (Bayesian) neural net by SGD
-\item What's next?
-\end{itemize}
-%\end{column}
-%\begin{column}{5cm}
-%\includegraphics[width=1.15\columnwidth]{../experiments/2015_03_03_vary_width/7_hidden_units_higher_learnrate/vary_widths.pdf}
-%\end{column}
-%\end{columns}
+\frame[plain]{\frametitle{Good ideas always have Bayesian interpretations}
+%\begin{itemize}
+%\item Regularization -> MAP inference
+%\item Dropout -> Integrating over spike-and-slab
+%\item Limiting model capacity -> Bayesian Occam's razor
+%\item Cross-validation -> Estimating marginal likelihood
+%\item Ensembling -> Bayes model averaging?
+%\item Early stopping -> ?
+%\end{itemize}
+\begin{tabular}{rcl}
+Regularization & $=$ & MAP inference \\
+Limiting model capacity & $=$ &Bayesian Occam's razor \\
+Cross-validation & $=$ &Estimating marginal likelihood \\
+Dropout        & $=$ &Integrating out spike-and-slab \\
+Ensembling & $=$ &Bayes model averaging? \\
+Early stopping & $=$ & ??
+\end{tabular}
 }
 
 
@@ -144,7 +145,7 @@ Dougal Maclaurin, David Duvenaud, Ryan Adams}
 \begin{columns}
 \hspace{-1cm}\begin{column}{6cm}
 \begin{itemize} 
-  \item Optimization paths start from random init, and converges to modes...
+  \item Optimization paths start from random init, and move towards modes...
 \end{itemize}
 \end{column}
 \begin{column}{5cm}
@@ -193,8 +194,8 @@ Dougal Maclaurin, David Duvenaud, Ryan Adams}
 \item What about the implicit distribution of parameters after optimizing for $t$ steps?
 \item Starts as a bad approximation (prior dist)
 \item Ends as a bad approximation (point mass)
-\item Choosing best intermediate dist $=$ early stopping
-\item Taking multiple samples from dist $=$ ensembling
+\item Ensembling $=$ taking multiple samples from dist
+\item Early stopping $=$ choosing best intermediate dist
 \end{itemize}
 \end{column}
 \begin{column}{5cm}
@@ -216,10 +217,9 @@ Dougal Maclaurin, David Duvenaud, Ryan Adams}
 \begin{columns}
 \hspace{-1cm}\begin{column}{6cm}
 \begin{itemize} 
-\item Currently, hyperparameters chosen by cross-validation.
 \item What if we could evaluate marginal likelihood of implicit distribution?
 \item Could choose all hypers to maximize marginal likelihood
-\item No need for validation set?
+\item No need for cross-validation?
 \end{itemize}
 \end{column}
 \begin{column}{5cm}
@@ -242,10 +242,28 @@ Entropy estimated by tracking change at each iteration:
 - \expectargs{q(\params)}{\log q(\params)} & \approx S[q_0] + \sum_{t=0}^{T-1} \log \left| J(\params_t) \right|
 \label{eq:entropy-bound}
 \end{align*}
+Using a single sample!% sometimes OK in high dimensions.
+}
 
-Using a single sample sometimes OK in high dimensions}
+\frame[plain]{\frametitle{Estimating change in entropy}
+\begin{columns}
+\hspace{-1cm}\begin{column}{6cm}
+\begin{itemize} 
+\item Inuitively: High curvature makes entropy decrease quickly
+\item Can measure local curvature with Hessian
+\item Approximation good for small step-sizes
+\end{itemize}
+\end{column}
+\begin{column}{5cm}
+\dist{0}{1}%
+\dist{1}{2}%
+\dist{2}{3}%
+\dist{3}{4}%
+\dist{4}{5}%
+\end{column}
+\end{columns}}
 
-\frame[plain]{\frametitle{Estimating Change in Entropy}
+\frame[plain]{\frametitle{Estimating change in entropy}
 
 Volume change given by Jacobian of optimizer's operator:
 \begin{align*}
@@ -263,7 +281,7 @@ Has Jacobian:
 J(\params_t) = I - \stepsize \nabla \nabla L(\theta_t)
 \end{align*}
 
-Entropy change estimate given by:
+Entropy change estimated at a single sample:
 \begin{align*}
 S[q_{t+1}] - S[q_t] \approx \log \left| I - \stepsize \nabla \nabla L(\theta_t) \right|
 \end{align*}
@@ -272,30 +290,12 @@ S[q_{t+1}] - S[q_t] \approx \log \left| I - \stepsize \nabla \nabla L(\theta_t) 
 %\end{columns}
 }
 
-\frame[plain]{\frametitle{Estimating Change in Entropy}
-\begin{columns}
-\hspace{-1cm}\begin{column}{6cm}
-\begin{itemize} 
-\item Inuitively: High curvature makes entropy decrease
-\item Approximation good for small step-sizes
-\end{itemize}
-\end{column}
-\begin{column}{5cm}
-\dist{0}{1}%
-\dist{1}{2}%
-\dist{2}{3}%
-\dist{3}{4}%
-\dist{4}{5}%
-\end{column}
-\end{columns}}
-
-
-\frame[plain]{\frametitle{Final Algorithm}
+\frame[plain]{\frametitle{Final algorithm}
 %\hspace{-1cm}%
 \Wider[1cm]{
 \begin{minipage}[t]{0.49\columnwidth}
 \begin{algorithm}[H]
-\caption*{Stochastic Gradient Descent\phantom{py}} 
+\caption*{Stochastic gradient descent\phantom{py}} 
 \begin{algorithmic}[1]
 \scriptsize%
 	\State {\bfseries input:}
@@ -304,7 +304,7 @@ S[q_{t+1}] - S[q_t] \approx \log \left| I - \stepsize \nabla \nabla L(\theta_t) 
 	\State {\bfseries initialize} $\params_0 \sim \N{0}{\sigma_0 \vI_D}$
 	\State \phantom{{\bfseries initialize} $\entropy_{0} = \frac{D}{2} (1 + \log 2 \pi)$}
 	\For{$t=1$ {\bfseries to} $T$}
-		\State \phantom{$\entropy_{t} = \entropy_{t-1} + \log \left| \vI - \stepsize H_{t-1} \right|$}%\Comment{Update entropy}} 
+		\State \phantom{$\entropy_{t} = \entropy_{t-1} + \log \left| \vI - \stepsize \nabla \nabla L(\theta_t, t) \right|$}%\Comment{Update entropy}} 
 		\State $\params_{t} = \params_{t-1} - \stepsize \gradparams$ % \Comment{Update parameters}	
    \EndFor
    \State \textbf{output} sample $\params_T$, \phantom{entropy estimate $\entropy_T$}
@@ -314,7 +314,7 @@ S[q_{t+1}] - S[q_t] \approx \log \left| I - \stepsize \nabla \nabla L(\theta_t) 
 \hfill
 \begin{minipage}[t]{0.49\columnwidth}
 \begin{algorithm}[H]
-\caption*{SGD with Entropy Estimate} 
+\caption*{SGD with entropy estimate} 
 \label{alg:neural} 
 \begin{algorithmic}[1]
 \scriptsize%
@@ -324,7 +324,7 @@ S[q_{t+1}] - S[q_t] \approx \log \left| I - \stepsize \nabla \nabla L(\theta_t) 
 	\State {\bfseries initialize} $\params_0 \sim \N{0}{\sigma_0 \vI_D}$
 	\State {\color{myfavblue}{{\bfseries initialize} $\entropy_{0} = \frac{D}{2} (1 + \log 2 \pi) + D \log\sigma_0$}}
 	\For{$t=1$ {\bfseries to} $T$}
-		\State {\color{myfavblue}$\entropy_{t} = \entropy_{t-1} + \log \left| \vI - \stepsize H_{t-1} \right|$} %\Comment{Update entropy} 
+		\State {\color{myfavblue}$\entropy_{t} = \entropy_{t-1} + \log \left| \vI - \stepsize \nabla \nabla L(\theta_t, t) \right|$} %\Comment{Update entropy} 
 		\State $\params_{t} = \params_{t-1} - \stepsize \gradparams$ % \Comment{Update parameters}	
    \EndFor
    \State \textbf{output} sample $\params_T$, \color{myfavblue}{entropy estimate $\entropy_T$}
@@ -334,17 +334,17 @@ S[q_{t+1}] - S[q_t] \approx \log \left| I - \stepsize \nabla \nabla L(\theta_t) 
 
 \vspace{1cm}
 \begin{itemize}
-\item Add entropy to likelihood to get lower bound estimate
-\item Efficient implementation uses Hessian-vector products
+\item Approximate bound: $\log p(\data) \gtrsim -L(\theta_T) + S_T$
+\item Further $\mathcal{O}(D)$ approximation using Hessian-vector products
 \item Scales linearly in parameters and dataset size
 \end{itemize}}
 
-\frame[plain]{\frametitle{Experiments: Early Stopping}
+\frame[plain]{\frametitle{Choosing when to stop}
 \begin{columns}
 \hspace{-1cm}\begin{column}{6cm}
 \begin{itemize} 
-\item Top: Training and test-set error on the Boston housing dataset.
-\item Bottom: SGD marginal likelihood estimates.
+\item Neural network on the Boston housing dataset.
+\item SGD marginal likelihood estimate gives stopping criterion without a validation set
 \end{itemize}
 \end{column}
 \begin{column}{5cm}
@@ -352,14 +352,14 @@ S[q_{t+1}] - S[q_t] \approx \log \left| I - \stepsize \nabla \nabla L(\theta_t) 
 \end{column}
 \end{columns}}
 
-\frame[plain]{\frametitle{Experiments: Number of Hidden Units}
+\frame[plain]{\frametitle{Choosing number of hidden units}
 \begin{columns}
 \hspace{-1cm}\begin{column}{6cm}
 \begin{itemize} 
-\item Top: Likelihood vs hidden units on MNIST
-\item Largest model has 2 million params
-\item Bottom: SGD marginal likelihood estimates
-\item Inter-sample variance is surprisingly low
+\item Neural net on 50000 MNIST examples
+\item Largest model has 2 million parameters
+\item Gives reasonable estimates
+%\item Inter-sample variance is surprisingly low
 \end{itemize}
 \end{column}
 \begin{column}{5cm}
@@ -367,12 +367,11 @@ S[q_{t+1}] - S[q_t] \approx \log \left| I - \stepsize \nabla \nabla L(\theta_t) 
 \end{column}
 \end{columns}}
 
-\frame[plain]{\frametitle{Limitations}
+\frame[plain]{\frametitle{Limitations of early stopping}
 \begin{columns}
 \hspace{-1cm}\begin{column}{6cm}
 \begin{itemize} 
-\item Entropy term gets arbitrarily bad due to concentration, but true performance only gets as bad as MLE
-\item Irrelevant parameters can cause low entropy estimate
+\item SGD not even trying to maximize lower bound -- good approximation is by accident!
 \end{itemize}
 \end{column}
 \begin{column}{5cm}
@@ -380,12 +379,13 @@ S[q_{t+1}] - S[q_t] \approx \log \left| I - \stepsize \nabla \nabla L(\theta_t) 
 \end{column}
 \end{columns}}
 
-\frame[plain]{\frametitle{Experiments: Entropy-friendly Optimization}
+\frame[plain]{\frametitle{Entropy-friendly optimization}
 \begin{columns}
 \hspace{-1cm}\begin{column}{6cm}
 \begin{itemize} 
-\item Modified SGD to move slower near convergence
-\item Hurts performance, but gives higher bound estimate
+\item Modified SGD to move slower near convergence, optimized new hyperparameter
+\item Hurts performance, but gives tighter bound
+\item ideally would match test likelihood
 \end{itemize}
 \end{column}
 \begin{column}{5cm}
@@ -396,12 +396,13 @@ S[q_{t+1}] - S[q_t] \approx \log \left| I - \stepsize \nabla \nabla L(\theta_t) 
 \end{column}
 \end{columns}}
 
-\frame[plain]{\frametitle{More Limitations}
+\frame[plain]{\frametitle{Limitations of bound}
 \begin{columns}
 \hspace{-1cm}\begin{column}{6cm}
-\begin{itemize} 
+\begin{itemize}
+\item Irrelevant parameters can cause low entropy estimate
+\item Entropy term gets arbitrarily bad due to concentration, but true performance only gets as bad as MLE
 \item No momentum - would need to estimate distribution (see Kingma \& Welling, 2015)
-\item SGD not even trying to maximize lower bound -- good approximation is by accident!
 \end{itemize}
 \end{column}
 \begin{column}{5cm}
@@ -414,11 +415,13 @@ S[q_{t+1}] - S[q_t] \approx \log \left| I - \stepsize \nabla \nabla L(\theta_t) 
 %\hspace{-1cm}\begin{column}{6cm}
 \begin{itemize} 
 \item Optimization with random restarts implies nonparametric intermediate distributions
-\item Early stopping chooses among these distributions, ensembling samples from them
-\item Can scalably estimate lower bound on model evidence during optimization
+\item Early stopping chooses among these distributions
+\item Ensembling samples from them
+\item Can scalably estimate variational lower bound on model evidence during optimization
 \end{itemize}
+\pause
 
-Thanks!
+\centerline{Thanks!}
 
 %\end{column}
 %\begin{column}{5cm}

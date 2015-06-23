@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.15 (TeX Live 2014) (preloaded format=pdflatex 2014.5.25)  22 JUN 2015 21:29
+This is pdfTeX, Version 3.14159265-2.6-1.40.15 (TeX Live 2014) (preloaded format=pdflatex 2014.5.25)  23 JUN 2015 14:17
 entering extended mode
  \write18 enabled.
  file:line:error style messages enabled.
@@ -1006,77 +1006,97 @@ Package caption Info: Hyperref support is turned off
 (caption)             because hyperref has stopped early.
 Package caption Info: listings package is loaded.
 )
+(/usr/local/texlive/2014/texmf-dist/tex/latex/booktabs/booktabs.sty
+Package: booktabs 2005/04/14 v1.61803 publication quality tables
+\heavyrulewidth=\dimen263
+\lightrulewidth=\dimen264
+\cmidrulewidth=\dimen265
+\belowrulesep=\dimen266
+\belowbottomsep=\dimen267
+\aboverulesep=\dimen268
+\abovetopsep=\dimen269
+\cmidrulesep=\dimen270
+\cmidrulekern=\dimen271
+\defaultaddspace=\dimen272
+\@cmidla=\count211
+\@cmidlb=\count212
+\@aboverulesep=\dimen273
+\@belowrulesep=\dimen274
+\@thisruleclass=\count213
+\@lastruleclass=\count214
+\@thisrulewidth=\dimen275
+)
 (/usr/local/texlive/2014/texmf-dist/tex/latex/listings/lstlang1.sty
 File: lstlang1.sty 2014/03/04 1.5c listings language file
 )
-Package hyperref Info: Option `colorlinks' set `true' on input line 88.
+Package hyperref Info: Option `colorlinks' set `true' on input line 89.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `\new@ifnextchar' on input line 109.
+(hyperref)                removing `\new@ifnextchar' on input line 110.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `\textwidth' on input line 109.
-
-
-Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                \hskip 23.49426pt
-(hyperref)                replaced by space on input line 109.
+(hyperref)                removing `\textwidth' on input line 110.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
 (hyperref)                \hskip 23.49426pt
-(hyperref)                replaced by space on input line 109.
-
-
-Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `\new@ifnextchar' on input line 109.
-
-
-Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `\textwidth' on input line 109.
+(hyperref)                replaced by space on input line 110.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
 (hyperref)                \hskip 23.49426pt
-(hyperref)                replaced by space on input line 109.
+(hyperref)                replaced by space on input line 110.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `\new@ifnextchar' on input line 110.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `\textwidth' on input line 110.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
 (hyperref)                \hskip 23.49426pt
-(hyperref)                replaced by space on input line 109.
+(hyperref)                replaced by space on input line 110.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `\new@ifnextchar' on input line 109.
+(hyperref)                \hskip 23.49426pt
+(hyperref)                replaced by space on input line 110.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `\textwidth' on input line 109.
+(hyperref)                removing `\new@ifnextchar' on input line 110.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `\\' on input line 109.
+(hyperref)                removing `\textwidth' on input line 110.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `\\' on input line 110.
 
 (./talk.aux)
 \openout1 = `talk.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 114.
-LaTeX Font Info:    ... okay on input line 114.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 114.
-LaTeX Font Info:    ... okay on input line 114.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 114.
-LaTeX Font Info:    ... okay on input line 114.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 114.
-LaTeX Font Info:    ... okay on input line 114.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 114.
-LaTeX Font Info:    ... okay on input line 114.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 114.
-LaTeX Font Info:    ... okay on input line 114.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 114.
-LaTeX Font Info:    ... okay on input line 114.
-LaTeX Font Info:    Try loading font information for T1+phv on input line 114.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 115.
+LaTeX Font Info:    ... okay on input line 115.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 115.
+LaTeX Font Info:    ... okay on input line 115.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 115.
+LaTeX Font Info:    ... okay on input line 115.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 115.
+LaTeX Font Info:    ... okay on input line 115.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 115.
+LaTeX Font Info:    ... okay on input line 115.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 115.
+LaTeX Font Info:    ... okay on input line 115.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 115.
+LaTeX Font Info:    ... okay on input line 115.
+LaTeX Font Info:    Try loading font information for T1+phv on input line 115.
  (/usr/local/texlive/2014/texmf-dist/tex/latex/psnfss/t1phv.fd
 File: t1phv.fd 2001/06/04 scalable font definitions for T1/phv.
 )
@@ -1115,16 +1135,16 @@ File: t1phv.fd 2001/06/04 scalable font definitions for T1/phv.
 
 (/usr/local/texlive/2014/texmf-dist/tex/context/base/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count211
-\scratchdimen=\dimen263
+\scratchcounter=\count215
+\scratchdimen=\dimen276
 \scratchbox=\box66
-\nofMPsegments=\count212
-\nofMParguments=\count213
+\nofMPsegments=\count216
+\nofMParguments=\count217
 \everyMPshowfont=\toks53
-\MPscratchCnt=\count214
-\MPscratchDim=\dimen264
-\MPnumerator=\count215
-\makeMPintoPDFobject=\count216
+\MPscratchCnt=\count218
+\MPscratchDim=\dimen277
+\MPnumerator=\count219
+\makeMPintoPDFobject=\count220
 \everyMPtoPDFconversion=\toks54
 ) (/usr/local/texlive/2014/texmf-dist/tex/latex/oberdiek/epstopdf-base.sty
 Package: epstopdf-base 2010/02/09 v2.5 Base part for package epstopdf
@@ -1143,7 +1163,7 @@ e
 ))
 ABD: EveryShipout initializing macros
 \AtBeginShipoutBox=\box67
-Package hyperref Info: Link coloring ON on input line 114.
+Package hyperref Info: Link coloring ON on input line 115.
 
 (/usr/local/texlive/2014/texmf-dist/tex/latex/hyperref/nameref.sty
 Package: nameref 2012/10/27 v2.43 Cross-referencing by name of section
@@ -1151,58 +1171,58 @@ Package: nameref 2012/10/27 v2.43 Cross-referencing by name of section
 (/usr/local/texlive/2014/texmf-dist/tex/generic/oberdiek/gettitlestring.sty
 Package: gettitlestring 2010/12/03 v1.4 Cleanup title references (HO)
 )
-\c@section@level=\count217
+\c@section@level=\count221
 )
-LaTeX Info: Redefining \ref on input line 114.
-LaTeX Info: Redefining \pageref on input line 114.
-LaTeX Info: Redefining \nameref on input line 114.
+LaTeX Info: Redefining \ref on input line 115.
+LaTeX Info: Redefining \pageref on input line 115.
+LaTeX Info: Redefining \nameref on input line 115.
 
 (./talk.out) (./talk.out)
 \@outlinefile=\write5
 \openout5 = `talk.out'.
 
 LaTeX Font Info:    Overwriting symbol font `operators' in version `normal'
-(Font)                  OT1/cmr/m/n --> OT1/cmss/m/n on input line 114.
+(Font)                  OT1/cmr/m/n --> OT1/cmss/m/n on input line 115.
 LaTeX Font Info:    Overwriting symbol font `operators' in version `bold'
-(Font)                  OT1/cmr/bx/n --> OT1/cmss/bx/n on input line 114.
+(Font)                  OT1/cmr/bx/n --> OT1/cmss/bx/n on input line 115.
 \symnumbers=\mathgroup6
 \sympureletters=\mathgroup7
 LaTeX Font Info:    Overwriting math alphabet `\mathrm' in version `normal'
-(Font)                  OT1/cmss/m/n --> T1/ptm/m/n on input line 114.
-LaTeX Font Info:    Redeclaring math alphabet \mathbf on input line 114.
+(Font)                  OT1/cmss/m/n --> T1/ptm/m/n on input line 115.
+LaTeX Font Info:    Redeclaring math alphabet \mathbf on input line 115.
 LaTeX Font Info:    Overwriting math alphabet `\mathbf' in version `normal'
-(Font)                  OT1/cmr/bx/n --> T1/phv/bx/n on input line 114.
+(Font)                  OT1/cmr/bx/n --> T1/phv/bx/n on input line 115.
 LaTeX Font Info:    Overwriting math alphabet `\mathbf' in version `bold'
-(Font)                  OT1/cmr/bx/n --> T1/phv/bx/n on input line 114.
-LaTeX Font Info:    Redeclaring math alphabet \mathsf on input line 114.
+(Font)                  OT1/cmr/bx/n --> T1/phv/bx/n on input line 115.
+LaTeX Font Info:    Redeclaring math alphabet \mathsf on input line 115.
 LaTeX Font Info:    Overwriting math alphabet `\mathsf' in version `normal'
-(Font)                  OT1/cmss/m/n --> T1/phv/m/n on input line 114.
+(Font)                  OT1/cmss/m/n --> T1/phv/m/n on input line 115.
 LaTeX Font Info:    Overwriting math alphabet `\mathsf' in version `bold'
-(Font)                  OT1/cmss/bx/n --> T1/phv/m/n on input line 114.
-LaTeX Font Info:    Redeclaring math alphabet \mathit on input line 114.
+(Font)                  OT1/cmss/bx/n --> T1/phv/m/n on input line 115.
+LaTeX Font Info:    Redeclaring math alphabet \mathit on input line 115.
 LaTeX Font Info:    Overwriting math alphabet `\mathit' in version `normal'
-(Font)                  OT1/cmr/m/it --> T1/phv/m/it on input line 114.
+(Font)                  OT1/cmr/m/it --> T1/phv/m/it on input line 115.
 LaTeX Font Info:    Overwriting math alphabet `\mathit' in version `bold'
-(Font)                  OT1/cmr/bx/it --> T1/phv/m/it on input line 114.
-LaTeX Font Info:    Redeclaring math alphabet \mathtt on input line 114.
+(Font)                  OT1/cmr/bx/it --> T1/phv/m/it on input line 115.
+LaTeX Font Info:    Redeclaring math alphabet \mathtt on input line 115.
 LaTeX Font Info:    Overwriting math alphabet `\mathtt' in version `normal'
-(Font)                  OT1/cmtt/m/n --> T1/pcr/m/n on input line 114.
+(Font)                  OT1/cmtt/m/n --> T1/pcr/m/n on input line 115.
 LaTeX Font Info:    Overwriting math alphabet `\mathtt' in version `bold'
-(Font)                  OT1/cmtt/m/n --> T1/pcr/m/n on input line 114.
+(Font)                  OT1/cmtt/m/n --> T1/pcr/m/n on input line 115.
 LaTeX Font Info:    Overwriting symbol font `numbers' in version `bold'
-(Font)                  T1/phv/m/n --> T1/phv/bx/n on input line 114.
+(Font)                  T1/phv/m/n --> T1/phv/bx/n on input line 115.
 LaTeX Font Info:    Overwriting symbol font `pureletters' in version `bold'
-(Font)                  T1/phv/m/it --> T1/phv/bx/it on input line 114.
+(Font)                  T1/phv/m/it --> T1/phv/bx/it on input line 115.
 LaTeX Font Info:    Overwriting math alphabet `\mathrm' in version `bold'
-(Font)                  OT1/cmss/bx/n --> T1/ptm/bx/n on input line 114.
+(Font)                  OT1/cmss/bx/n --> T1/ptm/bx/n on input line 115.
 LaTeX Font Info:    Overwriting math alphabet `\mathbf' in version `bold'
-(Font)                  T1/phv/bx/n --> T1/phv/bx/n on input line 114.
+(Font)                  T1/phv/bx/n --> T1/phv/bx/n on input line 115.
 LaTeX Font Info:    Overwriting math alphabet `\mathsf' in version `bold'
-(Font)                  T1/phv/m/n --> T1/phv/bx/n on input line 114.
+(Font)                  T1/phv/m/n --> T1/phv/bx/n on input line 115.
 LaTeX Font Info:    Overwriting math alphabet `\mathit' in version `bold'
-(Font)                  T1/phv/m/it --> T1/phv/bx/it on input line 114.
+(Font)                  T1/phv/m/it --> T1/phv/bx/it on input line 115.
 LaTeX Font Info:    Overwriting math alphabet `\mathtt' in version `bold'
-(Font)                  T1/pcr/m/n --> T1/pcr/bx/n on input line 114.
+(Font)                  T1/pcr/m/n --> T1/pcr/bx/n on input line 115.
 
 (/usr/local/texlive/2014/texmf-dist/tex/latex/beamer/translator/dicts/translato
 r-basic-dictionary/translator-basic-dictionary-English.dict
@@ -1228,33 +1248,33 @@ Dictionary: translator-numbers-dictionary, Language: English
 r-theorem-dictionary/translator-theorem-dictionary-English.dict
 Dictionary: translator-theorem-dictionary, Language: English 
 )
-LaTeX Info: Redefining \includegraphics on input line 114.
-\c@lstlisting=\count218
+LaTeX Info: Redefining \includegraphics on input line 115.
+\c@lstlisting=\count222
 Package caption Info: Begin \AtBeginDocument code.
 Package caption Info: End \AtBeginDocument code.
  (./talk.nav)
 <talkfigs/dougal.png, id=14, 461.725pt x 461.725pt>
 File: talkfigs/dougal.png Graphic file (type png)
  <use talkfigs/dougal.png>
-Package pdftex.def Info: talkfigs/dougal.png used on input line 116.
+Package pdftex.def Info: talkfigs/dougal.png used on input line 117.
 (pdftex.def)             Requested size: 49.16243pt x 49.1675pt.
 
 <talkfigs/david2.jpg, id=15, 325.215pt x 487.8225pt>
 File: talkfigs/david2.jpg Graphic file (type jpg)
  <use talkfigs/david2.jpg>
-Package pdftex.def Info: talkfigs/david2.jpg used on input line 116.
+Package pdftex.def Info: talkfigs/david2.jpg used on input line 117.
 (pdftex.def)             Requested size: 38.17308pt x 49.1675pt.
 
 <talkfigs/adams.jpg, id=17, 200.75pt x 301.125pt>
 File: talkfigs/adams.jpg Graphic file (type jpg)
  <use talkfigs/adams.jpg>
-Package pdftex.def Info: talkfigs/adams.jpg used on input line 116.
+Package pdftex.def Info: talkfigs/adams.jpg used on input line 117.
 (pdftex.def)             Requested size: 32.77617pt x 49.1675pt.
 
 <talkfigs/harvard.jpg, id=18, 272.4579pt x 96.36pt>
 File: talkfigs/harvard.jpg Graphic file (type jpg)
  <use talkfigs/harvard.jpg>
-Package pdftex.def Info: talkfigs/harvard.jpg used on input line 116.
+Package pdftex.def Info: talkfigs/harvard.jpg used on input line 117.
 (pdftex.def)             Requested size: 139.01819pt x 49.1675pt.
 
 [1
@@ -1262,33 +1282,37 @@ Package pdftex.def Info: talkfigs/harvard.jpg used on input line 116.
 {/usr/local/texlive/2014/texmf-var/fonts/map/pdftex/updmap/pdftex.map} <./talkf
 igs/david2.jpg> <./talkfigs/dougal.png (PNG copy)> <./talkfigs/adams.jpg> <./ta
 lkfigs/harvard.jpg>]
-LaTeX Font Info:    Try loading font information for OMS+phv on input line 135.
-
-
-(/usr/local/texlive/2014/texmf-dist/tex/latex/psnfss/omsphv.fd
-File: omsphv.fd 
-)
-LaTeX Font Info:    Font shape `OMS/phv/m/n' in size <10.95> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 135.
- [2
-
-]
-LaTeX Font Info:    Try loading font information for U+msa on input line 185.
+LaTeX Font Info:    Try loading font information for U+msa on input line 136.
 
 (/usr/local/texlive/2014/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Try loading font information for U+msb on input line 185.
+LaTeX Font Info:    Try loading font information for U+msb on input line 136.
 
 (/usr/local/texlive/2014/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
 LaTeX Font Info:    Font shape `T1/phv/m/it' in size <12> not available
-(Font)              Font shape `T1/phv/m/sl' tried instead on input line 185.
+(Font)              Font shape `T1/phv/m/sl' tried instead on input line 136.
 LaTeX Font Info:    Font shape `T1/phv/m/it' in size <8> not available
-(Font)              Font shape `T1/phv/m/sl' tried instead on input line 185.
+(Font)              Font shape `T1/phv/m/sl' tried instead on input line 136.
 LaTeX Font Info:    Font shape `T1/phv/m/it' in size <6> not available
-(Font)              Font shape `T1/phv/m/sl' tried instead on input line 185.
+(Font)              Font shape `T1/phv/m/sl' tried instead on input line 136.
+
+Overfull \hbox (21.02147pt too wide) in paragraph at lines 136--136
+[][]  
+ []
+
+[2
+
+]
+LaTeX Font Info:    Try loading font information for OMS+phv on input line 186.
+
+ (/usr/local/texlive/2014/texmf-dist/tex/latex/psnfss/omsphv.fd
+File: omsphv.fd 
+)
+LaTeX Font Info:    Font shape `OMS/phv/m/n' in size <10.95> not available
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 186.
 
 <../experiments/2015_03_02_funnel/5-talk/figures/trails_0/iter_0.pdf, id=33, 28
 7.27327pt x 238.49101pt>
@@ -1297,571 +1321,571 @@ ic file (type pdf)
 
 <use ../experiments/2015_03_02_funnel/5-talk/figures/trails_0/iter_0.pdf>
 Package pdftex.def Info: ../experiments/2015_03_02_funnel/5-talk/figures/trails
-_0/iter_0.pdf used on input line 185.
+_0/iter_0.pdf used on input line 186.
 (pdftex.def)             Requested size: 170.71652pt x 141.7274pt.
 
-Overfull \hbox (28.45274pt too wide) in paragraph at lines 185--185
+Overfull \hbox (28.45274pt too wide) in paragraph at lines 186--186
 [][]  
  []
 
 [3
 
  <../experiments/2015_03_02_funnel/5-talk/figures/trails_0/iter_0.pdf>]
-<../experiments/2015_03_02_funnel/5-talk/figures/trails_0/iter_1.pdf, id=46, 28
+<../experiments/2015_03_02_funnel/5-talk/figures/trails_0/iter_1.pdf, id=47, 28
 7.27327pt x 238.49101pt>
 File: ../experiments/2015_03_02_funnel/5-talk/figures/trails_0/iter_1.pdf Graph
 ic file (type pdf)
 
 <use ../experiments/2015_03_02_funnel/5-talk/figures/trails_0/iter_1.pdf>
 Package pdftex.def Info: ../experiments/2015_03_02_funnel/5-talk/figures/trails
-_0/iter_1.pdf used on input line 185.
+_0/iter_1.pdf used on input line 186.
 (pdftex.def)             Requested size: 170.71652pt x 141.7274pt.
 
-Overfull \hbox (28.45274pt too wide) in paragraph at lines 185--185
+Overfull \hbox (28.45274pt too wide) in paragraph at lines 186--186
 [][]  
  []
 
 [4
 
  <../experiments/2015_03_02_funnel/5-talk/figures/trails_0/iter_1.pdf>]
-<../experiments/2015_03_02_funnel/5-talk/figures/trails_0/iter_2.pdf, id=59, 28
+<../experiments/2015_03_02_funnel/5-talk/figures/trails_0/iter_2.pdf, id=60, 28
 7.27327pt x 238.49101pt>
 File: ../experiments/2015_03_02_funnel/5-talk/figures/trails_0/iter_2.pdf Graph
 ic file (type pdf)
 
 <use ../experiments/2015_03_02_funnel/5-talk/figures/trails_0/iter_2.pdf>
 Package pdftex.def Info: ../experiments/2015_03_02_funnel/5-talk/figures/trails
-_0/iter_2.pdf used on input line 185.
+_0/iter_2.pdf used on input line 186.
 (pdftex.def)             Requested size: 170.71652pt x 141.7274pt.
 
-Overfull \hbox (28.45274pt too wide) in paragraph at lines 185--185
+Overfull \hbox (28.45274pt too wide) in paragraph at lines 186--186
 [][]  
  []
 
 [5
 
  <../experiments/2015_03_02_funnel/5-talk/figures/trails_0/iter_2.pdf>]
-<../experiments/2015_03_02_funnel/5-talk/figures/trails_0/iter_3.pdf, id=72, 28
+<../experiments/2015_03_02_funnel/5-talk/figures/trails_0/iter_3.pdf, id=73, 28
 7.27327pt x 238.49101pt>
 File: ../experiments/2015_03_02_funnel/5-talk/figures/trails_0/iter_3.pdf Graph
 ic file (type pdf)
 
 <use ../experiments/2015_03_02_funnel/5-talk/figures/trails_0/iter_3.pdf>
 Package pdftex.def Info: ../experiments/2015_03_02_funnel/5-talk/figures/trails
-_0/iter_3.pdf used on input line 185.
+_0/iter_3.pdf used on input line 186.
 (pdftex.def)             Requested size: 170.71652pt x 141.7274pt.
 
-Overfull \hbox (28.45274pt too wide) in paragraph at lines 185--185
+Overfull \hbox (28.45274pt too wide) in paragraph at lines 186--186
 [][]  
  []
 
 [6
 
  <../experiments/2015_03_02_funnel/5-talk/figures/trails_0/iter_3.pdf>]
-<../experiments/2015_03_02_funnel/5-talk/figures/trails_0/iter_4.pdf, id=85, 28
+<../experiments/2015_03_02_funnel/5-talk/figures/trails_0/iter_4.pdf, id=86, 28
 7.27327pt x 238.49101pt>
 File: ../experiments/2015_03_02_funnel/5-talk/figures/trails_0/iter_4.pdf Graph
 ic file (type pdf)
 
 <use ../experiments/2015_03_02_funnel/5-talk/figures/trails_0/iter_4.pdf>
 Package pdftex.def Info: ../experiments/2015_03_02_funnel/5-talk/figures/trails
-_0/iter_4.pdf used on input line 185.
+_0/iter_4.pdf used on input line 186.
 (pdftex.def)             Requested size: 170.71652pt x 141.7274pt.
 
-Overfull \hbox (28.45274pt too wide) in paragraph at lines 185--185
+Overfull \hbox (28.45274pt too wide) in paragraph at lines 186--186
 [][]  
  []
 
 [7
 
  <../experiments/2015_03_02_funnel/5-talk/figures/trails_0/iter_4.pdf>]
-<../experiments/2015_03_02_funnel/5-talk/figures/trails_0/iter_5.pdf, id=99, 28
-7.27327pt x 238.49101pt>
+<../experiments/2015_03_02_funnel/5-talk/figures/trails_0/iter_5.pdf, id=100, 2
+87.27327pt x 238.49101pt>
 File: ../experiments/2015_03_02_funnel/5-talk/figures/trails_0/iter_5.pdf Graph
 ic file (type pdf)
 
 <use ../experiments/2015_03_02_funnel/5-talk/figures/trails_0/iter_5.pdf>
 Package pdftex.def Info: ../experiments/2015_03_02_funnel/5-talk/figures/trails
-_0/iter_5.pdf used on input line 185.
+_0/iter_5.pdf used on input line 186.
 (pdftex.def)             Requested size: 170.71652pt x 141.7274pt.
 
-Overfull \hbox (28.45274pt too wide) in paragraph at lines 185--185
+Overfull \hbox (28.45274pt too wide) in paragraph at lines 186--186
 [][]  
  []
 
 [8
 
  <../experiments/2015_03_02_funnel/5-talk/figures/trails_0/iter_5.pdf>]
-<../experiments/2015_03_02_funnel/5-talk/figures/trails_0/iter_6.pdf, id=112, 2
+<../experiments/2015_03_02_funnel/5-talk/figures/trails_0/iter_6.pdf, id=113, 2
 87.27327pt x 238.49101pt>
 File: ../experiments/2015_03_02_funnel/5-talk/figures/trails_0/iter_6.pdf Graph
 ic file (type pdf)
 
 <use ../experiments/2015_03_02_funnel/5-talk/figures/trails_0/iter_6.pdf>
 Package pdftex.def Info: ../experiments/2015_03_02_funnel/5-talk/figures/trails
-_0/iter_6.pdf used on input line 185.
+_0/iter_6.pdf used on input line 186.
 (pdftex.def)             Requested size: 170.71652pt x 141.7274pt.
 
-Overfull \hbox (28.45274pt too wide) in paragraph at lines 185--185
+Overfull \hbox (28.45274pt too wide) in paragraph at lines 186--186
 [][]  
  []
 
 [9
 
  <../experiments/2015_03_02_funnel/5-talk/figures/trails_0/iter_6.pdf>]
-<../experiments/2015_03_02_funnel/5-talk/figures/trails_0/iter_7.pdf, id=125, 2
+<../experiments/2015_03_02_funnel/5-talk/figures/trails_0/iter_7.pdf, id=126, 2
 87.27327pt x 238.49101pt>
 File: ../experiments/2015_03_02_funnel/5-talk/figures/trails_0/iter_7.pdf Graph
 ic file (type pdf)
 
 <use ../experiments/2015_03_02_funnel/5-talk/figures/trails_0/iter_7.pdf>
 Package pdftex.def Info: ../experiments/2015_03_02_funnel/5-talk/figures/trails
-_0/iter_7.pdf used on input line 185.
+_0/iter_7.pdf used on input line 186.
 (pdftex.def)             Requested size: 170.71652pt x 141.7274pt.
 
-Overfull \hbox (28.45274pt too wide) in paragraph at lines 185--185
+Overfull \hbox (28.45274pt too wide) in paragraph at lines 186--186
 [][]  
  []
 
 [10
 
  <../experiments/2015_03_02_funnel/5-talk/figures/trails_0/iter_7.pdf>]
-<../experiments/2015_03_02_funnel/5-talk/figures/trails_0/iter_8.pdf, id=138, 2
+<../experiments/2015_03_02_funnel/5-talk/figures/trails_0/iter_8.pdf, id=139, 2
 87.27327pt x 238.49101pt>
 File: ../experiments/2015_03_02_funnel/5-talk/figures/trails_0/iter_8.pdf Graph
 ic file (type pdf)
 
 <use ../experiments/2015_03_02_funnel/5-talk/figures/trails_0/iter_8.pdf>
 Package pdftex.def Info: ../experiments/2015_03_02_funnel/5-talk/figures/trails
-_0/iter_8.pdf used on input line 185.
+_0/iter_8.pdf used on input line 186.
 (pdftex.def)             Requested size: 170.71652pt x 141.7274pt.
 
-Overfull \hbox (28.45274pt too wide) in paragraph at lines 185--185
+Overfull \hbox (28.45274pt too wide) in paragraph at lines 186--186
 [][]  
  []
 
 [11
 
  <../experiments/2015_03_02_funnel/5-talk/figures/trails_0/iter_8.pdf>]
-<../experiments/2015_03_02_funnel/5-talk/figures/trails_0/iter_9.pdf, id=151, 2
+<../experiments/2015_03_02_funnel/5-talk/figures/trails_0/iter_9.pdf, id=152, 2
 87.27327pt x 238.49101pt>
 File: ../experiments/2015_03_02_funnel/5-talk/figures/trails_0/iter_9.pdf Graph
 ic file (type pdf)
 
 <use ../experiments/2015_03_02_funnel/5-talk/figures/trails_0/iter_9.pdf>
 Package pdftex.def Info: ../experiments/2015_03_02_funnel/5-talk/figures/trails
-_0/iter_9.pdf used on input line 185.
+_0/iter_9.pdf used on input line 186.
 (pdftex.def)             Requested size: 170.71652pt x 141.7274pt.
 
-Overfull \hbox (28.45274pt too wide) in paragraph at lines 185--185
+Overfull \hbox (28.45274pt too wide) in paragraph at lines 186--186
 [][]  
  []
 
 [12
 
  <../experiments/2015_03_02_funnel/5-talk/figures/trails_0/iter_9.pdf>]
-<../experiments/2015_03_02_funnel/5-talk/figures/trails_0/iter_10.pdf, id=164, 
+<../experiments/2015_03_02_funnel/5-talk/figures/trails_0/iter_10.pdf, id=165, 
 287.27327pt x 238.49101pt>
 File: ../experiments/2015_03_02_funnel/5-talk/figures/trails_0/iter_10.pdf Grap
 hic file (type pdf)
 
 <use ../experiments/2015_03_02_funnel/5-talk/figures/trails_0/iter_10.pdf>
 Package pdftex.def Info: ../experiments/2015_03_02_funnel/5-talk/figures/trails
-_0/iter_10.pdf used on input line 185.
+_0/iter_10.pdf used on input line 186.
 (pdftex.def)             Requested size: 170.71652pt x 141.7274pt.
 
-Overfull \hbox (28.45274pt too wide) in paragraph at lines 185--185
+Overfull \hbox (28.45274pt too wide) in paragraph at lines 186--186
 [][]  
  []
 
 [13
 
  <../experiments/2015_03_02_funnel/5-talk/figures/trails_0/iter_10.pdf>]
-<../experiments/2015_03_02_funnel/5-talk/figures/trails_12/iter_0.pdf, id=178, 
+<../experiments/2015_03_02_funnel/5-talk/figures/trails_12/iter_0.pdf, id=179, 
 287.27327pt x 238.49101pt>
 File: ../experiments/2015_03_02_funnel/5-talk/figures/trails_12/iter_0.pdf Grap
 hic file (type pdf)
 
 <use ../experiments/2015_03_02_funnel/5-talk/figures/trails_12/iter_0.pdf>
 Package pdftex.def Info: ../experiments/2015_03_02_funnel/5-talk/figures/trails
-_12/iter_0.pdf used on input line 185.
+_12/iter_0.pdf used on input line 186.
 (pdftex.def)             Requested size: 170.71652pt x 141.7274pt.
 
-Overfull \hbox (28.45274pt too wide) in paragraph at lines 185--185
+Overfull \hbox (28.45274pt too wide) in paragraph at lines 186--186
 [][]  
  []
 
 [14
 
  <../experiments/2015_03_02_funnel/5-talk/figures/trails_12/iter_0.pdf>]
-<../experiments/2015_03_02_funnel/5-talk/figures/trails_12/iter_1.pdf, id=191, 
+<../experiments/2015_03_02_funnel/5-talk/figures/trails_12/iter_1.pdf, id=192, 
 287.27327pt x 238.49101pt>
 File: ../experiments/2015_03_02_funnel/5-talk/figures/trails_12/iter_1.pdf Grap
 hic file (type pdf)
 
 <use ../experiments/2015_03_02_funnel/5-talk/figures/trails_12/iter_1.pdf>
 Package pdftex.def Info: ../experiments/2015_03_02_funnel/5-talk/figures/trails
-_12/iter_1.pdf used on input line 185.
+_12/iter_1.pdf used on input line 186.
 (pdftex.def)             Requested size: 170.71652pt x 141.7274pt.
 
-Overfull \hbox (28.45274pt too wide) in paragraph at lines 185--185
+Overfull \hbox (28.45274pt too wide) in paragraph at lines 186--186
 [][]  
  []
 
 [15
 
  <../experiments/2015_03_02_funnel/5-talk/figures/trails_12/iter_1.pdf>]
-<../experiments/2015_03_02_funnel/5-talk/figures/trails_12/iter_2.pdf, id=204, 
+<../experiments/2015_03_02_funnel/5-talk/figures/trails_12/iter_2.pdf, id=205, 
 287.27327pt x 238.49101pt>
 File: ../experiments/2015_03_02_funnel/5-talk/figures/trails_12/iter_2.pdf Grap
 hic file (type pdf)
 
 <use ../experiments/2015_03_02_funnel/5-talk/figures/trails_12/iter_2.pdf>
 Package pdftex.def Info: ../experiments/2015_03_02_funnel/5-talk/figures/trails
-_12/iter_2.pdf used on input line 185.
+_12/iter_2.pdf used on input line 186.
 (pdftex.def)             Requested size: 170.71652pt x 141.7274pt.
 
-Overfull \hbox (28.45274pt too wide) in paragraph at lines 185--185
+Overfull \hbox (28.45274pt too wide) in paragraph at lines 186--186
 [][]  
  []
 
 [16
 
  <../experiments/2015_03_02_funnel/5-talk/figures/trails_12/iter_2.pdf>]
-<../experiments/2015_03_02_funnel/5-talk/figures/trails_12/iter_3.pdf, id=217, 
+<../experiments/2015_03_02_funnel/5-talk/figures/trails_12/iter_3.pdf, id=218, 
 287.27327pt x 238.49101pt>
 File: ../experiments/2015_03_02_funnel/5-talk/figures/trails_12/iter_3.pdf Grap
 hic file (type pdf)
 
 <use ../experiments/2015_03_02_funnel/5-talk/figures/trails_12/iter_3.pdf>
 Package pdftex.def Info: ../experiments/2015_03_02_funnel/5-talk/figures/trails
-_12/iter_3.pdf used on input line 185.
+_12/iter_3.pdf used on input line 186.
 (pdftex.def)             Requested size: 170.71652pt x 141.7274pt.
 
-Overfull \hbox (28.45274pt too wide) in paragraph at lines 185--185
+Overfull \hbox (28.45274pt too wide) in paragraph at lines 186--186
 [][]  
  []
 
 [17
 
  <../experiments/2015_03_02_funnel/5-talk/figures/trails_12/iter_3.pdf>]
-<../experiments/2015_03_02_funnel/5-talk/figures/trails_12/iter_4.pdf, id=231, 
+<../experiments/2015_03_02_funnel/5-talk/figures/trails_12/iter_4.pdf, id=232, 
 287.27327pt x 238.49101pt>
 File: ../experiments/2015_03_02_funnel/5-talk/figures/trails_12/iter_4.pdf Grap
 hic file (type pdf)
 
 <use ../experiments/2015_03_02_funnel/5-talk/figures/trails_12/iter_4.pdf>
 Package pdftex.def Info: ../experiments/2015_03_02_funnel/5-talk/figures/trails
-_12/iter_4.pdf used on input line 185.
+_12/iter_4.pdf used on input line 186.
 (pdftex.def)             Requested size: 170.71652pt x 141.7274pt.
 
-Overfull \hbox (28.45274pt too wide) in paragraph at lines 185--185
+Overfull \hbox (28.45274pt too wide) in paragraph at lines 186--186
 [][]  
  []
 
 [18
 
  <../experiments/2015_03_02_funnel/5-talk/figures/trails_12/iter_4.pdf>]
-<../experiments/2015_03_02_funnel/5-talk/figures/trails_12/iter_5.pdf, id=244, 
+<../experiments/2015_03_02_funnel/5-talk/figures/trails_12/iter_5.pdf, id=245, 
 287.27327pt x 238.49101pt>
 File: ../experiments/2015_03_02_funnel/5-talk/figures/trails_12/iter_5.pdf Grap
 hic file (type pdf)
 
 <use ../experiments/2015_03_02_funnel/5-talk/figures/trails_12/iter_5.pdf>
 Package pdftex.def Info: ../experiments/2015_03_02_funnel/5-talk/figures/trails
-_12/iter_5.pdf used on input line 185.
+_12/iter_5.pdf used on input line 186.
 (pdftex.def)             Requested size: 170.71652pt x 141.7274pt.
 
-Overfull \hbox (28.45274pt too wide) in paragraph at lines 185--185
+Overfull \hbox (28.45274pt too wide) in paragraph at lines 186--186
 [][]  
  []
 
 [19
 
  <../experiments/2015_03_02_funnel/5-talk/figures/trails_12/iter_5.pdf>]
-<../experiments/2015_03_02_funnel/5-talk/figures/trails_12/iter_6.pdf, id=258, 
+<../experiments/2015_03_02_funnel/5-talk/figures/trails_12/iter_6.pdf, id=259, 
 287.27327pt x 238.49101pt>
 File: ../experiments/2015_03_02_funnel/5-talk/figures/trails_12/iter_6.pdf Grap
 hic file (type pdf)
 
 <use ../experiments/2015_03_02_funnel/5-talk/figures/trails_12/iter_6.pdf>
 Package pdftex.def Info: ../experiments/2015_03_02_funnel/5-talk/figures/trails
-_12/iter_6.pdf used on input line 185.
+_12/iter_6.pdf used on input line 186.
 (pdftex.def)             Requested size: 170.71652pt x 141.7274pt.
 
-Overfull \hbox (28.45274pt too wide) in paragraph at lines 185--185
+Overfull \hbox (28.45274pt too wide) in paragraph at lines 186--186
 [][]  
  []
 
 [20
 
  <../experiments/2015_03_02_funnel/5-talk/figures/trails_12/iter_6.pdf>]
-<../experiments/2015_03_02_funnel/5-talk/figures/trails_12/iter_7.pdf, id=271, 
+<../experiments/2015_03_02_funnel/5-talk/figures/trails_12/iter_7.pdf, id=272, 
 287.27327pt x 238.49101pt>
 File: ../experiments/2015_03_02_funnel/5-talk/figures/trails_12/iter_7.pdf Grap
 hic file (type pdf)
 
 <use ../experiments/2015_03_02_funnel/5-talk/figures/trails_12/iter_7.pdf>
 Package pdftex.def Info: ../experiments/2015_03_02_funnel/5-talk/figures/trails
-_12/iter_7.pdf used on input line 185.
+_12/iter_7.pdf used on input line 186.
 (pdftex.def)             Requested size: 170.71652pt x 141.7274pt.
 
-Overfull \hbox (28.45274pt too wide) in paragraph at lines 185--185
+Overfull \hbox (28.45274pt too wide) in paragraph at lines 186--186
 [][]  
  []
 
 [21
 
  <../experiments/2015_03_02_funnel/5-talk/figures/trails_12/iter_7.pdf>]
-<../experiments/2015_03_02_funnel/5-talk/figures/trails_12/iter_8.pdf, id=284, 
+<../experiments/2015_03_02_funnel/5-talk/figures/trails_12/iter_8.pdf, id=285, 
 287.27327pt x 238.49101pt>
 File: ../experiments/2015_03_02_funnel/5-talk/figures/trails_12/iter_8.pdf Grap
 hic file (type pdf)
 
 <use ../experiments/2015_03_02_funnel/5-talk/figures/trails_12/iter_8.pdf>
 Package pdftex.def Info: ../experiments/2015_03_02_funnel/5-talk/figures/trails
-_12/iter_8.pdf used on input line 185.
+_12/iter_8.pdf used on input line 186.
 (pdftex.def)             Requested size: 170.71652pt x 141.7274pt.
 
-Overfull \hbox (28.45274pt too wide) in paragraph at lines 185--185
+Overfull \hbox (28.45274pt too wide) in paragraph at lines 186--186
 [][]  
  []
 
 [22
 
  <../experiments/2015_03_02_funnel/5-talk/figures/trails_12/iter_8.pdf>]
-<../experiments/2015_03_02_funnel/5-talk/figures/trails_12/iter_9.pdf, id=297, 
+<../experiments/2015_03_02_funnel/5-talk/figures/trails_12/iter_9.pdf, id=298, 
 287.27327pt x 238.49101pt>
 File: ../experiments/2015_03_02_funnel/5-talk/figures/trails_12/iter_9.pdf Grap
 hic file (type pdf)
 
 <use ../experiments/2015_03_02_funnel/5-talk/figures/trails_12/iter_9.pdf>
 Package pdftex.def Info: ../experiments/2015_03_02_funnel/5-talk/figures/trails
-_12/iter_9.pdf used on input line 185.
+_12/iter_9.pdf used on input line 186.
 (pdftex.def)             Requested size: 170.71652pt x 141.7274pt.
 
-Overfull \hbox (28.45274pt too wide) in paragraph at lines 185--185
+Overfull \hbox (28.45274pt too wide) in paragraph at lines 186--186
 [][]  
  []
 
 [23
 
  <../experiments/2015_03_02_funnel/5-talk/figures/trails_12/iter_9.pdf>]
-<../experiments/2015_03_02_funnel/5-talk/figures/trails_12/iter_10.pdf, id=310,
+<../experiments/2015_03_02_funnel/5-talk/figures/trails_12/iter_10.pdf, id=311,
  287.27327pt x 238.49101pt>
 File: ../experiments/2015_03_02_funnel/5-talk/figures/trails_12/iter_10.pdf Gra
 phic file (type pdf)
 
 <use ../experiments/2015_03_02_funnel/5-talk/figures/trails_12/iter_10.pdf>
 Package pdftex.def Info: ../experiments/2015_03_02_funnel/5-talk/figures/trails
-_12/iter_10.pdf used on input line 185.
+_12/iter_10.pdf used on input line 186.
 (pdftex.def)             Requested size: 170.71652pt x 141.7274pt.
 
-Overfull \hbox (28.45274pt too wide) in paragraph at lines 185--185
+Overfull \hbox (28.45274pt too wide) in paragraph at lines 186--186
 [][]  
  []
 
 [24
 
  <../experiments/2015_03_02_funnel/5-talk/figures/trails_12/iter_10.pdf>]
-<../experiments/2015_03_02_funnel/5-talk/figures/trails_6/iter_0.pdf, id=323, 2
+<../experiments/2015_03_02_funnel/5-talk/figures/trails_6/iter_0.pdf, id=324, 2
 87.27327pt x 238.49101pt>
 File: ../experiments/2015_03_02_funnel/5-talk/figures/trails_6/iter_0.pdf Graph
 ic file (type pdf)
 
 <use ../experiments/2015_03_02_funnel/5-talk/figures/trails_6/iter_0.pdf>
 Package pdftex.def Info: ../experiments/2015_03_02_funnel/5-talk/figures/trails
-_6/iter_0.pdf used on input line 185.
+_6/iter_0.pdf used on input line 186.
 (pdftex.def)             Requested size: 170.71652pt x 141.7274pt.
 
-Overfull \hbox (28.45274pt too wide) in paragraph at lines 185--185
+Overfull \hbox (28.45274pt too wide) in paragraph at lines 186--186
 [][]  
  []
 
 [25
 
  <../experiments/2015_03_02_funnel/5-talk/figures/trails_6/iter_0.pdf>]
-<../experiments/2015_03_02_funnel/5-talk/figures/trails_6/iter_1.pdf, id=337, 2
+<../experiments/2015_03_02_funnel/5-talk/figures/trails_6/iter_1.pdf, id=338, 2
 87.27327pt x 238.49101pt>
 File: ../experiments/2015_03_02_funnel/5-talk/figures/trails_6/iter_1.pdf Graph
 ic file (type pdf)
 
 <use ../experiments/2015_03_02_funnel/5-talk/figures/trails_6/iter_1.pdf>
 Package pdftex.def Info: ../experiments/2015_03_02_funnel/5-talk/figures/trails
-_6/iter_1.pdf used on input line 185.
+_6/iter_1.pdf used on input line 186.
 (pdftex.def)             Requested size: 170.71652pt x 141.7274pt.
 
-Overfull \hbox (28.45274pt too wide) in paragraph at lines 185--185
+Overfull \hbox (28.45274pt too wide) in paragraph at lines 186--186
 [][]  
  []
 
 [26
 
  <../experiments/2015_03_02_funnel/5-talk/figures/trails_6/iter_1.pdf>]
-<../experiments/2015_03_02_funnel/5-talk/figures/trails_6/iter_2.pdf, id=350, 2
+<../experiments/2015_03_02_funnel/5-talk/figures/trails_6/iter_2.pdf, id=351, 2
 87.27327pt x 238.49101pt>
 File: ../experiments/2015_03_02_funnel/5-talk/figures/trails_6/iter_2.pdf Graph
 ic file (type pdf)
 
 <use ../experiments/2015_03_02_funnel/5-talk/figures/trails_6/iter_2.pdf>
 Package pdftex.def Info: ../experiments/2015_03_02_funnel/5-talk/figures/trails
-_6/iter_2.pdf used on input line 185.
+_6/iter_2.pdf used on input line 186.
 (pdftex.def)             Requested size: 170.71652pt x 141.7274pt.
 
-Overfull \hbox (28.45274pt too wide) in paragraph at lines 185--185
+Overfull \hbox (28.45274pt too wide) in paragraph at lines 186--186
 [][]  
  []
 
 [27
 
  <../experiments/2015_03_02_funnel/5-talk/figures/trails_6/iter_2.pdf>]
-<../experiments/2015_03_02_funnel/5-talk/figures/trails_6/iter_3.pdf, id=363, 2
+<../experiments/2015_03_02_funnel/5-talk/figures/trails_6/iter_3.pdf, id=364, 2
 87.27327pt x 238.49101pt>
 File: ../experiments/2015_03_02_funnel/5-talk/figures/trails_6/iter_3.pdf Graph
 ic file (type pdf)
 
 <use ../experiments/2015_03_02_funnel/5-talk/figures/trails_6/iter_3.pdf>
 Package pdftex.def Info: ../experiments/2015_03_02_funnel/5-talk/figures/trails
-_6/iter_3.pdf used on input line 185.
+_6/iter_3.pdf used on input line 186.
 (pdftex.def)             Requested size: 170.71652pt x 141.7274pt.
 
-Overfull \hbox (28.45274pt too wide) in paragraph at lines 185--185
+Overfull \hbox (28.45274pt too wide) in paragraph at lines 186--186
 [][]  
  []
 
 [28
 
  <../experiments/2015_03_02_funnel/5-talk/figures/trails_6/iter_3.pdf>]
-<../experiments/2015_03_02_funnel/5-talk/figures/trails_6/iter_4.pdf, id=376, 2
+<../experiments/2015_03_02_funnel/5-talk/figures/trails_6/iter_4.pdf, id=377, 2
 87.27327pt x 238.49101pt>
 File: ../experiments/2015_03_02_funnel/5-talk/figures/trails_6/iter_4.pdf Graph
 ic file (type pdf)
 
 <use ../experiments/2015_03_02_funnel/5-talk/figures/trails_6/iter_4.pdf>
 Package pdftex.def Info: ../experiments/2015_03_02_funnel/5-talk/figures/trails
-_6/iter_4.pdf used on input line 185.
+_6/iter_4.pdf used on input line 186.
 (pdftex.def)             Requested size: 170.71652pt x 141.7274pt.
 
-Overfull \hbox (28.45274pt too wide) in paragraph at lines 185--185
+Overfull \hbox (28.45274pt too wide) in paragraph at lines 186--186
 [][]  
  []
 
 [29
 
  <../experiments/2015_03_02_funnel/5-talk/figures/trails_6/iter_4.pdf>]
-<../experiments/2015_03_02_funnel/5-talk/figures/trails_6/iter_5.pdf, id=389, 2
+<../experiments/2015_03_02_funnel/5-talk/figures/trails_6/iter_5.pdf, id=390, 2
 87.27327pt x 238.49101pt>
 File: ../experiments/2015_03_02_funnel/5-talk/figures/trails_6/iter_5.pdf Graph
 ic file (type pdf)
 
 <use ../experiments/2015_03_02_funnel/5-talk/figures/trails_6/iter_5.pdf>
 Package pdftex.def Info: ../experiments/2015_03_02_funnel/5-talk/figures/trails
-_6/iter_5.pdf used on input line 185.
+_6/iter_5.pdf used on input line 186.
 (pdftex.def)             Requested size: 170.71652pt x 141.7274pt.
 
-Overfull \hbox (28.45274pt too wide) in paragraph at lines 185--185
+Overfull \hbox (28.45274pt too wide) in paragraph at lines 186--186
 [][]  
  []
 
 [30
 
  <../experiments/2015_03_02_funnel/5-talk/figures/trails_6/iter_5.pdf>]
-<../experiments/2015_03_02_funnel/5-talk/figures/trails_6/iter_6.pdf, id=402, 2
+<../experiments/2015_03_02_funnel/5-talk/figures/trails_6/iter_6.pdf, id=403, 2
 87.27327pt x 238.49101pt>
 File: ../experiments/2015_03_02_funnel/5-talk/figures/trails_6/iter_6.pdf Graph
 ic file (type pdf)
 
 <use ../experiments/2015_03_02_funnel/5-talk/figures/trails_6/iter_6.pdf>
 Package pdftex.def Info: ../experiments/2015_03_02_funnel/5-talk/figures/trails
-_6/iter_6.pdf used on input line 185.
+_6/iter_6.pdf used on input line 186.
 (pdftex.def)             Requested size: 170.71652pt x 141.7274pt.
 
-Overfull \hbox (28.45274pt too wide) in paragraph at lines 185--185
+Overfull \hbox (28.45274pt too wide) in paragraph at lines 186--186
 [][]  
  []
 
 [31
 
  <../experiments/2015_03_02_funnel/5-talk/figures/trails_6/iter_6.pdf>]
-<../experiments/2015_03_02_funnel/5-talk/figures/trails_6/iter_7.pdf, id=416, 2
+<../experiments/2015_03_02_funnel/5-talk/figures/trails_6/iter_7.pdf, id=417, 2
 87.27327pt x 238.49101pt>
 File: ../experiments/2015_03_02_funnel/5-talk/figures/trails_6/iter_7.pdf Graph
 ic file (type pdf)
 
 <use ../experiments/2015_03_02_funnel/5-talk/figures/trails_6/iter_7.pdf>
 Package pdftex.def Info: ../experiments/2015_03_02_funnel/5-talk/figures/trails
-_6/iter_7.pdf used on input line 185.
+_6/iter_7.pdf used on input line 186.
 (pdftex.def)             Requested size: 170.71652pt x 141.7274pt.
 
-Overfull \hbox (28.45274pt too wide) in paragraph at lines 185--185
+Overfull \hbox (28.45274pt too wide) in paragraph at lines 186--186
 [][]  
  []
 
 [32
 
  <../experiments/2015_03_02_funnel/5-talk/figures/trails_6/iter_7.pdf>]
-<../experiments/2015_03_02_funnel/5-talk/figures/trails_6/iter_8.pdf, id=429, 2
+<../experiments/2015_03_02_funnel/5-talk/figures/trails_6/iter_8.pdf, id=430, 2
 87.27327pt x 238.49101pt>
 File: ../experiments/2015_03_02_funnel/5-talk/figures/trails_6/iter_8.pdf Graph
 ic file (type pdf)
 
 <use ../experiments/2015_03_02_funnel/5-talk/figures/trails_6/iter_8.pdf>
 Package pdftex.def Info: ../experiments/2015_03_02_funnel/5-talk/figures/trails
-_6/iter_8.pdf used on input line 185.
+_6/iter_8.pdf used on input line 186.
 (pdftex.def)             Requested size: 170.71652pt x 141.7274pt.
 
-Overfull \hbox (28.45274pt too wide) in paragraph at lines 185--185
+Overfull \hbox (28.45274pt too wide) in paragraph at lines 186--186
 [][]  
  []
 
 [33
 
  <../experiments/2015_03_02_funnel/5-talk/figures/trails_6/iter_8.pdf>]
-<../experiments/2015_03_02_funnel/5-talk/figures/trails_6/iter_9.pdf, id=442, 2
+<../experiments/2015_03_02_funnel/5-talk/figures/trails_6/iter_9.pdf, id=443, 2
 87.27327pt x 238.49101pt>
 File: ../experiments/2015_03_02_funnel/5-talk/figures/trails_6/iter_9.pdf Graph
 ic file (type pdf)
 
 <use ../experiments/2015_03_02_funnel/5-talk/figures/trails_6/iter_9.pdf>
 Package pdftex.def Info: ../experiments/2015_03_02_funnel/5-talk/figures/trails
-_6/iter_9.pdf used on input line 185.
+_6/iter_9.pdf used on input line 186.
 (pdftex.def)             Requested size: 170.71652pt x 141.7274pt.
 
-Overfull \hbox (28.45274pt too wide) in paragraph at lines 185--185
+Overfull \hbox (28.45274pt too wide) in paragraph at lines 186--186
 [][]  
  []
 
 [34
 
  <../experiments/2015_03_02_funnel/5-talk/figures/trails_6/iter_9.pdf>]
-<../experiments/2015_03_02_funnel/5-talk/figures/trails_6/iter_10.pdf, id=456, 
+<../experiments/2015_03_02_funnel/5-talk/figures/trails_6/iter_10.pdf, id=457, 
 287.27327pt x 238.49101pt>
 File: ../experiments/2015_03_02_funnel/5-talk/figures/trails_6/iter_10.pdf Grap
 hic file (type pdf)
 
 <use ../experiments/2015_03_02_funnel/5-talk/figures/trails_6/iter_10.pdf>
 Package pdftex.def Info: ../experiments/2015_03_02_funnel/5-talk/figures/trails
-_6/iter_10.pdf used on input line 185.
+_6/iter_10.pdf used on input line 186.
 (pdftex.def)             Requested size: 170.71652pt x 141.7274pt.
 
-Overfull \hbox (28.45274pt too wide) in paragraph at lines 185--185
+Overfull \hbox (28.45274pt too wide) in paragraph at lines 186--186
 [][]  
  []
 
 [35
 
  <../experiments/2015_03_02_funnel/5-talk/figures/trails_6/iter_10.pdf>]
-<../experiments/2015_03_02_funnel/6-nicer/figures/dists_0.pdf, id=469, 287.2732
+<../experiments/2015_03_02_funnel/6-nicer/figures/dists_0.pdf, id=470, 287.2732
 7pt x 238.49101pt>
 File: ../experiments/2015_03_02_funnel/6-nicer/figures/dists_0.pdf Graphic file
  (type pdf)
 
 <use ../experiments/2015_03_02_funnel/6-nicer/figures/dists_0.pdf>
 Package pdftex.def Info: ../experiments/2015_03_02_funnel/6-nicer/figures/dists
-_0.pdf used on input line 213.
+_0.pdf used on input line 214.
 (pdftex.def)             Requested size: 170.71652pt x 141.7274pt.
 
-Overfull \hbox (28.45274pt too wide) in paragraph at lines 213--213
+Overfull \hbox (28.45274pt too wide) in paragraph at lines 214--214
 [][]  
  []
 
@@ -1875,10 +1899,10 @@ File: ../experiments/2015_03_02_funnel/6-nicer/figures/dists_1.pdf Graphic file
 
 <use ../experiments/2015_03_02_funnel/6-nicer/figures/dists_1.pdf>
 Package pdftex.def Info: ../experiments/2015_03_02_funnel/6-nicer/figures/dists
-_1.pdf used on input line 213.
+_1.pdf used on input line 214.
 (pdftex.def)             Requested size: 170.71652pt x 141.7274pt.
 
-Overfull \hbox (28.45274pt too wide) in paragraph at lines 213--213
+Overfull \hbox (28.45274pt too wide) in paragraph at lines 214--214
 [][]  
  []
 
@@ -1892,10 +1916,10 @@ File: ../experiments/2015_03_02_funnel/6-nicer/figures/dists_2.pdf Graphic file
 
 <use ../experiments/2015_03_02_funnel/6-nicer/figures/dists_2.pdf>
 Package pdftex.def Info: ../experiments/2015_03_02_funnel/6-nicer/figures/dists
-_2.pdf used on input line 213.
+_2.pdf used on input line 214.
 (pdftex.def)             Requested size: 170.71652pt x 141.7274pt.
 
-Overfull \hbox (28.45274pt too wide) in paragraph at lines 213--213
+Overfull \hbox (28.45274pt too wide) in paragraph at lines 214--214
 [][]  
  []
 
@@ -1909,10 +1933,10 @@ File: ../experiments/2015_03_02_funnel/6-nicer/figures/dists_3.pdf Graphic file
 
 <use ../experiments/2015_03_02_funnel/6-nicer/figures/dists_3.pdf>
 Package pdftex.def Info: ../experiments/2015_03_02_funnel/6-nicer/figures/dists
-_3.pdf used on input line 213.
+_3.pdf used on input line 214.
 (pdftex.def)             Requested size: 170.71652pt x 141.7274pt.
 
-Overfull \hbox (28.45274pt too wide) in paragraph at lines 213--213
+Overfull \hbox (28.45274pt too wide) in paragraph at lines 214--214
 [][]  
  []
 
@@ -1926,10 +1950,10 @@ File: ../experiments/2015_03_02_funnel/6-nicer/figures/dists_4.pdf Graphic file
 
 <use ../experiments/2015_03_02_funnel/6-nicer/figures/dists_4.pdf>
 Package pdftex.def Info: ../experiments/2015_03_02_funnel/6-nicer/figures/dists
-_4.pdf used on input line 213.
+_4.pdf used on input line 214.
 (pdftex.def)             Requested size: 170.71652pt x 141.7274pt.
 
-Overfull \hbox (28.45274pt too wide) in paragraph at lines 213--213
+Overfull \hbox (28.45274pt too wide) in paragraph at lines 214--214
 [][]  
  []
 
@@ -1943,10 +1967,10 @@ File: ../experiments/2015_03_02_funnel/6-nicer/figures/dists_5.pdf Graphic file
 
 <use ../experiments/2015_03_02_funnel/6-nicer/figures/dists_5.pdf>
 Package pdftex.def Info: ../experiments/2015_03_02_funnel/6-nicer/figures/dists
-_5.pdf used on input line 213.
+_5.pdf used on input line 214.
 (pdftex.def)             Requested size: 170.71652pt x 141.7274pt.
 
-Overfull \hbox (28.45274pt too wide) in paragraph at lines 213--213
+Overfull \hbox (28.45274pt too wide) in paragraph at lines 214--214
 [][]  
  []
 
@@ -1960,10 +1984,10 @@ File: ../experiments/2015_03_02_funnel/6-nicer/figures/dists_6.pdf Graphic file
 
 <use ../experiments/2015_03_02_funnel/6-nicer/figures/dists_6.pdf>
 Package pdftex.def Info: ../experiments/2015_03_02_funnel/6-nicer/figures/dists
-_6.pdf used on input line 213.
+_6.pdf used on input line 214.
 (pdftex.def)             Requested size: 170.71652pt x 141.7274pt.
 
-Overfull \hbox (28.45274pt too wide) in paragraph at lines 213--213
+Overfull \hbox (28.45274pt too wide) in paragraph at lines 214--214
 [][]  
  []
 
@@ -1977,10 +2001,10 @@ File: ../experiments/2015_03_02_funnel/6-nicer/figures/dists_7.pdf Graphic file
 
 <use ../experiments/2015_03_02_funnel/6-nicer/figures/dists_7.pdf>
 Package pdftex.def Info: ../experiments/2015_03_02_funnel/6-nicer/figures/dists
-_7.pdf used on input line 213.
+_7.pdf used on input line 214.
 (pdftex.def)             Requested size: 170.71652pt x 141.7274pt.
 
-Overfull \hbox (28.45274pt too wide) in paragraph at lines 213--213
+Overfull \hbox (28.45274pt too wide) in paragraph at lines 214--214
 [][]  
  []
 
@@ -1994,10 +2018,10 @@ File: ../experiments/2015_03_02_funnel/6-nicer/figures/dists_8.pdf Graphic file
 
 <use ../experiments/2015_03_02_funnel/6-nicer/figures/dists_8.pdf>
 Package pdftex.def Info: ../experiments/2015_03_02_funnel/6-nicer/figures/dists
-_8.pdf used on input line 213.
+_8.pdf used on input line 214.
 (pdftex.def)             Requested size: 170.71652pt x 141.7274pt.
 
-Overfull \hbox (28.45274pt too wide) in paragraph at lines 213--213
+Overfull \hbox (28.45274pt too wide) in paragraph at lines 214--214
 [][]  
  []
 
@@ -2011,10 +2035,10 @@ File: ../experiments/2015_03_02_funnel/6-nicer/figures/dists_9.pdf Graphic file
 
 <use ../experiments/2015_03_02_funnel/6-nicer/figures/dists_9.pdf>
 Package pdftex.def Info: ../experiments/2015_03_02_funnel/6-nicer/figures/dists
-_9.pdf used on input line 213.
+_9.pdf used on input line 214.
 (pdftex.def)             Requested size: 170.71652pt x 141.7274pt.
 
-Overfull \hbox (28.45274pt too wide) in paragraph at lines 213--213
+Overfull \hbox (28.45274pt too wide) in paragraph at lines 214--214
 [][]  
  []
 
@@ -2028,10 +2052,10 @@ e (type pdf)
 
 <use ../experiments/2015_03_02_funnel/6-nicer/figures/dists_10.pdf>
 Package pdftex.def Info: ../experiments/2015_03_02_funnel/6-nicer/figures/dists
-_10.pdf used on input line 213.
+_10.pdf used on input line 214.
 (pdftex.def)             Requested size: 170.71652pt x 141.7274pt.
 
-Overfull \hbox (28.45274pt too wide) in paragraph at lines 213--213
+Overfull \hbox (28.45274pt too wide) in paragraph at lines 214--214
 [][]  
  []
 
@@ -2061,78 +2085,78 @@ LaTeX Font Info:    Font shape `T1/phv/bx/n' in size <6> not available
 (Font)              Font shape `T1/phv/b/n' tried instead on input line 246.
  [48
 
-] [49
-
 ]
 File: ../experiments/2015_03_02_funnel/6-nicer/figures/dists_0.pdf Graphic file
  (type pdf)
 
 <use ../experiments/2015_03_02_funnel/6-nicer/figures/dists_0.pdf>
 Package pdftex.def Info: ../experiments/2015_03_02_funnel/6-nicer/figures/dists
-_0.pdf used on input line 290.
+_0.pdf used on input line 264.
 (pdftex.def)             Requested size: 170.71652pt x 141.7274pt.
 
-Overfull \hbox (28.45274pt too wide) in paragraph at lines 290--290
+Overfull \hbox (28.45274pt too wide) in paragraph at lines 264--264
 [][]  
  []
 
-[50
+[49
 
 ]
 File: ../experiments/2015_03_02_funnel/6-nicer/figures/dists_1.pdf Graphic file
  (type pdf)
  <use ../experiments/2015_03_02_funnel/6-nicer/figures/dists_1.pdf>
 Package pdftex.def Info: ../experiments/2015_03_02_funnel/6-nicer/figures/dists
-_1.pdf used on input line 290.
+_1.pdf used on input line 264.
 (pdftex.def)             Requested size: 170.71652pt x 141.7274pt.
 
-Overfull \hbox (28.45274pt too wide) in paragraph at lines 290--290
+Overfull \hbox (28.45274pt too wide) in paragraph at lines 264--264
 [][]  
  []
 
-[51
+[50
 
 ]
 File: ../experiments/2015_03_02_funnel/6-nicer/figures/dists_2.pdf Graphic file
  (type pdf)
  <use ../experiments/2015_03_02_funnel/6-nicer/figures/dists_2.pdf>
 Package pdftex.def Info: ../experiments/2015_03_02_funnel/6-nicer/figures/dists
-_2.pdf used on input line 290.
+_2.pdf used on input line 264.
 (pdftex.def)             Requested size: 170.71652pt x 141.7274pt.
 
-Overfull \hbox (28.45274pt too wide) in paragraph at lines 290--290
+Overfull \hbox (28.45274pt too wide) in paragraph at lines 264--264
 [][]  
  []
 
-[52
+[51
 
 ]
 File: ../experiments/2015_03_02_funnel/6-nicer/figures/dists_3.pdf Graphic file
  (type pdf)
  <use ../experiments/2015_03_02_funnel/6-nicer/figures/dists_3.pdf>
 Package pdftex.def Info: ../experiments/2015_03_02_funnel/6-nicer/figures/dists
-_3.pdf used on input line 290.
+_3.pdf used on input line 264.
 (pdftex.def)             Requested size: 170.71652pt x 141.7274pt.
 
-Overfull \hbox (28.45274pt too wide) in paragraph at lines 290--290
+Overfull \hbox (28.45274pt too wide) in paragraph at lines 264--264
 [][]  
  []
 
-[53
+[52
 
 ]
 File: ../experiments/2015_03_02_funnel/6-nicer/figures/dists_4.pdf Graphic file
  (type pdf)
  <use ../experiments/2015_03_02_funnel/6-nicer/figures/dists_4.pdf>
 Package pdftex.def Info: ../experiments/2015_03_02_funnel/6-nicer/figures/dists
-_4.pdf used on input line 290.
+_4.pdf used on input line 264.
 (pdftex.def)             Requested size: 170.71652pt x 141.7274pt.
 
-Overfull \hbox (28.45274pt too wide) in paragraph at lines 290--290
+Overfull \hbox (28.45274pt too wide) in paragraph at lines 264--264
 [][]  
  []
 
-[54
+[53
+
+] [54
 
 ]
 LaTeX Font Info:    Font shape `T1/phv/bx/n' in size <5> not available
@@ -2156,7 +2180,7 @@ Overfull \hbox (21.33868pt too wide) in paragraph at lines 353--353
 
 ]
 <../experiments/2015_03_03_vary_width/7_hidden_units_higher_learnrate/vary_widt
-hs.pdf, id=706, 357.3162pt x 258.59636pt>
+hs.pdf, id=707, 357.3162pt x 258.59636pt>
 File: ../experiments/2015_03_03_vary_width/7_hidden_units_higher_learnrate/vary
 _widths.pdf Graphic file (type pdf)
 
@@ -2179,17 +2203,17 @@ File: ../experiments/2015_03_02_funnel/6-nicer/figures/dists_3.pdf Graphic file
 
 <use ../experiments/2015_03_02_funnel/6-nicer/figures/dists_3.pdf>
 Package pdftex.def Info: ../experiments/2015_03_02_funnel/6-nicer/figures/dists
-_3.pdf used on input line 381.
+_3.pdf used on input line 380.
 (pdftex.def)             Requested size: 170.71652pt x 141.7274pt.
 
-Overfull \hbox (28.45274pt too wide) in paragraph at lines 381--381
+Overfull \hbox (28.45274pt too wide) in paragraph at lines 380--380
 [][]  
  []
 
 [58
 
 ]
-<../experiments/2015_03_02_funnel/2/dists.pdf, id=755, 287.27327pt x 238.49101p
+<../experiments/2015_03_02_funnel/2/dists.pdf, id=756, 287.27327pt x 238.49101p
 t>
 File: ../experiments/2015_03_02_funnel/2/dists.pdf Graphic file (type pdf)
  <use ../experiments/2015_03_02_funnel/2/dists.pdf>
@@ -2197,7 +2221,7 @@ Package pdftex.def Info: ../experiments/2015_03_02_funnel/2/dists.pdf used on i
 nput line 397.
 (pdftex.def)             Requested size: 142.26378pt x 118.10617pt.
 
-<../experiments/2015_03_03_vary_width/5_grad_threshold/vary_widths.pdf, id=756,
+<../experiments/2015_03_03_vary_width/5_grad_threshold/vary_widths.pdf, id=757,
  357.21425pt x 247.78824pt>
 File: ../experiments/2015_03_03_vary_width/5_grad_threshold/vary_widths.pdf Gra
 phic file (type pdf)
@@ -2220,7 +2244,7 @@ pdfTeX warning: /usr/texbin/pdflatex (file ../experiments/2015_03_03_vary_width
 /5_grad_threshold/vary_widths.pdf): PDF inclusion: multiple pdfs with page grou
 p included in a single page
 >]
-<../experiments/2015_03_02_funnel/3_grad_threshold/dists.pdf, id=819, 287.27327
+<../experiments/2015_03_02_funnel/3_grad_threshold/dists.pdf, id=820, 287.27327
 pt x 238.49101pt>
 File: ../experiments/2015_03_02_funnel/3_grad_threshold/dists.pdf Graphic file 
 (type pdf)
@@ -2249,16 +2273,18 @@ File: ../experiments/2015_03_02_funnel/6-nicer/figures/dists_3.pdf Graphic file
 
 <use ../experiments/2015_03_02_funnel/6-nicer/figures/dists_3.pdf>
 Package pdftex.def Info: ../experiments/2015_03_02_funnel/6-nicer/figures/dists
-_3.pdf used on input line 410.
+_3.pdf used on input line 411.
 (pdftex.def)             Requested size: 170.71652pt x 141.7274pt.
 
-Overfull \hbox (28.45274pt too wide) in paragraph at lines 410--410
+Overfull \hbox (28.45274pt too wide) in paragraph at lines 411--411
 [][]  
  []
 
 [61
 
 ] [62
+
+] [63
 
 ]
 \tf@nav=\write6
@@ -2270,23 +2296,23 @@ Overfull \hbox (28.45274pt too wide) in paragraph at lines 410--410
 \tf@snm=\write8
 \openout8 = `talk.snm'.
 
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 429.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 429.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 432.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 432.
  (./talk.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 429.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 429.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 432.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 432.
 Package rerunfilecheck Info: File `talk.out' has not changed.
 (rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 429.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 432.
  ) 
 Here is how much of TeX's memory you used:
- 24123 strings out of 493117
- 465548 string characters out of 6135433
- 557474 words of memory out of 5000000
- 26861 multiletter control sequences out of 15000+600000
+ 24185 strings out of 493117
+ 466371 string characters out of 6135433
+ 559201 words of memory out of 5000000
+ 26917 multiletter control sequences out of 15000+600000
  48059 words of font info for 64 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 58i,18n,59p,414b,620s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 58i,18n,59p,414b,630s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/local/texlive/2014/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/local/t
 exlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/local/te
 xlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb></usr/local/tex
@@ -2296,14 +2322,15 @@ e/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmss8.pfb></usr/local/texlive/
 2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2
 014/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy6.pfb></usr/local/texlive/201
 4/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/local/texlive/2014/
-texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb></usr/local/texlive/2
-014/texmf-dist/fonts/type1/urw/helvetic/uhvb8a.pfb></usr/local/texlive/2014/tex
-mf-dist/fonts/type1/urw/helvetic/uhvr8a.pfb></usr/local/texlive/2014/texmf-dist
-/fonts/type1/urw/helvetic/uhvro8a.pfb>
-Output written on talk.pdf (62 pages, 1558584 bytes).
+texmf-dist/fonts/type1/public/amsfonts/symbols/msam10.pfb></usr/local/texlive/2
+014/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb></usr/local/texli
+ve/2014/texmf-dist/fonts/type1/urw/helvetic/uhvb8a.pfb></usr/local/texlive/2014
+/texmf-dist/fonts/type1/urw/helvetic/uhvr8a.pfb></usr/local/texlive/2014/texmf-
+dist/fonts/type1/urw/helvetic/uhvro8a.pfb>
+Output written on talk.pdf (63 pages, 1568186 bytes).
 PDF statistics:
- 930 PDF objects out of 1000 (max. 8388607)
- 453 compressed objects within 5 object streams
- 127 named destinations out of 1000 (max. 500000)
+ 939 PDF objects out of 1000 (max. 8388607)
+ 460 compressed objects within 5 object streams
+ 129 named destinations out of 1000 (max. 500000)
  318 words of extra memory for PDF output out of 10000 (max. 10000000)
 
