@@ -2,14 +2,74 @@
 \usepackage{etex}
 \usepackage{tabularx}
 \usepackage{include/picins}
-\usepackage{include/preamble}
+%\usepackage{include/preamble}
 \usepackage{setspace}
 \usepackage{xcolor}
 \usepackage{tikz}
 \usepackage{listings}
-%\usepackage{algorithm}
-%\usepackage{algpseudocode}
+\usepackage[noend]{algpseudocode}
+\usepackage{algorithm}
+\usepackage{caption}
+\usepackage{array}
 
+% Math typesetting.
+\newcommand{\vx}{\mathbf{x}}
+\newcommand{\vX}{\mathbf{X}}
+\newcommand{\vw}{\mathbf{w}}
+\newcommand{\vv}{\mathbf{v}}
+\newcommand{\vr}{\mathbf{r}}
+\newcommand{\vg}{\mathbf{g}}
+\newcommand{\vI}{\mathbf{I}}
+\newcommand{\vzero}{\bf{0}}
+\newcommand{\ones}[1]{\mat{1}_{#1}}
+\newcommand{\eye}[1]{\mat{E}_{#1}}
+\newcommand{\tra}{^{\mathsf{T}}}
+\newcommand{\vect}[1]{{\bf{#1}}}
+\newcommand{\mat}[1]{\mathbf{#1}}
+\newcommand{\pderiv}[2]{\frac{\partial #1}{\partial #2}}
+\newcommand{\npderiv}[2]{\nicefrac{\partial #1}{\partial #2}}
+\newcommand{\argmin}{\operatornamewithlimits{argmin}}
+\newcommand{\argmax}{\operatornamewithlimits{argmax}}
+\newcommand{\expect}{\mathbb{E}}
+\newcommand{\expectargs}[2]{\mathbb{E}_{#1} \left[ {#2} \right]}
+\newcommand{\var}{\mathbb{V}}
+\newcommand{\varL}{\mathcal{L}}
+\def\iid{i.i.d.\ }
+\def\simiid{\overset{\mbox{\tiny iid}}{\sim}}
+\newcommand{\defeq}{\mathrel{:\mkern-0.25mu=}}
+\newcommand{\Normal}{\mathcal{N}}
+\newcommand{\Nt}[3]{\mathcal{N}\!\left(#1 \middle| #2,#3\right)}
+\newcommand{\N}[2]{\mathcal{N}\!\left(#1,#2\right)}
+\DeclareMathOperator{\KLop}{KL}
+\newcommand{\KL}[2]{\KLop \left(#1 \middle \| #2 \right)}
+
+% Symbol definitions.
+\newcommand{\distinit}{q_0(\params, \vv)}
+\newcommand{\data}{\vx}
+
+%% \newcommand{\params}{\vx}
+\newcommand{\params}{\mathbf{\theta}}
+\newcommand{\trans}{T}
+\newcommand{\paramsrv}{\vX}  % Random variable.
+\newcommand{\numsteps}{T}
+\newcommand{\decay}{\gamma}
+\newcommand{\decays}{{\boldsymbol{\decay}}}
+\newcommand{\stepsize}{\alpha}
+\newcommand{\stepsizes}{{\boldsymbol{\stepsize}}}
+\newcommand{\gradparams}{\nabla L(\params_t, t)}
+\DeclareMathOperator{\SGD}{SGD}
+\newcommand{\entropy}{S}
+\newcommand{\pun}{{\tilde p}}
+\newcommand{\jointdist}{p(\params , \data)}
+\newcommand{\posterior}{p(\params | \data)}
+\newcommand{\subjointdist}[2]{p_{#1}(\params_{#2} , \data)}
+\newcommand{\subjointdistminibatch}[1]{\tilde{p}(\params_{#1} , \data)}
+\newcommand{\reals}{\mathbb{R}}
+\newcommand{\bigo}[1]{\mathcal{O}\left(#1\right)}
+%\newcommand{\trace}[1]{\text{Tr}\left[#1\right]}
+\newcommand{\loss}{L(\params)}
+
+\definecolor{myfavblue}{rgb}{0.1176, 0.392, 1.0}
 \definecolor{Blue}{rgb}{0.0,0.0,1.0}
 \lstloadlanguages{Python}%
 \lstset{language=Python,
@@ -27,9 +87,17 @@
 \setlength{\parindent}{0.0cm}
 \hypersetup{colorlinks=true,citecolor=blue}
 \newcommand{\paren}[1]{\left( #1 \right)}
-\newcommand{\vv}{\mathbf{v}}
+%\newcommand{\vv}{\mathbf{v}}
 
-\title{Early Stopping as Nonparametric Variational Inference}
+\newcommand\Wider[2][3em]{%
+\makebox[\linewidth][c]{%
+  \begin{minipage}{\dimexpr\textwidth+#1\relax}
+  \raggedright#2
+  \end{minipage}%
+  }%
+}
+
+\title{Early Stopping is Nonparametric Variational Inference}
 
 \author{
 \includegraphics[height=0.16\textwidth]{talkfigs/dougal}
@@ -40,18 +108,39 @@
 \\
 Dougal Maclaurin, David Duvenaud, Ryan Adams}
 
-\institute{Harvard University}
+\institute{\includegraphics[height=0.16\textwidth]{talkfigs/harvard.jpg}}
+\date{}
 
 \begin{document}
 
 \frame[plain] {\titlepage}
+
+
+\frame[plain]{\frametitle{Inference is moving to stochastic optimization}
+%\begin{columns}
+%\hspace{-1cm}\begin{column}{6cm}
+\begin{itemize}
+\item First: Full-batch MCMC
+\item Then: Variational Bayes (optimization)
+\item Then: Stochastic variational inference (minibatches)
+\item Then: SVI for deep GPs (neural networks)
+\item Looks like training a (Bayesian) neural net by SGD
+\item What's next?
+\end{itemize}
+%\end{column}
+%\begin{column}{5cm}
+%\includegraphics[width=1.15\columnwidth]{../experiments/2015_03_03_vary_width/7_hidden_units_higher_learnrate/vary_widths.pdf}
+%\end{column}
+%\end{columns}
+}
+
 
 \newcommand{\trail}[3]{\includegraphics<#3>[width=6cm]{../experiments/2015_03_02_funnel/5-talk/figures/trails_#1/iter_#2.pdf}}%
 \newcommand{\trixa}{0}%
 \newcommand{\trixb}{12}%
 \newcommand{\trixc}{6}%
 
-\frame[plain]{\frametitle{Optimization as Inference}
+\frame[plain]{\frametitle{Gradient Descent as Inference}
 \begin{columns}
 \hspace{-1cm}\begin{column}{6cm}
 \begin{itemize} 
@@ -97,7 +186,7 @@ Dougal Maclaurin, David Duvenaud, Ryan Adams}
 
 \newcommand{\dist}[2]{\includegraphics<#2>[width=6cm]{../experiments/2015_03_02_funnel/6-nicer/figures/dists_#1.pdf}}%
 
-\frame[plain]{\frametitle{Main Idea}
+\frame[plain]{\frametitle{Implicit Distributions}
 \begin{columns}
 \hspace{-1cm}\begin{column}{6cm}
 \begin{itemize} 
@@ -127,24 +216,10 @@ Dougal Maclaurin, David Duvenaud, Ryan Adams}
 \begin{columns}
 \hspace{-1cm}\begin{column}{6cm}
 \begin{itemize} 
+\item Currently, hyperparameters chosen by cross-validation.
 \item What if we could evaluate marginal likelihood of implicit distribution?
-\item Currently, hyperparameters chosen by cross-validation
-\item Could choose model and learning hypers to maximize marginal likelihood
-\item No need for validation set
-\end{itemize}
-\end{column}
-\begin{column}{5cm}
-\end{column}
-\end{columns}}
-
-
-\frame[plain]{\frametitle{Experiments}
-\begin{columns}
-\hspace{-1cm}\begin{column}{6cm}
-\begin{itemize} 
-\item Early stopping
-\item Top: Training and test-set error on the Boston housing dataset.
-\item Bottom: Stochastic gradient descent marginal likelihood estimates.
+\item Could choose all hypers to maximize marginal likelihood
+\item No need for validation set?
 \end{itemize}
 \end{column}
 \begin{column}{5cm}
@@ -152,15 +227,139 @@ Dougal Maclaurin, David Duvenaud, Ryan Adams}
 \end{column}
 \end{columns}}
 
+\frame[plain]{\frametitle{Variational Lower Bound}
+\begin{align*}
+\log p(\data) \geq - \underbrace{\expectargs{q(\params)}{ -\log \jointdist }}_{\textnormal{\normalsize Energy $E[q]$}}
+ \quad \underbrace{- \expectargs{q(\params)}{\log q(\params)}}_{\textnormal{\normalsize Entropy $S[q]$}}
+%& := \varL[q] \label{eq:varbound}
+\end{align*}
+Likelihood estimated from optimized objective function:
+\begin{align*}
+\expectargs{q(\params)}{-\log \jointdist} & \approx \log p(\hat\theta_T, \vx) %\subjointdist{}{T}
+\end{align*}
+Entropy estimated by tracking change at each iteration:
+\begin{align*}
+- \expectargs{q(\params)}{\log q(\params)} & \approx S[q_0] + \sum_{t=0}^{T-1} \log \left| J(\params_t) \right|
+\label{eq:entropy-bound}
+\end{align*}
 
-\frame[plain]{\frametitle{Experiments}
+Using a single sample sometimes OK in high dimensions}
+
+\frame[plain]{\frametitle{Estimating Change in Entropy}
+
+Volume change given by Jacobian of optimizer's operator:
+\begin{align*}
+S[q_{t+1}] - S[q_t] = \expect_{q_t(\params_t)} \left[ \log \Big| J(\params_t) \Big| \right]
+\end{align*}
+
+Gradient descent update rule:
+\begin{align*}
+\params_{t+1} &=
+  \params_t - \stepsize \nabla \loss,
+\end{align*}
+
+Has Jacobian:
+\begin{align*}
+J(\params_t) = I - \stepsize \nabla \nabla L(\theta_t)
+\end{align*}
+
+Entropy change estimate given by:
+\begin{align*}
+S[q_{t+1}] - S[q_t] \approx \log \left| I - \stepsize \nabla \nabla L(\theta_t) \right|
+\end{align*}
+
+%\end{column}
+%\end{columns}
+}
+
+\frame[plain]{\frametitle{Estimating Change in Entropy}
 \begin{columns}
 \hspace{-1cm}\begin{column}{6cm}
 \begin{itemize} 
-\item Choosing the number of hidden units
-\item Top: Training and test-set likelihood as a function of the number of hidden units in the first layer of a neural network.
-\item Bottom: Stochastic gradient descent marginal likelihood estimates.
-\item Side result: Looks like inter-sample variance is low, surprisngly!
+\item Inuitively: High curvature makes entropy decrease
+\item Approximation good for small step-sizes
+\end{itemize}
+\end{column}
+\begin{column}{5cm}
+\dist{0}{1}%
+\dist{1}{2}%
+\dist{2}{3}%
+\dist{3}{4}%
+\dist{4}{5}%
+\end{column}
+\end{columns}}
+
+
+\frame[plain]{\frametitle{Final Algorithm}
+%\hspace{-1cm}%
+\Wider[1cm]{
+\begin{minipage}[t]{0.49\columnwidth}
+\begin{algorithm}[H]
+\caption*{Stochastic Gradient Descent\phantom{py}} 
+\begin{algorithmic}[1]
+\scriptsize%
+	\State {\bfseries input:}
+	Weight init scale $\sigma_0$, step size $\stepsize$,
+	negative log-likelihood $L(\params, t)$
+	\State {\bfseries initialize} $\params_0 \sim \N{0}{\sigma_0 \vI_D}$
+	\State \phantom{{\bfseries initialize} $\entropy_{0} = \frac{D}{2} (1 + \log 2 \pi)$}
+	\For{$t=1$ {\bfseries to} $T$}
+		\State \phantom{$\entropy_{t} = \entropy_{t-1} + \log \left| \vI - \stepsize H_{t-1} \right|$}%\Comment{Update entropy}} 
+		\State $\params_{t} = \params_{t-1} - \stepsize \gradparams$ % \Comment{Update parameters}	
+   \EndFor
+   \State \textbf{output} sample $\params_T$, \phantom{entropy estimate $\entropy_T$}
+\end{algorithmic}
+\end{algorithm}
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.49\columnwidth}
+\begin{algorithm}[H]
+\caption*{SGD with Entropy Estimate} 
+\label{alg:neural} 
+\begin{algorithmic}[1]
+\scriptsize%
+\State {\bfseries input:}
+	Weight init scale $\sigma_0$, step size $\stepsize$,
+	negative log-likelihood $L(\params, t)$
+	\State {\bfseries initialize} $\params_0 \sim \N{0}{\sigma_0 \vI_D}$
+	\State {\color{myfavblue}{{\bfseries initialize} $\entropy_{0} = \frac{D}{2} (1 + \log 2 \pi) + D \log\sigma_0$}}
+	\For{$t=1$ {\bfseries to} $T$}
+		\State {\color{myfavblue}$\entropy_{t} = \entropy_{t-1} + \log \left| \vI - \stepsize H_{t-1} \right|$} %\Comment{Update entropy} 
+		\State $\params_{t} = \params_{t-1} - \stepsize \gradparams$ % \Comment{Update parameters}	
+   \EndFor
+   \State \textbf{output} sample $\params_T$, \color{myfavblue}{entropy estimate $\entropy_T$}
+\end{algorithmic}
+\end{algorithm}
+\end{minipage}}
+
+\vspace{1cm}
+\begin{itemize}
+\item Add entropy to likelihood to get lower bound estimate
+\item Efficient implementation uses Hessian-vector products
+\item Scales linearly in parameters and dataset size
+\end{itemize}}
+
+\frame[plain]{\frametitle{Experiments: Early Stopping}
+\begin{columns}
+\hspace{-1cm}\begin{column}{6cm}
+\begin{itemize} 
+\item Top: Training and test-set error on the Boston housing dataset.
+\item Bottom: SGD marginal likelihood estimates.
+\end{itemize}
+\end{column}
+\begin{column}{5cm}
+\includegraphics[width=1.15\columnwidth]{../experiments/2015_03_01_housing/2/marglik.pdf}
+\end{column}
+\end{columns}}
+
+\frame[plain]{\frametitle{Experiments: Number of Hidden Units}
+\begin{columns}
+\hspace{-1cm}\begin{column}{6cm}
+\begin{itemize} 
+\item Top: Likelihood vs hidden units on MNIST
+\item Largest model has 2 million params
+\item Bottom: SGD marginal likelihood estimates
+\item Inter-sample variance is surprisingly low
 \end{itemize}
 \end{column}
 \begin{column}{5cm}
@@ -168,35 +367,63 @@ Dougal Maclaurin, David Duvenaud, Ryan Adams}
 \end{column}
 \end{columns}}
 
-
-
-\frame[plain]{\frametitle{Experiments}
+\frame[plain]{\frametitle{Limitations}
 \begin{columns}
 \hspace{-1cm}\begin{column}{6cm}
 \begin{itemize} 
-\item Choosing the number of hidden units
-\item Top: Training and test-set likelihood as a function of the gradient threshold.
-\item Marginal likelihood as a function of the gradient threshold.
-A gradient threshold of zero corresponds to standard SGD.
+\item Entropy term gets arbitrarily bad due to concentration, but true performance only gets as bad as MLE
+\item Irrelevant parameters can cause low entropy estimate
 \end{itemize}
 \end{column}
 \begin{column}{5cm}
-\includegraphics[width=1.15\columnwidth]{../experiments/2015_03_03_vary_width/5_grad_threshold/vary_widths.pdf}
+\dist{3}{1}%
 \end{column}
 \end{columns}}
 
+\frame[plain]{\frametitle{Experiments: Entropy-friendly Optimization}
+\begin{columns}
+\hspace{-1cm}\begin{column}{6cm}
+\begin{itemize} 
+\item Modified SGD to move slower near convergence
+\item Hurts performance, but gives higher bound estimate
+\end{itemize}
+\end{column}
+\begin{column}{5cm}
+\includegraphics<1>[width=\columnwidth]{../experiments/2015_03_02_funnel/2/dists.pdf}
+\includegraphics<2>[width=\columnwidth]{../experiments/2015_03_02_funnel/3_grad_threshold/dists.pdf}
+
+\hspace*{-0.5cm}\includegraphics[width=1.15\columnwidth]{../experiments/2015_03_03_vary_width/5_grad_threshold/vary_widths.pdf}
+\end{column}
+\end{columns}}
+
+\frame[plain]{\frametitle{More Limitations}
+\begin{columns}
+\hspace{-1cm}\begin{column}{6cm}
+\begin{itemize} 
+\item No momentum - would need to estimate distribution (see Kingma \& Welling, 2015)
+\item SGD not even trying to maximize lower bound -- good approximation is by accident!
+\end{itemize}
+\end{column}
+\begin{column}{5cm}
+\dist{3}{1}%
+\end{column}
+\end{columns}}
 
 \frame[plain]{\frametitle{Main Takeaways}
-\begin{columns}
-\hspace{-1cm}\begin{column}{6cm}
+%\begin{columns}
+%\hspace{-1cm}\begin{column}{6cm}
 \begin{itemize} 
-\item Optimization with random starts implies nonparametric intermediate distributions
-\item Can estimate lower bound on model evidence during optimization using minibatches
+\item Optimization with random restarts implies nonparametric intermediate distributions
+\item Early stopping chooses among these distributions, ensembling samples from them
+\item Can scalably estimate lower bound on model evidence during optimization
 \end{itemize}
-\end{column}
-\begin{column}{5cm}
-\end{column}
-\end{columns}}
 
+Thanks!
+
+%\end{column}
+%\begin{column}{5cm}
+%\end{column}
+%\end{columns}
+}
 
 \end{document}
