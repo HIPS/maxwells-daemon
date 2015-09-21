@@ -141,7 +141,7 @@ Early stopping & $=$ & ??
 \newcommand{\trixb}{12}%
 \newcommand{\trixc}{6}%
 
-\frame[plain]{\frametitle{Gradient Descent as Inference}
+\frame[plain]{\frametitle{Gradient descent as a sampler}
 \begin{columns}
 \hspace{-1cm}\begin{column}{6cm}
 \begin{itemize} 
@@ -213,7 +213,7 @@ Early stopping & $=$ & ??
 \end{column}
 \end{columns}}
 
-\frame[plain]{\frametitle{Cross Validation vs Marginal Likelihood}
+\frame[plain]{\frametitle{Cross validation vs. marginal likelihood}
 \begin{columns}
 \hspace{-1cm}\begin{column}{6cm}
 \begin{itemize} 
@@ -233,13 +233,13 @@ Early stopping & $=$ & ??
  \quad \underbrace{- \expectargs{q(\params)}{\log q(\params)}}_{\textnormal{\normalsize Entropy $S[q]$}}
 %& := \varL[q] \label{eq:varbound}
 \end{align*}
-Likelihood estimated from optimized objective function:
+Energy estimated from optimized objective function (training loss is NLL):
 \begin{align*}
-\expectargs{q(\params)}{-\log \jointdist} & \approx \log p(\hat\theta_T, \vx) %\subjointdist{}{T}
+\expectargs{q(\params)}{-\log \jointdist} & \approx - \log p(\hat\theta_T, \vx) %\subjointdist{}{T}
 \end{align*}
 Entropy estimated by tracking change at each iteration:
 \begin{align*}
-- \expectargs{q(\params)}{\log q(\params)} & \approx S[q_0] + \sum_{t=0}^{T-1} \log \left| J(\params_t) \right|
+- \expectargs{q(\params)}{\log q(\params)} & \approx S[q_0] + \sum_{t=0}^{T-1} \log \left| J(\hat\params_t) \right|
 \label{eq:entropy-bound}
 \end{align*}
 Using a single sample!% sometimes OK in high dimensions.
@@ -335,7 +335,8 @@ S[q_{t+1}] - S[q_t] \approx \log \left| I - \stepsize \nabla \nabla L(\theta_t) 
 \vspace{1cm}
 \begin{itemize}
 \item Approximate bound: $\log p(\data) \gtrsim -L(\theta_T) + S_T$
-\item Further $\mathcal{O}(D)$ approximation using Hessian-vector products
+\item Determinant is $\mathcal{O}(D^3)$
+\item $\mathcal{O}(D)$ Taylor approximation using Hessian-vector products
 \item Scales linearly in parameters and dataset size
 \end{itemize}}
 
@@ -358,7 +359,7 @@ S[q_{t+1}] - S[q_t] \approx \log \left| I - \stepsize \nabla \nabla L(\theta_t) 
 \begin{itemize} 
 \item Neural net on 50000 MNIST examples
 \item Largest model has 2 million parameters
-\item Gives reasonable estimates
+\item Gives reasonable estimates, but cross-validation still better
 %\item Inter-sample variance is surprisingly low
 \end{itemize}
 \end{column}
@@ -367,11 +368,12 @@ S[q_{t+1}] - S[q_t] \approx \log \left| I - \stepsize \nabla \nabla L(\theta_t) 
 \end{column}
 \end{columns}}
 
-\frame[plain]{\frametitle{Limitations of early stopping}
+\frame[plain]{\frametitle{Limitations}
 \begin{columns}
 \hspace{-1cm}\begin{column}{6cm}
 \begin{itemize} 
 \item SGD not even trying to maximize lower bound -- good approximation is by accident!
+\item Entropy term gets arbitrarily bad due to concentration, but true performance only gets as bad as maximum likelihood estimate
 \end{itemize}
 \end{column}
 \begin{column}{5cm}
@@ -396,12 +398,11 @@ S[q_{t+1}] - S[q_t] \approx \log \left| I - \stepsize \nabla \nabla L(\theta_t) 
 \end{column}
 \end{columns}}
 
-\frame[plain]{\frametitle{Limitations of bound}
+\frame[plain]{\frametitle{Limitations}
 \begin{columns}
 \hspace{-1cm}\begin{column}{6cm}
 \begin{itemize}
 \item Irrelevant parameters can cause low entropy estimate
-\item Entropy term gets arbitrarily bad due to concentration, but true performance only gets as bad as MLE
 \item No momentum - would need to estimate distribution (see Kingma \& Welling, 2015)
 \end{itemize}
 \end{column}
@@ -418,6 +419,7 @@ S[q_{t+1}] - S[q_t] \approx \log \left| I - \stepsize \nabla \nabla L(\theta_t) 
 \item Early stopping chooses among these distributions
 \item Ensembling samples from them
 \item Can scalably estimate variational lower bound on model evidence during optimization
+\item Another connection between practice and theory
 \end{itemize}
 \pause
 

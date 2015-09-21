@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.15 (TeX Live 2014) (preloaded format=pdflatex 2014.5.25)  23 JUN 2015 14:17
+This is pdfTeX, Version 3.14159265-2.6-1.40.15 (TeX Live 2014) (preloaded format=pdflatex 2014.5.25)  23 JUN 2015 15:45
 entering extended mode
  \write18 enabled.
  file:line:error style messages enabled.
@@ -2160,19 +2160,19 @@ Overfull \hbox (28.45274pt too wide) in paragraph at lines 264--264
 
 ]
 LaTeX Font Info:    Font shape `T1/phv/bx/n' in size <5> not available
-(Font)              Font shape `T1/phv/b/n' tried instead on input line 340.
+(Font)              Font shape `T1/phv/b/n' tried instead on input line 341.
 LaTeX Font Info:    Font shape `T1/phv/m/it' in size <5> not available
-(Font)              Font shape `T1/phv/m/sl' tried instead on input line 340.
+(Font)              Font shape `T1/phv/m/sl' tried instead on input line 341.
  [55
 
 ]
 File: ../experiments/2015_03_01_housing/2/marglik.pdf Graphic file (type pdf)
  <use ../experiments/2015_03_01_housing/2/marglik.pdf>
 Package pdftex.def Info: ../experiments/2015_03_01_housing/2/marglik.pdf used o
-n input line 353.
+n input line 354.
 (pdftex.def)             Requested size: 163.60246pt x 114.58513pt.
 
-Overfull \hbox (21.33868pt too wide) in paragraph at lines 353--353
+Overfull \hbox (21.33868pt too wide) in paragraph at lines 354--354
 [][]  
  []
 
@@ -2187,10 +2187,10 @@ _widths.pdf Graphic file (type pdf)
 <use ../experiments/2015_03_03_vary_width/7_hidden_units_higher_learnrate/vary_
 widths.pdf>
 Package pdftex.def Info: ../experiments/2015_03_03_vary_width/7_hidden_units_hi
-gher_learnrate/vary_widths.pdf used on input line 368.
+gher_learnrate/vary_widths.pdf used on input line 369.
 (pdftex.def)             Requested size: 163.60246pt x 118.3994pt.
 
-Overfull \hbox (21.33868pt too wide) in paragraph at lines 368--368
+Overfull \hbox (21.33868pt too wide) in paragraph at lines 369--369
 [][]  
  []
 
@@ -2203,10 +2203,10 @@ File: ../experiments/2015_03_02_funnel/6-nicer/figures/dists_3.pdf Graphic file
 
 <use ../experiments/2015_03_02_funnel/6-nicer/figures/dists_3.pdf>
 Package pdftex.def Info: ../experiments/2015_03_02_funnel/6-nicer/figures/dists
-_3.pdf used on input line 380.
+_3.pdf used on input line 382.
 (pdftex.def)             Requested size: 170.71652pt x 141.7274pt.
 
-Overfull \hbox (28.45274pt too wide) in paragraph at lines 380--380
+Overfull \hbox (28.45274pt too wide) in paragraph at lines 382--382
 [][]  
  []
 
@@ -2218,7 +2218,7 @@ t>
 File: ../experiments/2015_03_02_funnel/2/dists.pdf Graphic file (type pdf)
  <use ../experiments/2015_03_02_funnel/2/dists.pdf>
 Package pdftex.def Info: ../experiments/2015_03_02_funnel/2/dists.pdf used on i
-nput line 397.
+nput line 399.
 (pdftex.def)             Requested size: 142.26378pt x 118.10617pt.
 
 <../experiments/2015_03_03_vary_width/5_grad_threshold/vary_widths.pdf, id=757,
@@ -2228,10 +2228,10 @@ phic file (type pdf)
 
 <use ../experiments/2015_03_03_vary_width/5_grad_threshold/vary_widths.pdf>
 Package pdftex.def Info: ../experiments/2015_03_03_vary_width/5_grad_threshold/
-vary_widths.pdf used on input line 397.
+vary_widths.pdf used on input line 399.
 (pdftex.def)             Requested size: 163.60246pt x 113.48865pt.
 
-Overfull \hbox (7.11232pt too wide) in paragraph at lines 397--397
+Overfull \hbox (7.11232pt too wide) in paragraph at lines 399--399
 []| []  
  []
 
@@ -2251,17 +2251,17 @@ File: ../experiments/2015_03_02_funnel/3_grad_threshold/dists.pdf Graphic file
 
 <use ../experiments/2015_03_02_funnel/3_grad_threshold/dists.pdf>
 Package pdftex.def Info: ../experiments/2015_03_02_funnel/3_grad_threshold/dist
-s.pdf used on input line 397.
+s.pdf used on input line 399.
 (pdftex.def)             Requested size: 142.26378pt x 118.10617pt.
 File: ../experiments/2015_03_03_vary_width/5_grad_threshold/vary_widths.pdf Gra
 phic file (type pdf)
 
 <use ../experiments/2015_03_03_vary_width/5_grad_threshold/vary_widths.pdf>
 Package pdftex.def Info: ../experiments/2015_03_03_vary_width/5_grad_threshold/
-vary_widths.pdf used on input line 397.
+vary_widths.pdf used on input line 399.
 (pdftex.def)             Requested size: 163.60246pt x 113.48865pt.
 
-Overfull \hbox (7.11232pt too wide) in paragraph at lines 397--397
+Overfull \hbox (7.11232pt too wide) in paragraph at lines 399--399
 []| []  
  []
 
@@ -2273,10 +2273,10 @@ File: ../experiments/2015_03_02_funnel/6-nicer/figures/dists_3.pdf Graphic file
 
 <use ../experiments/2015_03_02_funnel/6-nicer/figures/dists_3.pdf>
 Package pdftex.def Info: ../experiments/2015_03_02_funnel/6-nicer/figures/dists
-_3.pdf used on input line 411.
+_3.pdf used on input line 412.
 (pdftex.def)             Requested size: 170.71652pt x 141.7274pt.
 
-Overfull \hbox (28.45274pt too wide) in paragraph at lines 411--411
+Overfull \hbox (28.45274pt too wide) in paragraph at lines 412--412
 [][]  
  []
 
@@ -2296,14 +2296,14 @@ Overfull \hbox (28.45274pt too wide) in paragraph at lines 411--411
 \tf@snm=\write8
 \openout8 = `talk.snm'.
 
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 432.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 432.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 434.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 434.
  (./talk.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 432.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 432.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 434.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 434.
 Package rerunfilecheck Info: File `talk.out' has not changed.
 (rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 432.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 434.
  ) 
 Here is how much of TeX's memory you used:
  24185 strings out of 493117
@@ -2327,7 +2327,7 @@ texmf-dist/fonts/type1/public/amsfonts/symbols/msam10.pfb></usr/local/texlive/2
 ve/2014/texmf-dist/fonts/type1/urw/helvetic/uhvb8a.pfb></usr/local/texlive/2014
 /texmf-dist/fonts/type1/urw/helvetic/uhvr8a.pfb></usr/local/texlive/2014/texmf-
 dist/fonts/type1/urw/helvetic/uhvro8a.pfb>
-Output written on talk.pdf (63 pages, 1568186 bytes).
+Output written on talk.pdf (63 pages, 1568302 bytes).
 PDF statistics:
  939 PDF objects out of 1000 (max. 8388607)
  460 compressed objects within 5 object streams
