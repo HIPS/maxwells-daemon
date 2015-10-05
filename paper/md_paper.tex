@@ -2,7 +2,8 @@
 % column, 8 1/2 by 11 inch proceedings format.
 
 \documentclass[]{article}
-\usepackage{uai2015stylefiles/proceed2e}
+%\usepackage{uai2015stylefiles/proceed2e}
+\usepackage{aistats2016/aistats2016}
 
 % Set the typeface to Times Roman
 \usepackage{times}
@@ -93,27 +94,35 @@
    \or \ddagger\ddagger \else\@ctrerr\fi}}
 \makeatother
 
-%\title{Maxwell's D\ae mon: Stochastic Gradient Nonparametric Variational Inference}
-%\title{Entropic Descent: Stochastic Gradient Nonparametric Variational Inference}
-%\title{Stochastic Gradient Descent is Nonparametric Variational Inference}
-\title{Early Stopping is Nonparametric Variational Inference}
-
-\author{ {\bf Dougal Maclaurin $^\dagger$} \\
-%\texttt{dmaclaurin@seas.harvard.edu} \\
-Harvard University
-\And
-{\bf David Duvenaud \thanks{ \hspace{1em}Equal contributors.}}  \\
-%\texttt{dduvenaud@seas.harvard.edu} \\
-Harvard University
-\And
-{\bf Ryan P. Adams}   \\
-%\texttt{rpa@seas.harvard.edu} \\
-Harvard University
-}
 
 \begin{document}
 
-\maketitle
+\twocolumn[
+
+%\title{Maxwell's D\ae mon: Stochastic Gradient Nonparametric Variational Inference}
+%\title{Entropic Descent: Stochastic Gradient Nonparametric Variational Inference}
+%\title{Stochastic Gradient Descent is Nonparametric Variational Inference}
+\aistatstitle{Early Stopping is Nonparametric Variational Inference}
+
+
+\aistatsauthor{ Anonymous Author 1 \And Anonymous Author 2 \And Anonymous Author 3 }
+
+\aistatsaddress{ Unknown Institution 1 \And Unknown Institution 2 \And Unknown Institution 3 }]
+
+%\author{ {\bf Dougal Maclaurin $^\dagger$} \\
+%\texttt{dmaclaurin@seas.harvard.edu} \\
+%Harvard University
+%\And
+%{\bf David Duvenaud \thanks{ \hspace{1em}Equal contributors.}}  \\
+%\texttt{dduvenaud@seas.harvard.edu} \\
+%Harvard University
+%\And
+%{\bf Ryan P. Adams}   \\
+%\texttt{rpa@seas.harvard.edu} \\
+%Harvard University
+%}
+
+%\maketitle
 
 \begin{abstract}
 We show that unconverged stochastic gradient descent 
@@ -138,18 +147,21 @@ However, early stopping is both theoretically unsatisfying and incoherent from a
 A related trick is to ensemble the results from multiple optimization runs from different starting positions.
 Similarly, this must rely on imperfect optimization, since otherwise all optimization runs would reach the same optimum.
 
-\begin{figure}[t]
-\vskip 0.434in
-\begin{center}
-\includegraphics[width=\columnwidth]{../experiments/2015_03_02_funnel/2/dists.pdf}
-\vskip -0.043in
+\newcommand{\dist}[1]{\includegraphics[width=5.5cm]{../experiments/2015_03_02_funnel/6-nicer/figures/dists_#1.pdf}}%
+\begin{figure*}[t]
+\setlength{\tabcolsep}{2pt}
+\begin{tabular}{ccc}
+Initial parameter distribution & After 150 iterations of SGD & After 300 iterations of SGD \\
+\dist{0} &
+\dist{3} &
+\dist{6}
+\end{tabular}
 \caption{A series of variational distributions implicitly defined by gradient descent on the log-likelihood of the posterior.
 %  The initial distribution from which parameters are drawn (red) doesn't match the posterior (black).
 Intermediate distributions (green and blue) are implicitly defined by mapping each possible random initial parameters through many iterations of optimization.
-  These distributions don't have fixed parametric shape, and will eventually concentrate around the mode.}
+These distributions have nonparametric shapes, and eventually concentrate around modes.}
 \label{fig:cartoon}
-\end{center}
-\end{figure}
+\end{figure*}
 
 We propose an interpretation of incomplete optimization in terms of variational Bayesian inference, and provide a simple method for estimating the marginal likelihood of the approximate posterior.
 Our starting point is a Bayesian posterior distribution for a potentially complicated model, in which there is an empirical loss that can be interpreted as a negative log likelihood and regularizers that have interpretations as priors.
@@ -369,9 +381,6 @@ Note that the quantity we are estimating \eqref{eq:exact hessian} is well-condit
 This arises, for example, in making the Laplace approximation to the posterior \citep{mackay1992practical}.
 This is a much harder problem since the Hessian can be arbitrarily ill-conditioned, unlike our small Hessian-based perturbation to the identity.
 
-
-
-
 \subsection{Parameter initialization, priors, and objective functions}
 \label{sec:priors}
 What initial parameter distribution should we use for SGD?
@@ -415,14 +424,15 @@ yields only a small increase in entropy. \citet{welling2011bayesian} handle this
 by learning a highly parameterized ``inverse model'' which implicitly models the distribution
 over parameters. The downside of this approach is that the parameters of this model must be learned in an outer loop.
 
-\begin{figure}
+\begin{figure*}
 \begin{center}
+\includegraphics[width=0.9\columnwidth]{../experiments/2015_03_02_funnel/2/dists.pdf}
 \includegraphics[width=0.9\columnwidth]{../experiments/2015_03_02_funnel/3_grad_threshold/dists.pdf}
 \caption{The variational distribution implied by the modified, ``entropy-friendly'', SGD algorithm.
 Compared to Figure \ref{fig:cartoon}, the variational distributions are slower to collapse into low-entropy filaments, causing the marginal likelihood to remain higher.}
 \label{fig:cartoon-fatter}
 \end{center}
-\end{figure}
+\end{figure*}
 
 Another approach is to try to develop deterministic update rules
 that avoid some of the pathologies of update rules like SGD.
@@ -524,11 +534,13 @@ However, for intermediate thresholds, the lower bound increases.
 Because it is a lower bound, its increase means that the estimate of the marginal likelihood is becoming \emph{more accurate}, even though the actual model happens to be getting worse at the same time.
 
 \subsection{Implementation details}
-To allow easy computation of Hessian-vector products in arbitrary models, we implemented
-a reverse-mode automatic differentiation package for Python, available at \url{github.com/HIPS/autograd}.
-This package operates on standard Numpy~\citep{oliphant2007python} code, and can differentiate code containing loops, branches, and even its own gradient evaluations.
+To compute Hessian-vector products in our models, we used \href{http://github.com/HIPS/autograd}{autograd},
+a reverse-mode automatic differentiation package for Python capable of arbitrary-order derivatives.
+%, available at \url{github.com/HIPS/autograd}.
+%This package operates on standard Numpy~\citep{oliphant2007python} code, and can differentiate code containing loops, branches, and even its own gradient evaluations.
 
-Code for all experiments in this paper is available at \url{github.com/HIPS/maxwells-daemon}.
+Code for all experiments in this paper will be made available upon publication.
+%is available at \url{github.com/HIPS/maxwells-daemon}.
 
 \section{Limitations}
 \label{sec:limitations}
@@ -623,8 +635,8 @@ Regularization parameters and training parameters.
 Optimizing marginal likelihood rather than training loss lets us set regularization parameters during training without using a validation set.
 The marginal likelihood estimate lets us optimize the variational parameters (training hyperparameters) in an outer loop.
 However, optimizing more than a few of these is difficult without gradients.
-We could gain access to exact gradients of the variational lower bound with respect to all variational parameters by simply using reverse-mode differentiation.
-\citet{domke2012generic, MacDuvAda2015hyper} showed that this can be done in a memory-efficient way for momentum-based learning procedures.
+We could gain access to exact gradients of the variational lower bound with respect to all variational parameters by simply using reverse-mode differentiation~\citep{domke2012generic}.
+\citet{MacDuvAda2015hyper} showed that this can be done in a memory-efficient way for momentum-based learning procedures.
 Combining these two procedures would allow one to set all hyperparameters using gradient-based methods without the need for a validation set.
 
 \paragraph{Stochastic dynamics}
@@ -647,9 +659,9 @@ We showed how to produce an unbiased estimate of this variational lower bound by
 This simple and inexpensive calculation turns standard gradient descent into an inference algorithm, and allows the optimization of hyperparameters without a validation set.
 Our estimator is compatible with using data minibatches and scales linearly with the number of parameters, making it suitable for large-scale problems.
 
-\subsection{Acknowledgements}
-We are grateful to Roger Grosse, Miguel Hern\'andez-Lobato, Matthew Johnson, and Oren Rippel for helpful discussions.
-We thank Analog Devices International and Samsung Advanced Institute of Technology for their support.
+%\subsection{Acknowledgements}
+%We are grateful to Roger Grosse, Miguel Hern\'andez-Lobato, Matthew Johnson, and Oren Rippel for helpful discussions.
+%We thank Analog Devices International and Samsung Advanced Institute of Technology for their support.
 
 \bibliography{references.bib}
 \bibliographystyle{uai2015stylefiles/icml2015}
