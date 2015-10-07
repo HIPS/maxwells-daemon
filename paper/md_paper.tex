@@ -102,7 +102,7 @@
 %\title{Maxwell's D\ae mon: Stochastic Gradient Nonparametric Variational Inference}
 %\title{Entropic Descent: Stochastic Gradient Nonparametric Variational Inference}
 %\title{Stochastic Gradient Descent is Nonparametric Variational Inference}
-\aistatstitle{Early Stopping is Nonparametric Variational Inference}
+\aistatstitle{Early Stopping as Nonparametric Variational Inference}
 
 
 \aistatsauthor{ Anonymous Author 1 \And Anonymous Author 2 \And Anonymous Author 3 }
@@ -127,12 +127,12 @@
 \begin{abstract}
 We show that unconverged stochastic gradient descent 
 %and other popular optimization methods
-can be interpreted as a procedure that samples from a nonparametric variational approximate posterior distribution.
-This distribution is implicitly defined as the transformation of an initial distribution by a sequence of optimization updates. % into a final approximation.
+can be interpreted as a procedure that samples from a nonparametric approximate posterior distribution.
+This distribution is implicitly defined by the transformation of an initial distribution by a sequence of optimization steps. % into a final approximation.
 %Each step of the optimization results in an intermediate distribution, and 
-By tracking the change in entropy over this sequence of transformations during optimization, we form a scalable, unbiased estimate of the variational lower bound on the log marginal likelihood.
-We can use this bound to optimize hyperparameters instead of using cross-validation.
-This Bayesian interpretation of SGD suggests improved, overfitting-resistant optimization procedures, and gives a theoretical foundation for popular tricks such as early stopping and ensembling.
+By tracking the change in entropy over these distributions during optimization, we form a scalable, unbiased estimate of a variational lower bound on the log marginal likelihood.
+This bound can be used to optimize hyperparameters instead of cross-validation.
+This Bayesian interpretation of SGD suggests improved, overfitting-resistant optimization procedures, and gives a theoretical foundation for early stopping and ensembling.
 %Moreover, this procedure hints at a middle ground between point estimates arising from MAP inference, and fully-factored variational approximations.
 We investigate the properties of this marginal likelihood estimator on neural network models.
 \end{abstract}
@@ -151,15 +151,15 @@ Similarly, this must rely on imperfect optimization, since otherwise all optimiz
 \begin{figure*}[t]
 \setlength{\tabcolsep}{2pt}
 \begin{tabular}{ccc}
-Initial parameter distribution & After 150 iterations of SGD & After 300 iterations of SGD \\
+Initial distribution & After 150 steps of gradient descent & After 300 steps of gradient descent \\
 \dist{0} &
 \dist{3} &
 \dist{6}
 \end{tabular}
-\caption{A series of variational distributions implicitly defined by gradient descent on the log-likelihood of the posterior.
+\caption{A series of distributions (blue) implicitly defined by gradient descent on an objective  (black).
 %  The initial distribution from which parameters are drawn (red) doesn't match the posterior (black).
-Intermediate distributions (green and blue) are implicitly defined by mapping each possible random initial parameters through many iterations of optimization.
-These distributions have nonparametric shapes, and eventually concentrate around modes.}
+These distributions are defined by mapping each point in the initial distribution through a fixed number of iterations of optimization.
+These distributions have nonparametric shapes, and eventually concentrate around the optima of the objective.}
 \label{fig:cartoon}
 \end{figure*}
 
@@ -333,9 +333,9 @@ subsequent calculation of $\varL$ remains a true lower bound on the log marginal
 \subsection{Estimating the Jacobian in high dimensions}
 \label{sec:scalable-estimator}
 The expression for the change in entropy given by (\ref{eq:exact hessian}) is impractical for large-scale problems since it requires an~$\bigo{D^3}$ determinant computation.
-Fortunately, we can make a good approximation using just one or two Hessian-vector products, which can usually be performed in~$\bigo{D}$ time using reverse-mode differentiation \citep{pearlmutter1994fast}.
+Fortunately, we can make a good approximation using just two Hessian-vector products, which can usually be performed in~$\bigo{D}$ time using reverse-mode differentiation \citep{pearlmutter1994fast}.
 
-The idea is that since~$\stepsize\lambda_{\text{max}}$ is small, the Jacobian is actually just a small perturbation to the identity and we can approximate its determinant using traces as follows:
+The idea is that since~$\stepsize\lambda_{\text{max}}$ is small, the Jacobian is just a small perturbation to the identity, and we can approximate its determinant using traces as follows:
 %
 \begin{align}
 \log \left| I - \stepsize H \right|
@@ -387,33 +387,32 @@ What initial parameter distribution should we use for SGD?
 The marginal likelihood estimate given by \eqref{eq:entropy-bound} is valid no matter which initial distribution we choose.
 We could conceivably optimize this distribution in an outer loop using the marginal likelihood estimate itself.
 
-However, using the prior distribution has several advantages.
-First, it is usually designed to have broader support than the likelihood.
-Since SGD usually decreases entropy, starting with a high-entropy distribution
-is a good heuristic.
+However, using the prior as the initialization distribution has several advantages.
+First, it is usually designed to have broad support.
+Since SGD usually decreases entropy, starting with a high-entropy distribution is a good heuristic.
 
 The second advantage has to do with our choice of objective function.
-The obvious choice is the (unnormalized, negative) log-posterior, but we can actually use any function we like.
+One option is to use the unnormalized log-posterior, but we can use any function we like.
 %The marginal likelihood estimate remains valid provided we can compute its Hessian
 %(or appropriate Hessian vector products). A more sensible choice is to ignore the prior
 %in our SGD optimization and just take gradients and Hessians with respect to the log likelihood.
 A more sensible choice is the negative log-likelihood.
-variational distributions only differ from the
-initial distribution to the extent that the posterior differs from the prior.
-%This difference is just the log-likelihood.
-One nice implication is that the entropy estimate will be exactly correct for parameters that don't affect the likelihood.
-Because of these favorable properties, we use these choices for the initial distribution and objective in our experiments.
+Variational distributions only differ from the initial distribution to the extent that the posterior differs from the prior.
+This difference is just the log-likelihood.
 
-\section{Designing entropy-friendly optimization methods}
+One nice implication of using the log-likelihood as the objective function is that the entropy estimate will be exactly correct for parameters that don't affect the likelihood, since their gradient (and corresponding rows of the Hessian) will always be zero.
+Because of these favorable properties, we use the prior as the initial distribution and log-likelihood as the objective in our experiments.
+
+\section{Entropy-friendly optimization methods}
 \label{sec:entropy friendly}
 %The variational distribution implied by SGD does not optimize the variational lower bound directly.
-SGD optimizes the training loss, not he variational lower bound.
-In some sense, if this optimization happens to create a good variational distribution, it's only by accident.
+SGD optimizes the training loss, not the variational lower bound.
+In some sense, if this optimization happens to create a good intermediate distributions, it's only by accident!
 %However, now that we have a variational interpretation of optimization, we can design new optimization procedures with posterior-fitting in mind.
 Why not design a new optimization method that produces good variational lower bounds?
 In place of SGD, we can use any optimization method for which we can approximate the change in entropy, which in practice means any optimization for which we can compute Jacobian-vector products.
 
-An obvious place to start is with stochastic update rules inspired by Markov Chain Monte Carlo (MCMC). 
+An obvious place to start is with stochastic update rules inspired by Markov chain Monte Carlo (MCMC). 
 Procedures like Hamiltonian Monte Carlo \citep{neal2011mcmc} and Langevin dynamics MCMC \citep{welling2011bayesian} look very much like optimization procedures but actually have the posterior as their stationary distribution.
 This is exactly the approach taken by \citet{Bridging14}.
 One difficulty with using stochastic updates, however, is that calculating the change in
@@ -426,10 +425,11 @@ over parameters. The downside of this approach is that the parameters of this mo
 
 \begin{figure*}
 \begin{center}
-\includegraphics[width=0.9\columnwidth]{../experiments/2015_03_02_funnel/2/dists.pdf}
+\includegraphics[width=0.9\columnwidth]{../experiments/2015_03_02_funnel/2/dists.pdf} \hspace{1cm}
 \includegraphics[width=0.9\columnwidth]{../experiments/2015_03_02_funnel/3_grad_threshold/dists.pdf}
-\caption{The variational distribution implied by the modified, ``entropy-friendly'', SGD algorithm.
-Compared to Figure \ref{fig:cartoon}, the variational distributions are slower to collapse into low-entropy filaments, causing the marginal likelihood to remain higher.}
+\caption{\emph{Left}: The distribution implied by standard gradient descent.
+\emph{Right}: The distribution implied by the modified, ``entropy-friendly'', gradient descent algorithm.
+The entropy-friendly distributions are slower to collapse into low-entropy filaments, causing the marginal likelihood to remain higher.}
 \label{fig:cartoon-fatter}
 \end{center}
 \end{figure*}
@@ -439,7 +439,7 @@ that avoid some of the pathologies of update rules like SGD.
 This could could be a research agenda in itself, but we give one example here of a modification to
 SGD which can improve the variational lower bound.
 One problem with SGD in the context of posterior approximation is that
-SGD can collapse the variational distribution into low-entropy filaments, shrinking in some directions to be orders of magnitude smaller than the width of the true posterior.
+SGD can collapse the implicit distribution into low-entropy filaments, shrinking in some directions to be orders of magnitude smaller than the width of the true posterior.
 A simple trick to prevent this is to apply a nonlinear, parameter-wise warping
 to the gradient, such that directions of very small gradient do not get optimized all the way
 to the optimium.
@@ -468,7 +468,7 @@ As a simple demonstration of the usefulness of our marginal likelihood estimate,
 We performed regression on the Boston housing dataset 
 %[citation needed]
 using a neural network with one hidden layer having 100 hidden units, sigmoidal activation functions, and no regularization.
-Figure \ref{fig:housing} shows overfitting and shows that marginal likelihood peaks at a similar place to the peak of held-out log-likelihood, which is where early stopping would occur when using a large validation set.
+Figure \ref{fig:housing} shows that marginal likelihood peaks at a similar place to the peak of held-out log-likelihood, which is where early stopping would occur when using a large validation set.
 
 \begin{figure}[h!]
 %\vskip 0.2in
@@ -546,7 +546,7 @@ Code for all experiments in this paper will be made available upon publication.
 \label{sec:limitations}
 In practice, the marginal likelihood estimate we present might not be useful for several reasons.
 First, using only a single sample to estimate both the expected likelihood as well as the entropy of an entire distribution will necessarily have high variance under some circumstances.
-These problems could conceivably be addressed by ensembling, which has an interpretation as taking multiple exact independent samples from the implicit variational posterior.
+These problems could conceivably be addressed by ensembling, which has an interpretation as taking multiple exact independent samples from the implicit posterior.
 
 Second, as parameters converge, their entropy estimate (and true entropy) will continue to decrease indefinitely, making the marginal likelihood arbitrarily small.
 However, in practice there is usually a limit to the degree of overfitting possible.
@@ -573,11 +573,11 @@ However, the point of early stopping is not that the intermediate distributions 
 \section{Related work}
 
 \paragraph{Estimators for early stopping}
-Stein's unbiased risk estimator (SURE) \citep{stein1981estimation} provides an unbiased estimate of generalization performance under very broad conditions, and can be used to construct a stopping rule.
+Stein's unbiased risk estimator (SURE) \citep{stein1981estimation} provides an unbiased estimate of generalization performance under broad conditions, and can be used to construct a stopping rule.
 \citet{raskutti2014early} derived a SURE estimate for SGD in a regression setting.
 Interestingly, this estimator depends on the `shrinkage matrix' $\prod_{t=0}^{T} \left( \vI - \stepsize_t H_T \right)$, which is just the Jacobian of the entire SGD procedure along a particular path.
 However, this estimator depends on an estimate of the noise variance, and is restricted to the \iid regression setting.
-It's also not clear if these stopping rules could also be used to select other training parameters or model hyperparameters.
+It's not clear if this stopping rule could also be used to select other training parameters or model hyperparameters.
 
 %\citet{raskutti2014early} also derive a data-dependent early-stopping rule for kernel regression methods, but it not clear whether this stopping rule could be adapted to more general settings, or whether it could be used to select all training and model hyperparameters.
 
@@ -618,6 +618,9 @@ However, they constrain their variational approximation to be Gaussian, as oppos
 %[TODO: more citations go here]
 %\citet{betancourt2015fundamental} argues that minibatches are fundamentally incompatible with HMC.
 
+\paragraph{SGD as an estimator}
+\citet{hardt2015train} give theoretical results showing that the smaller the number of training epochs, the better the generalization performance of models trained using SGD.
+\citet{Dustin15} examine the properties of SGD as an estimator, and show that a variant that averages parameter updates has improved statistical efficiency.
 
 \section{Future work and extensions}
 
@@ -630,21 +633,21 @@ However, it is difficult to track the entropy change during the updates to the m
 %% We could derive a variational inference algorithm based on RMSprop~\cite{Tieleman2012}, and a corresponding variant of Hamiltonian Monte Carlo.
 
 \paragraph{Gradient-based hyperparameter optimization}
-Hyperparameters typically come in two forms:
-Regularization parameters and training parameters.
-Optimizing marginal likelihood rather than training loss lets us set regularization parameters during training without using a validation set.
-The marginal likelihood estimate lets us optimize the variational parameters (training hyperparameters) in an outer loop.
-However, optimizing more than a few of these is difficult without gradients.
-We could gain access to exact gradients of the variational lower bound with respect to all variational parameters by simply using reverse-mode differentiation~\citep{domke2012generic}.
-\citet{MacDuvAda2015hyper} showed that this can be done in a memory-efficient way for momentum-based learning procedures.
-Combining these two procedures would allow one to set all hyperparameters using gradient-based methods without the need for a validation set.
+%Hyperparameters typically come in two forms:
+%Regularization parameters and training parameters.
+Optimizing marginal likelihood rather than training loss lets us choose both training and regularization parameters without using a validation set.
+%The marginal likelihood estimate lets us optimize the variational parameters (training hyperparameters) in an outer loop.
+However, optimizing more than a few hyperparameters is difficult without gradients.
+Following \citet{domke2012generic} and \citet{MacDuvAda2015hyper}, we could compute exact gradients of the variational lower bound with respect to all variational parameters using reverse-mode differentiation through SGD.
+% showed that this can be done in a memory-efficient way for momentum-based learning procedures.
+Chaining gradients through SGD would allow one to set all hyperparameters using gradient-based optimization without the need for a validation set.
 
 \paragraph{Stochastic dynamics}
 One possible method to deal with over-zealous reduction in entropy by SGD would be to add noise to the dynamics.
 In the case of Gaussian noise, we would recover Langevin dynamics~\citep{neal2011mcmc}.
-However, estimating the entropy becomes much more difficult in this case.
-\citet{welling2011bayesian} introduced stochastic gradient Langevin dynamics for doing inference with minibatches.
-\citet{ma2013estimating} use Langevin dynamics and a floating temperature to estimate partition functions of graphical models.
+However, estimating the entropy is more difficult in this case.
+\citet{welling2011bayesian} introduced stochastic gradient Langevin dynamics for doing inference with minibatches, but do not track the entropy of the implicit distribution.
+%\citet{ma2013estimating} use Langevin dynamics and a floating temperature to estimate partition functions of graphical models.
 %\citet{vollmer2015non} analyze the asymptotics of Langevin dynamics.
 
 More generally, we are free to design optimization algorithms that do a better job of producing samples from the true posterior, as long as we can track their entropy.
@@ -652,12 +655,21 @@ The gradient-thresholding method proposed in this paper is a simple first exampl
 
 \section{Conclusion}
 
-Optimization algorithms with random initializations implicitly define a series of distributions which converge to posterior modes.
-We showed that these nonparametric distributions can be seen as variational approximations to the true posterior. %when the optimization objective is a log-likelihood.
+Most regularization methods have an interpretation as approximate inference in some Bayesian model.
+This paper shows that early stopping and ensembling can also be interpreted this way, sampling from an implicit nonparametric distribution.
+
+%This paper followed that tradition by interpreting early stopping as choosing between samples from distributions implicitly defined by an optimization procedure.
+
+We introduced a variational lower bound on the marginal likelihood of these implicit distributions, which in principle could be used to choose model and training hyperparameters.
 We showed how to produce an unbiased estimate of this variational lower bound by approximately tracking the entropy change at each step of optimization.
+Our estimator is compatible with using data minibatches and scales linearly with the number of parameters, making it suitable for large-scale problems.
+It does not beat the gold standard of cross-validation
+
+%Optimization algorithms with random initializations implicitly define a series of distributions which converge to posterior modes.
+%We showed that these nonparametric distributions can be seen as variational approximations to the true posterior. %when the optimization objective is a log-likelihood.
+
 
 This simple and inexpensive calculation turns standard gradient descent into an inference algorithm, and allows the optimization of hyperparameters without a validation set.
-Our estimator is compatible with using data minibatches and scales linearly with the number of parameters, making it suitable for large-scale problems.
 
 %\subsection{Acknowledgements}
 %We are grateful to Roger Grosse, Miguel Hern\'andez-Lobato, Matthew Johnson, and Oren Rippel for helpful discussions.
