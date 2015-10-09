@@ -126,14 +126,11 @@
 
 \begin{abstract}
 We show that unconverged stochastic gradient descent 
-%and other popular optimization methods
 can be interpreted as a procedure that samples from a nonparametric approximate posterior distribution.
-This distribution is implicitly defined by the transformation of an initial distribution by a sequence of optimization steps. % into a final approximation.
-%Each step of the optimization results in an intermediate distribution, and 
+This distribution is implicitly defined by the transformation of an initial distribution by a sequence of optimization steps. 
 By tracking the change in entropy over these distributions during optimization, we form a scalable, unbiased estimate of a variational lower bound on the log marginal likelihood.
 This bound can be used to optimize hyperparameters instead of cross-validation.
 This Bayesian interpretation of SGD suggests improved, overfitting-resistant optimization procedures, and gives a theoretical foundation for early stopping and ensembling.
-%Moreover, this procedure hints at a middle ground between point estimates arising from MAP inference, and fully-factored variational approximations.
 We investigate the properties of this marginal likelihood estimator on neural network models.
 \end{abstract}
 
@@ -660,16 +657,17 @@ This paper shows that early stopping and ensembling can also be interpreted this
 
 %This paper followed that tradition by interpreting early stopping as choosing between samples from distributions implicitly defined by an optimization procedure.
 
-We introduced a variational lower bound on the marginal likelihood of these implicit distributions, which in principle could be used to choose model and training hyperparameters.
+We introduced a variational lower bound on the marginal likelihood of these implicit distributions.
 We showed how to produce an unbiased estimate of this variational lower bound by approximately tracking the entropy change at each step of optimization.
 Our estimator is compatible with using data minibatches and scales linearly with the number of parameters, making it suitable for large-scale problems.
-It does not beat the gold standard of cross-validation
+This inexpensive calculation turns standard gradient descent into an inference algorithm.
+
+In principle this bound could be used to choose model and training hyperparameters without a validation set, however  in practice it doesn't beat the gold standard of cross-validation.
 
 %Optimization algorithms with random initializations implicitly define a series of distributions which converge to posterior modes.
 %We showed that these nonparametric distributions can be seen as variational approximations to the true posterior. %when the optimization objective is a log-likelihood.
 
-
-This simple and inexpensive calculation turns standard gradient descent into an inference algorithm, and allows the optimization of hyperparameters without a validation set.
+%, and allows the optimization of hyperparameters without a validation set.
 
 %\subsection{Acknowledgements}
 %We are grateful to Roger Grosse, Miguel Hern\'andez-Lobato, Matthew Johnson, and Oren Rippel for helpful discussions.
