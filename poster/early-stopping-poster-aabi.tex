@@ -1,0 +1,357 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% From a template maintained at https://github.com/jamesrobertlloyd/cbl-tikz-poster
+%
+% Code near the top should be fairly standard and not need to be changed
+%  - except for the document class
+% Code lower down is more likely to be customised
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\documentclass[portrait,a0b,final,a4resizeable]{include/a0poster}
+
+\usepackage{multicol}
+\usepackage{color}
+\usepackage{morefloats}
+\usepackage[pdftex]{graphicx}
+\usepackage{rotating}
+\usepackage{amsmath, amsthm, amssymb, bm}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{xcolor}
+
+\usepackage{include/picins}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric,arrows,chains,matrix,positioning,scopes,calc}
+\tikzstyle{mybox} = [draw=white, rectangle]
+\definecolor{darkblue}{rgb}{0,0.08,0.45}
+\definecolor{blue}{rgb}{0,0,1}
+
+\usepackage{dsfont}
+\usepackage{algorithm}
+%\usepackage{algorithmic}
+\usepackage{algpseudocode}
+
+\input{include/jlposter.tex}
+
+%\input{include/preamble.sty}
+%\newcommand{\vv}{\mathbf{v}}
+
+\definecolor{myfavblue}{rgb}{0.1176, 0.392, 1.0}
+
+% Math typesetting.
+\newcommand{\vx}{\mathbf{x}}
+\newcommand{\vX}{\mathbf{X}}
+\newcommand{\vw}{\mathbf{w}}
+\newcommand{\vv}{\mathbf{v}}
+\newcommand{\vr}{\mathbf{r}}
+\newcommand{\vg}{\mathbf{g}}
+\newcommand{\vI}{\mathbf{I}}
+\newcommand{\vzero}{\bf{0}}
+\newcommand{\ones}[1]{\mat{1}_{#1}}
+\newcommand{\eye}[1]{\mat{E}_{#1}}
+\newcommand{\tra}{^{\mathsf{T}}}
+\newcommand{\vect}[1]{{\bf{#1}}}
+\newcommand{\mat}[1]{\mathbf{#1}}
+\newcommand{\pderiv}[2]{\frac{\partial #1}{\partial #2}}
+\newcommand{\npderiv}[2]{\nicefrac{\partial #1}{\partial #2}}
+\newcommand{\argmin}{\operatornamewithlimits{argmin}}
+\newcommand{\argmax}{\operatornamewithlimits{argmax}}
+\newcommand{\expect}{\mathbb{E}}
+\newcommand{\expectargs}[2]{\mathbb{E}_{#1} \left[ {#2} \right]}
+\newcommand{\var}{\mathbb{V}}
+\newcommand{\varL}{\mathcal{L}}
+\def\iid{i.i.d.\ }
+\def\simiid{\overset{\mbox{\tiny iid}}{\sim}}
+\newcommand{\defeq}{\mathrel{:\mkern-0.25mu=}}
+\newcommand{\Normal}{\mathcal{N}}
+\newcommand{\Nt}[3]{\mathcal{N}\!\left(#1 \middle| #2,#3\right)}
+\newcommand{\N}[2]{\mathcal{N}\!\left(#1,#2\right)}
+\DeclareMathOperator{\KLop}{KL}
+\newcommand{\KL}[2]{\KLop \left(#1 \middle \| #2 \right)}
+
+% Symbol definitions.
+\newcommand{\distinit}{q_0(\params, \vv)}
+\newcommand{\data}{\vx}
+
+%% \newcommand{\params}{\vx}
+\newcommand{\params}{\mathbf{\theta}}
+\newcommand{\trans}{T}
+\newcommand{\paramsrv}{\vX}  % Random variable.
+\newcommand{\numsteps}{T}
+\newcommand{\decay}{\gamma}
+\newcommand{\decays}{{\boldsymbol{\decay}}}
+\newcommand{\stepsize}{\alpha}
+\newcommand{\stepsizes}{{\boldsymbol{\stepsize}}}
+\newcommand{\gradparams}{\nabla L(\params_t, t)}
+\DeclareMathOperator{\SGD}{SGD}
+\newcommand{\entropy}{S}
+\newcommand{\pun}{{\tilde p}}
+\newcommand{\jointdist}{p(\params , \data)}
+\newcommand{\posterior}{p(\params | \data)}
+\newcommand{\subjointdist}[2]{p_{#1}(\params_{#2} , \data)}
+\newcommand{\subjointdistminibatch}[1]{\tilde{p}(\params_{#1} , \data)}
+\newcommand{\reals}{\mathbb{R}}
+\newcommand{\bigo}[1]{\mathcal{O}\left(#1\right)}
+%\newcommand{\trace}[1]{\text{Tr}\left[#1\right]}
+\newcommand{\loss}{L(\params)}
+
+
+\definecolor{Blue}{rgb}{0.0,0.0,1.0}
+\definecolor{Black}{rgb}{0.0,0.0,0.0}
+\definecolor{Green}{rgb}{0.0,0.8,0.0}
+\definecolor{Purple}{rgb}{1.0,0.0,1.0}
+\lstloadlanguages{Python}%
+\lstset{language=Python,
+        frame=none,
+        basicstyle=\small\ttfamily\bfseries,
+        keywordstyle=[1]\color{Blue},
+        keywordstyle=[2]\color{Purple},
+        commentstyle=\usefont{T1}{pcr}{m}{sl}\color{Green},
+        keepspaces=true,
+        }
+%\lstset{language=Python}
+\lstset{
+ morekeywords={sum, exp, max, log, full, defgrad, shape}
+}
+
+
+\begin{document}
+\begin{poster} 
+
+
+%%% Header
+\begin{center}
+\begin{pcolumn}{0.99}
+
+\newcommand{\logowidth}{0.13\textwidth}
+
+\pbox{0.99\textwidth}{}{linewidth=2mm,framearc=0.3,linecolor=camdarkblue,fillstyle=gradient,gradangle=0,gradbegin=white,gradend=white,gradmidpoint=1.0,framesep=1em}{
+%
+%%% Cambridge Logo
+\begin{minipage}[c]{\logowidth}
+  %\begin{center}
+    \includegraphics[width=16cm]{badges/hips-logo.png}
+  %\end{center}
+\end{minipage}
+%
+%%% Title
+\begin{minipage}[c][9cm][c]{0.7\textwidth}
+  \begin{center}
+    {\sffamily \VeryHuge \textbf{Early Stopping is Nonparametric \\Variational Inference}}\\[10mm]
+    {\huge\sffamily \Huge David Duvenaud*, Dougal Maclaurin*, Ryan Adams\\[7.5mm]}
+  \end{center}
+\end{minipage}
+%
+%
+% Harvard logo
+\begin{minipage}[c]{\logowidth}
+  \begin{flushright}
+    \includegraphics[width=9cm,trim=2em 0em 2em 2em, clip]{badges/harvard}
+  \end{flushright}
+\end{minipage}
+%
+}
+\end{pcolumn}
+\end{center}
+
+\vspace*{1.5cm}
+
+\Large
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Beginning of Document
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{multicols}{2}
+
+\mysection{Why does early stopping help?}
+
+%\vspace{0.5in}
+
+%\begin{minipage}[c]{0.17\columnwidth}
+
+\begin{centering}
+\begin{tabular}{rcl}
+Regularization & $=$ & MAP inference \\
+Limiting model capacity & $=$ &Bayesian Occam's razor \\
+Cross-validation & $=$ &Estimating marginal likelihood \\
+Dropout        & $=$ &Integrating out spike-and-slab \\
+Ensembling & $=$ &Bayes model averaging? \\
+Early stopping & $=$ & ??
+\end{tabular}
+\end{centering}
+
+\vspace{0.5in}
+\mysection{Gradient descent with random starts is a sampler}
+
+What is the implicit distribution of parameters after optimizing for $t$ steps?
+\vspace{0.5in}
+\newcommand{\dist}[1]{\includegraphics[width=0.33\columnwidth]{../experiments/2015_03_02_funnel/6-nicer/figures/dists_#1.pdf}}%
+\setlength{\tabcolsep}{2pt}
+\begin{tabular}{ccc}
+Initial distribution & After 150 steps & After 300 steps \\
+\dist{0} &
+\dist{3} &
+\dist{6}
+\end{tabular}
+
+Distributions (blue) implicitly defined by gradient descent on an objective (black).
+\vspace{0.5in}
+\begin{itemize} 
+\item Starts as a bad approximation (prior dist)
+\item Ends as a bad approximation (point mass)
+\item Ensembling $=$ taking multiple samples from dist
+\item Early stopping $=$ choosing best intermediate dist
+\end{itemize}
+
+\vspace{0.5in}
+\mysection{Cross validation vs. marginal likelihood}
+\vspace{-0.5in}
+
+\begin{itemize} 
+\item What if we could evaluate marginal likelihood of implicit distribution?
+\item Could choose all hypers to maximize marginal likelihood
+\item No need for cross-validation?
+\end{itemize}
+
+\vspace{0.5in}
+\mysection{Contribution: Variational Lower Bound}
+\vspace{-1in}
+
+\begin{align*}
+\log p(\data) \geq - \underbrace{\expectargs{q(\params)}{ -\log \jointdist }}_{\textnormal{\normalsize Energy $E[q]$}}
+ \quad \underbrace{- \expectargs{q(\params)}{\log q(\params)}}_{\textnormal{\normalsize Entropy $S[q]$}}
+%& := \varL[q] \label{eq:varbound}
+\end{align*}
+Energy estimated from optimized objective function (training loss is NLL):
+\begin{align*}
+\expectargs{q(\params)}{-\log \jointdist} & \approx - \log p(\hat\theta_T, \vx) %\subjointdist{}{T}
+\end{align*}
+Entropy estimated by tracking change at each iteration:
+\begin{align*}
+- \expectargs{q(\params)}{\log q(\params)} & \approx S[q_0] + \sum_{t=0}^{T-1} \log \left| J(\hat\params_t) \right|
+\label{eq:entropy-bound}
+\end{align*}
+Using a single sample!
+
+
+\vspace{0.5in}
+\mysection{Estimating change in entropy}
+\vspace{-0.5in}
+\begin{itemize} 
+\item Inuitively: High curvature makes entropy decrease quickly
+\item Can measure local curvature with Hessian
+\item Approximation good for small step-sizes
+\end{itemize}
+
+Volume change given by Jacobian of optimizer's operator:
+\begin{align*}
+S[q_{t+1}] - S[q_t] = \expect_{q_t(\params_t)} \left[ \log \Big| J(\params_t) \Big| \right]
+\end{align*}
+
+Gradient descent update rule:
+\begin{align*}
+\params_{t+1} &=
+  \params_t - \stepsize \nabla \loss,
+\end{align*}
+
+Has Jacobian:
+\begin{align*}
+J(\params_t) = I - \stepsize \nabla \nabla L(\theta_t)
+\end{align*}
+
+Entropy change estimated at a single sample:
+\begin{align*}
+S[q_{t+1}] - S[q_t] \approx \log \left| I - \stepsize \nabla \nabla L(\theta_t) \right|
+\end{align*}
+
+\newpage %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\vspace{0.5in}
+\mysection{SGD with entropy estimate}
+\begin{algorithmic}[1]
+%\scriptsize%
+\State {\bfseries input:}
+	Weight init scale $\sigma_0$, step size $\stepsize$,
+	negative log-likelihood $L(\params, t)$
+	\State {\bfseries initialize} $\params_0 \sim \N{0}{\sigma_0 \vI_D}$
+	\State {\color{myfavblue}{{\bfseries initialize} $\entropy_{0} = \frac{D}{2} (1 + \log 2 \pi) + D \log\sigma_0$}}
+	\For{$t=1$ {\bfseries to} $T$}
+		\State {\color{myfavblue}$\entropy_{t} = \entropy_{t-1} + \log \left| \vI - \stepsize \nabla \nabla L(\theta_t, t) \right|$} %\Comment{Update entropy} 
+		\State $\params_{t} = \params_{t-1} - \stepsize \gradparams$ % \Comment{Update parameters}	
+   \EndFor
+   \State \textbf{output} sample $\params_T$, \color{myfavblue}{entropy estimate $\entropy_T$}
+\end{algorithmic}
+
+
+
+
+
+\vspace{0.5in}
+\mysection{Computational Complexity}
+
+\begin{itemize}
+\item Approximate bound: $\log p(\data) \gtrsim -L(\theta_T) + S_T$
+\item Determinant is $\mathcal{O}(D^3)$
+\item $\mathcal{O}(D)$ Taylor approximation using Hessian-vector products
+\item Scales linearly in parameters and dataset size
+\end{itemize}
+
+
+\vspace{0.5in}
+\mysection{Example: Choosing when to stop}
+
+\begin{tabular}{ccc}
+\begin{minipage}[c]{0.35\columnwidth}
+\begin{itemize} 
+\item Neural network on the Boston housing dataset.
+\item SGD marginal likelihood estimate gives stopping criterion without a validation set
+\end{itemize}
+\end{minipage} & \quad &
+\begin{minipage}[c]{0.55\columnwidth}
+\includegraphics[width=\columnwidth]{../experiments/2015_03_01_housing/2/marglik.pdf}
+\end{minipage}
+\end{tabular}
+
+\vspace{0.5in}
+\mysection{Example: Choosing number of hidden units}
+
+\begin{tabular}{ccc}
+\begin{minipage}[c]{0.35\columnwidth}
+\begin{itemize} 
+\item Neural net on 50000 MNIST digits
+\item Largest model has 2 million params
+\item Gives reasonable estimates, but cross-validation still better
+\item Entropy bound over-penalizes after long training
+\end{itemize}
+\end{minipage} & &
+\begin{minipage}[c]{0.55\columnwidth}
+\includegraphics[width=\columnwidth]{../experiments/2015_03_03_vary_width/7_hidden_units_higher_learnrate/vary_widths.pdf}
+\end{minipage}
+\end{tabular}
+
+
+\vspace{0.5in}
+\mysection{Main Takeaways}
+\begin{itemize}
+\item Optimization with random restarts implies nonparametric intermediate dists
+\item Early stopping chooses among these distributions
+\item Ensembling samples from them
+\item Can scalably estimate lower bound on model evidence during optimization
+\item Bound can be used for Langevin-dynamics recognition networks!
+\item All code at {\color{Blue}{\href{http://github.com/HIPS/maxwells-daemon/}{\texttt{github.com/HIPS/maxwells-daemon}}}}
+\end{itemize}
+
+
+\end{multicols}
+\end{poster}
+
+\end{document}
+
