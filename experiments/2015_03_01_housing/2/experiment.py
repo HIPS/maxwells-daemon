@@ -101,7 +101,7 @@ def plot():
     ax.set_ylabel('RMSE')
 
     ax = fig.add_subplot(212)
-    plt.plot(first_results["iterations"], first_results["marg_likelihood"], 'r', label="Marginal likelihood")
+    plt.plot(first_results["iterations"], first_results["marg_likelihood"], 'r', label="Marg. likelihood estimate")
     plt.axvline(x=best_marg_like, color='black', ls='dashed', zorder=2)
     ax.legend(numpoints=1, loc=1, frameon=False, prop={'size':'12'})
     ax.set_ylabel('Marginal likelihood')
@@ -110,7 +110,7 @@ def plot():
     #ax.set_ylim([0, high])
 
     fig.set_size_inches((5,3.5))
-    ax.legend(numpoints=1, loc=1, frameon=False, prop={'size':'12'})
+    ax.legend(numpoints=1, loc=3, frameon=False, prop={'size':'12'})
     plt.savefig('marglik.pdf', pad_inches=0.05, bbox_inches='tight')
 
 def plot_traces_and_mean(results, trace_type, X=None):
@@ -129,7 +129,7 @@ def plot_traces_and_mean(results, trace_type, X=None):
 
 
 if __name__ == '__main__':
-    results = run()
-    with open('results.pkl', 'w') as f:
-        pickle.dump(results, f, 1)
+    #results = run()
+    #with open('results.pkl', 'w') as f:
+    #    pickle.dump(results, f, 1)
     plot()

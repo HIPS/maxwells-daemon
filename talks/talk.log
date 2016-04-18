@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.15 (TeX Live 2014) (preloaded format=pdflatex 2014.5.25)  23 JUN 2015 15:45
+This is pdfTeX, Version 3.14159265-2.6-1.40.15 (TeX Live 2014) (preloaded format=pdflatex 2014.5.25)  6 FEB 2016 12:20
 entering extended mode
  \write18 enabled.
  file:line:error style messages enabled.
@@ -2091,10 +2091,10 @@ File: ../experiments/2015_03_02_funnel/6-nicer/figures/dists_0.pdf Graphic file
 
 <use ../experiments/2015_03_02_funnel/6-nicer/figures/dists_0.pdf>
 Package pdftex.def Info: ../experiments/2015_03_02_funnel/6-nicer/figures/dists
-_0.pdf used on input line 264.
+_0.pdf used on input line 265.
 (pdftex.def)             Requested size: 170.71652pt x 141.7274pt.
 
-Overfull \hbox (28.45274pt too wide) in paragraph at lines 264--264
+Overfull \hbox (28.45274pt too wide) in paragraph at lines 265--265
 [][]  
  []
 
@@ -2105,10 +2105,10 @@ File: ../experiments/2015_03_02_funnel/6-nicer/figures/dists_1.pdf Graphic file
  (type pdf)
  <use ../experiments/2015_03_02_funnel/6-nicer/figures/dists_1.pdf>
 Package pdftex.def Info: ../experiments/2015_03_02_funnel/6-nicer/figures/dists
-_1.pdf used on input line 264.
+_1.pdf used on input line 265.
 (pdftex.def)             Requested size: 170.71652pt x 141.7274pt.
 
-Overfull \hbox (28.45274pt too wide) in paragraph at lines 264--264
+Overfull \hbox (28.45274pt too wide) in paragraph at lines 265--265
 [][]  
  []
 
@@ -2119,10 +2119,10 @@ File: ../experiments/2015_03_02_funnel/6-nicer/figures/dists_2.pdf Graphic file
  (type pdf)
  <use ../experiments/2015_03_02_funnel/6-nicer/figures/dists_2.pdf>
 Package pdftex.def Info: ../experiments/2015_03_02_funnel/6-nicer/figures/dists
-_2.pdf used on input line 264.
+_2.pdf used on input line 265.
 (pdftex.def)             Requested size: 170.71652pt x 141.7274pt.
 
-Overfull \hbox (28.45274pt too wide) in paragraph at lines 264--264
+Overfull \hbox (28.45274pt too wide) in paragraph at lines 265--265
 [][]  
  []
 
@@ -2133,10 +2133,10 @@ File: ../experiments/2015_03_02_funnel/6-nicer/figures/dists_3.pdf Graphic file
  (type pdf)
  <use ../experiments/2015_03_02_funnel/6-nicer/figures/dists_3.pdf>
 Package pdftex.def Info: ../experiments/2015_03_02_funnel/6-nicer/figures/dists
-_3.pdf used on input line 264.
+_3.pdf used on input line 265.
 (pdftex.def)             Requested size: 170.71652pt x 141.7274pt.
 
-Overfull \hbox (28.45274pt too wide) in paragraph at lines 264--264
+Overfull \hbox (28.45274pt too wide) in paragraph at lines 265--265
 [][]  
  []
 
@@ -2147,10 +2147,10 @@ File: ../experiments/2015_03_02_funnel/6-nicer/figures/dists_4.pdf Graphic file
  (type pdf)
  <use ../experiments/2015_03_02_funnel/6-nicer/figures/dists_4.pdf>
 Package pdftex.def Info: ../experiments/2015_03_02_funnel/6-nicer/figures/dists
-_4.pdf used on input line 264.
+_4.pdf used on input line 265.
 (pdftex.def)             Requested size: 170.71652pt x 141.7274pt.
 
-Overfull \hbox (28.45274pt too wide) in paragraph at lines 264--264
+Overfull \hbox (28.45274pt too wide) in paragraph at lines 265--265
 [][]  
  []
 
@@ -2160,19 +2160,19 @@ Overfull \hbox (28.45274pt too wide) in paragraph at lines 264--264
 
 ]
 LaTeX Font Info:    Font shape `T1/phv/bx/n' in size <5> not available
-(Font)              Font shape `T1/phv/b/n' tried instead on input line 341.
+(Font)              Font shape `T1/phv/b/n' tried instead on input line 342.
 LaTeX Font Info:    Font shape `T1/phv/m/it' in size <5> not available
-(Font)              Font shape `T1/phv/m/sl' tried instead on input line 341.
+(Font)              Font shape `T1/phv/m/sl' tried instead on input line 342.
  [55
 
 ]
 File: ../experiments/2015_03_01_housing/2/marglik.pdf Graphic file (type pdf)
  <use ../experiments/2015_03_01_housing/2/marglik.pdf>
 Package pdftex.def Info: ../experiments/2015_03_01_housing/2/marglik.pdf used o
-n input line 354.
+n input line 355.
 (pdftex.def)             Requested size: 163.60246pt x 114.58513pt.
 
-Overfull \hbox (21.33868pt too wide) in paragraph at lines 354--354
+Overfull \hbox (21.33868pt too wide) in paragraph at lines 355--355
 [][]  
  []
 
@@ -2180,17 +2180,17 @@ Overfull \hbox (21.33868pt too wide) in paragraph at lines 354--354
 
 ]
 <../experiments/2015_03_03_vary_width/7_hidden_units_higher_learnrate/vary_widt
-hs.pdf, id=707, 357.3162pt x 258.59636pt>
+hs.pdf, id=681, 357.3162pt x 258.59636pt>
 File: ../experiments/2015_03_03_vary_width/7_hidden_units_higher_learnrate/vary
 _widths.pdf Graphic file (type pdf)
 
 <use ../experiments/2015_03_03_vary_width/7_hidden_units_higher_learnrate/vary_
 widths.pdf>
 Package pdftex.def Info: ../experiments/2015_03_03_vary_width/7_hidden_units_hi
-gher_learnrate/vary_widths.pdf used on input line 369.
+gher_learnrate/vary_widths.pdf used on input line 370.
 (pdftex.def)             Requested size: 163.60246pt x 118.3994pt.
 
-Overfull \hbox (21.33868pt too wide) in paragraph at lines 369--369
+Overfull \hbox (21.33868pt too wide) in paragraph at lines 370--370
 [][]  
  []
 
@@ -2203,35 +2203,35 @@ File: ../experiments/2015_03_02_funnel/6-nicer/figures/dists_3.pdf Graphic file
 
 <use ../experiments/2015_03_02_funnel/6-nicer/figures/dists_3.pdf>
 Package pdftex.def Info: ../experiments/2015_03_02_funnel/6-nicer/figures/dists
-_3.pdf used on input line 382.
+_3.pdf used on input line 383.
 (pdftex.def)             Requested size: 170.71652pt x 141.7274pt.
 
-Overfull \hbox (28.45274pt too wide) in paragraph at lines 382--382
+Overfull \hbox (28.45274pt too wide) in paragraph at lines 383--383
 [][]  
  []
 
 [58
 
 ]
-<../experiments/2015_03_02_funnel/2/dists.pdf, id=756, 287.27327pt x 238.49101p
+<../experiments/2015_03_02_funnel/2/dists.pdf, id=703, 287.27327pt x 238.49101p
 t>
 File: ../experiments/2015_03_02_funnel/2/dists.pdf Graphic file (type pdf)
  <use ../experiments/2015_03_02_funnel/2/dists.pdf>
 Package pdftex.def Info: ../experiments/2015_03_02_funnel/2/dists.pdf used on i
-nput line 399.
+nput line 400.
 (pdftex.def)             Requested size: 142.26378pt x 118.10617pt.
 
-<../experiments/2015_03_03_vary_width/5_grad_threshold/vary_widths.pdf, id=757,
+<../experiments/2015_03_03_vary_width/5_grad_threshold/vary_widths.pdf, id=704,
  357.21425pt x 247.78824pt>
 File: ../experiments/2015_03_03_vary_width/5_grad_threshold/vary_widths.pdf Gra
 phic file (type pdf)
 
 <use ../experiments/2015_03_03_vary_width/5_grad_threshold/vary_widths.pdf>
 Package pdftex.def Info: ../experiments/2015_03_03_vary_width/5_grad_threshold/
-vary_widths.pdf used on input line 399.
+vary_widths.pdf used on input line 400.
 (pdftex.def)             Requested size: 163.60246pt x 113.48865pt.
 
-Overfull \hbox (7.11232pt too wide) in paragraph at lines 399--399
+Overfull \hbox (7.11232pt too wide) in paragraph at lines 400--400
 []| []  
  []
 
@@ -2244,24 +2244,24 @@ pdfTeX warning: /usr/texbin/pdflatex (file ../experiments/2015_03_03_vary_width
 /5_grad_threshold/vary_widths.pdf): PDF inclusion: multiple pdfs with page grou
 p included in a single page
 >]
-<../experiments/2015_03_02_funnel/3_grad_threshold/dists.pdf, id=820, 287.27327
+<../experiments/2015_03_02_funnel/3_grad_threshold/dists.pdf, id=767, 287.27327
 pt x 238.49101pt>
 File: ../experiments/2015_03_02_funnel/3_grad_threshold/dists.pdf Graphic file 
 (type pdf)
 
 <use ../experiments/2015_03_02_funnel/3_grad_threshold/dists.pdf>
 Package pdftex.def Info: ../experiments/2015_03_02_funnel/3_grad_threshold/dist
-s.pdf used on input line 399.
+s.pdf used on input line 400.
 (pdftex.def)             Requested size: 142.26378pt x 118.10617pt.
 File: ../experiments/2015_03_03_vary_width/5_grad_threshold/vary_widths.pdf Gra
 phic file (type pdf)
 
 <use ../experiments/2015_03_03_vary_width/5_grad_threshold/vary_widths.pdf>
 Package pdftex.def Info: ../experiments/2015_03_03_vary_width/5_grad_threshold/
-vary_widths.pdf used on input line 399.
+vary_widths.pdf used on input line 400.
 (pdftex.def)             Requested size: 163.60246pt x 113.48865pt.
 
-Overfull \hbox (7.11232pt too wide) in paragraph at lines 399--399
+Overfull \hbox (7.11232pt too wide) in paragraph at lines 400--400
 []| []  
  []
 
@@ -2273,10 +2273,10 @@ File: ../experiments/2015_03_02_funnel/6-nicer/figures/dists_3.pdf Graphic file
 
 <use ../experiments/2015_03_02_funnel/6-nicer/figures/dists_3.pdf>
 Package pdftex.def Info: ../experiments/2015_03_02_funnel/6-nicer/figures/dists
-_3.pdf used on input line 412.
+_3.pdf used on input line 413.
 (pdftex.def)             Requested size: 170.71652pt x 141.7274pt.
 
-Overfull \hbox (28.45274pt too wide) in paragraph at lines 412--412
+Overfull \hbox (28.45274pt too wide) in paragraph at lines 413--413
 [][]  
  []
 
@@ -2296,14 +2296,18 @@ Overfull \hbox (28.45274pt too wide) in paragraph at lines 412--412
 \tf@snm=\write8
 \openout8 = `talk.snm'.
 
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 434.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 434.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 435.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 435.
  (./talk.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 434.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 434.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 435.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 435.
 Package rerunfilecheck Info: File `talk.out' has not changed.
 (rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 434.
+
+
+LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
+
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 435.
  ) 
 Here is how much of TeX's memory you used:
  24185 strings out of 493117
@@ -2327,10 +2331,10 @@ texmf-dist/fonts/type1/public/amsfonts/symbols/msam10.pfb></usr/local/texlive/2
 ve/2014/texmf-dist/fonts/type1/urw/helvetic/uhvb8a.pfb></usr/local/texlive/2014
 /texmf-dist/fonts/type1/urw/helvetic/uhvr8a.pfb></usr/local/texlive/2014/texmf-
 dist/fonts/type1/urw/helvetic/uhvro8a.pfb>
-Output written on talk.pdf (63 pages, 1568302 bytes).
+Output written on talk.pdf (63 pages, 1626856 bytes).
 PDF statistics:
- 939 PDF objects out of 1000 (max. 8388607)
- 460 compressed objects within 5 object streams
+ 886 PDF objects out of 1000 (max. 8388607)
+ 464 compressed objects within 5 object streams
  129 named destinations out of 1000 (max. 500000)
  318 words of extra memory for PDF output out of 10000 (max. 10000000)
 

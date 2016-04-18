@@ -118,7 +118,7 @@ def plot():
     ax = fig.add_subplot(212)
     plt.locator_params(nbins=4, axis='y')
     final_marg = [all_results[i]["marg_likelihood"][-1] for i, w in enumerate(widths)]
-    plt.plot(final_marg[1:], 'r', label='Marginal likelihood')
+    plt.plot(final_marg[1:], 'r', label='Marginal likelihood estimate')
     ax.legend(numpoints=1, loc=4, frameon=False, prop={'size':'12'})
     ax.set_ylabel('Marginal likelihood')
     ax.set_xlabel('Number of hidden units')
