@@ -1,9 +1,9 @@
 % Sample LaTeX file for creating a paper in the Morgan Kaufmannn two
 % column, 8 1/2 by 11 inch proceedings format.
 
-\documentclass[]{article}
+\documentclass[twoside]{article}
 %\usepackage{uai2015stylefiles/proceed2e}
-\usepackage{aistats2016/aistats2016}
+\usepackage[accepted]{aistats2016/aistats2016}
 
 % Set the typeface to Times Roman
 \usepackage{times}
@@ -15,6 +15,7 @@
 \usepackage{color}
 \usepackage{algorithm}
 \usepackage{todonotes}
+\usepackage{dsfont}
 
 \definecolor{mydarkblue}{rgb}{0,0.08,0.45}
 \hypersetup{ %
@@ -124,12 +125,11 @@
 %\maketitle
 
 \begin{abstract}
-We show that unconverged stochastic gradient descent 
-can be interpreted as a procedure that samples from a nonparametric approximate posterior distribution.
+We show that unconverged stochastic gradient descent can be interpreted as sampling from a nonparametric approximate posterior distribution.
 This distribution is implicitly defined by the transformation of an initial distribution by a sequence of optimization steps. 
-By tracking the change in entropy over these distributions during optimization, we form a scalable, unbiased estimate of a variational lower bound on the log marginal likelihood.
+By tracking the change in entropy of this distribution during optimization, we give a scalable, unbiased estimate of a variational lower bound on the log marginal likelihood.
 This bound can be used to optimize hyperparameters instead of cross-validation.
-This Bayesian interpretation of SGD suggests improved, overfitting-resistant optimization procedures, and gives a theoretical foundation for early stopping and ensembling.
+This Bayesian interpretation of SGD also suggests new overfitting-resistant optimization procedures, and gives a theoretical foundation for early stopping and ensembling.
 We investigate the properties of this marginal likelihood estimator on neural network models.
 \end{abstract}
 
@@ -240,7 +240,7 @@ The entropy term shrinks because the optimization converges over time.
 Optimization thus generates a sequence of distributions that range from underfitting to overfitting, and the variational lower bound captures this tradeoff.
 
 We cannot evaluate $\varL[q_t]$ exactly, but we can obtain an unbiased estimator.
-Sampling~$\params_0$ from~$q_0$ and then applying the transition operator~$t$ times produces an exact sample~$\params_0$ from~$q_t$, by definition.
+Sampling~$\params_0$ from~$q_0$ and then applying the transition operator~$t$ times produces an exact sample~$\params_t$ from~$q_t(\params)$, by definition.
 Since $\params_t$ is an exact sample from $q_t(\theta)$, $\log\subjointdist{}{t}$ is an unbiased estimator of the energy term of (\ref{eq:varbound}).
 The entropy term is trickier, since we do not have access to the density $q(\params)$ directly.
 However, if we know the entropy of the initial distribution, $S[q_0(\params)]$, then we can estimate $S[q_t(\params)]$ by tracking the change in entropy at each iteration, calculated by the change of variables formula. % for a probability density function.
@@ -527,7 +527,7 @@ The increased lower bound for non-zero thresholds indicates that the entropy-fri
 
 As the level of thresholding increases, the training and test error get worse due to under-fitting.
 However, for intermediate thresholds, the lower bound increases.
-Because it is a lower bound, its increase means that the estimate of the marginal likelihood is becoming \emph{more accurate}, even though the actual model happens to be getting worse at the same time.
+Because it is a lower bound, its increase means that the estimate of the marginal likelihood of the exact model is becoming \emph{more accurate}, even though the performance of the approximate model happens to be getting worse at the same time.
 
 \subsection{Implementation details}
 To compute Hessian-vector products in our models, we used \href{http://github.com/HIPS/autograd}{autograd},
@@ -535,14 +535,13 @@ a reverse-mode automatic differentiation package for Python capable of arbitrary
 %, available at \url{github.com/HIPS/autograd}.
 %This package operates on standard Numpy~\citep{oliphant2007python} code, and can differentiate code containing loops, branches, and even its own gradient evaluations.
 
-Code for all experiments in this paper will be made available upon publication.
-%is available at \url{github.com/HIPS/maxwells-daemon}.
+Code for all experiments in this paper is available at \href{http://github.com/HIPS/maxwells-daemon}{\texttt{github.com/HIPS/maxwells-daemon}}.
 
 \section{Limitations}
 \label{sec:limitations}
 In practice, the marginal likelihood estimate we present might not be useful for several reasons.
 First, using only a single sample to estimate both the expected likelihood as well as the entropy of an entire distribution will necessarily have high variance under some circumstances.
-These problems could conceivably be addressed by ensembling, which has an interpretation as taking multiple exact independent samples from the implicit posterior.
+These problems could conceivably be addressed by ensembling, which has an interpretation as taking multiple exact independent samples from the implicit approximate posterior.
 
 Second, as parameters converge, their entropy estimate (and true entropy) will continue to decrease indefinitely, making the marginal likelihood arbitrarily small.
 However, in practice there is usually a limit to the degree of overfitting possible.
@@ -550,7 +549,7 @@ However, in practice there is usually a limit to the degree of overfitting possi
 This raises the question: when are marginal likelihoods a good guide to predictive accuracy?
 %Certainly, comparing between somewhat degenerate and completely degenerate approximate distributions isn't likely to be helpful.
 Presumably the marginal likelihood is more likely to be correlated with predictive performance when the
-implicit distribution has moderate amounts of entropy.
+approximate posterior has moderate amounts of entropy.
 %optimization parameters have been optimized to produce reasonable approximating distributions.
 In section \ref{sec:entropy friendly} we modified SGD to be less prone to produce regions of pathologically low entropy, but a more satisfactory solution is probably possible.
 
@@ -652,16 +651,21 @@ The gradient-thresholding method proposed in this paper is a simple first exampl
 \section{Conclusion}
 
 Most regularization methods have an interpretation as approximate inference in some Bayesian model.
-This paper shows that early stopping and ensembling can also be interpreted this way, sampling from an implicit nonparametric distribution.
+We give such an interpretation for early stopping and ensembling: as sampling from a nonparametric approximation to the intractable posterior.
 
 %This paper followed that tradition by interpreting early stopping as choosing between samples from distributions implicitly defined by an optimization procedure.
 
-We introduced a variational lower bound on the marginal likelihood of these implicit distributions.
-We showed how to produce an unbiased estimate of this variational lower bound by approximately tracking the entropy change at each step of optimization.
-Our estimator is compatible with using data minibatches and scales linearly with the number of parameters, making it suitable for large-scale problems.
+%We showed how to estimate the KL-divergence between 
+%We introduced a marginal likelihood estimator based on a variational lower bound computed using these implicit distributions.
+This interpretation leads naturally to a variational lower bound on the marginal likelihood.
+We also gave an unbiased estimate of this lower bound by approximately tracking the entropy loss at each step of optimization.
+Our estimator is compatible with using data minibatches, and scales linearly with the number of parameters, making it suitable for large-scale problems.
 This inexpensive calculation turns standard gradient descent into an inference algorithm.
-
-In principle this bound could be used to choose model and training hyperparameters without a validation set, however  in practice it doesn't beat the gold standard of cross-validation.
+%
+%When a large validation set is available, cross-validation is the gold standard for choosing hyperparameters. 
+Our method can be used to choose model and training hyperparameters even when a validation set is not available.
+%In practice it doesn't beat the gold standard of cross-validation.
+%However, our estimator doesn't require a validation set.
 
 %Optimization algorithms with random initializations implicitly define a series of distributions which converge to posterior modes.
 %We showed that these nonparametric distributions can be seen as variational approximations to the true posterior. %when the optimization objective is a log-likelihood.
